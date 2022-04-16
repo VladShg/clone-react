@@ -1,9 +1,11 @@
 import {
 	Body,
+	ClassSerializerInterceptor,
 	Controller,
 	Get,
 	Post,
 	UseGuards,
+	UseInterceptors,
 	UsePipes,
 	ValidationPipe,
 } from '@nestjs/common';
@@ -11,6 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { hashPassword } from 'src/utils/bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserEntity } from './entity/user.entity';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -25,9 +28,11 @@ export class UserController {
 		return user;
 	}
 
-	@Get('')
+	@Get()
+	@UseInterceptors(ClassSerializerInterceptor)
 	@UseGuards(AuthGuard('jwt'))
 	async getUsers(): Promise<User[]> {
-		return await this.userService.findAll();
+		const users = await this.userService.findAll();
+		return users.map((user) => new UserEntity(user));
 	}
 }
