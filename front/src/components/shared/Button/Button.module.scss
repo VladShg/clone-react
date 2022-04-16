@@ -1,0 +1,20 @@
+.button {
+	font-family: Poppins, serif;
+	text-decoration: none;
+	background: var(--main);
+	color: white;
+	border: none;
+	border-radius: 20px;
+	padding: 10px 20px;
+	text-align: center;
+	font-size: 12px;
+	font-weight: bold;
+	transition: 0.2s ease background;
+	&:hover {
+		background: var(--main-fade);
+		cursor: pointer;
+	}
+	&[disabled] {
+		background: var(--main-inactive);
+	}
+}

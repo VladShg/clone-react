@@ -1,0 +1,93 @@
+@use "breakpoints";
+
+.layout {
+	display: grid;
+	height: 100%;
+	grid-template-columns: 1fr 1fr 1fr;
+}
+
+.section {
+	max-width: 100%;
+	overflow: hidden;
+}
+
+.dashboard {
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+	align-items: flex-end;
+	padding: 0px 12px;
+	margin-right: 5%;
+	box-sizing: border-box;
+}
+
+.header {
+	@include breakpoints.home-size-limit;
+	padding: 20px 0;
+	display: flex;
+	font-size: 32px;
+	color: var(--main);
+	justify-content: start;
+	align-items: center;
+	box-sizing: border-box;
+	> * {
+		padding: 20px;
+		border-radius: 9999px;
+		transition: 0.2s ease background;
+		&:hover {
+			cursor: pointer;
+			background: var(--main-hover);
+		}
+	}
+}
+
+.main {
+	@include breakpoints.home-size-limit;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	flex-grow: 1;
+}
+
+.bottom {
+	margin: 16px 0;
+}
+
+a.active {
+	> svg {
+		font-weight: bold;
+	}
+	> span {
+		font-weight: bold;
+	}
+}
+
+a.navigation {
+	border-radius: 9999px;
+	transition: 0.2s ease background;
+	font-size: 20px;
+	font-family: Poppins, serif;
+	font-weight: normal;
+
+	&:hover {
+		background: var(--gray-fade);
+	}
+
+	text-decoration: none;
+	color: black;
+	padding: 10px;
+	padding-left: 20px;
+	display: flex;
+	align-items: center;
+
+	> *:first-child {
+		width: 30px;
+		text-align: center;
+		font-size: 24px;
+	}
+
+	> *:last-child {
+		margin-left: 20px;
+		margin-right: 15px;
+	}
+}

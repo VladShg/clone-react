@@ -1,0 +1,29 @@
+@use "breakpoints";
+
+.container {
+	@include breakpoints.home-size-limit;
+	display: flex;
+	align-items: center;
+	font-size: 24px;
+	padding: 12px;
+	border-radius: 9999px;
+	margin: 10px 0;
+	transition: 0.2s ease background;
+
+	&:hover {
+		background: var(--gray-fade);
+		cursor: pointer;
+	}
+}
+
+.description {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	font-size: 15px;
+	font-weight: bold;
+
+	> .username {
+		font-weight: normal;
+	}
+}
