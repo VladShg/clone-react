@@ -15,7 +15,7 @@ export default function Login() {
 				<div className={styles.loginContainer}>
 					<i className={classNames("fa-solid fa-crow", styles.logo)} />
 					<h1>Happening now</h1>
-					<h2>Join Twitter today.</h2>
+					<h2>Join Crower today.</h2>
 					<Link to="/signup" className={styles.signupService}>
 						Sign up with Google
 					</Link>

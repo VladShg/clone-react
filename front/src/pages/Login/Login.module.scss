@@ -19,7 +19,7 @@
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		color: white;
+		color: var(--white);
 		font-size: 320px;
 		transform: translateX(-50%) translateY(-50%);
 	}
@@ -67,19 +67,33 @@
 	@include link;
 	border: 1px solid var(--border-grey);
 	color: black;
+
+	background: var(--white);
+	transition: .2s ease background;
+	&:hover {
+		background: var(--white-fade);
+	}
 }
 
 .signupManual {
 	@include link;
-	color: white;
+	color: var(--white);
 	background: var(--main);
+	transition: .2s ease background;
+	&:hover {
+		background: var(--main-fade);
+	}
 }
 
 .signIn {
 	@include link;
 	border: 1px solid var(--border-grey);
 	color: var(--main);
+	transition: .2s ease background;
 	font-weight: bold;
+	&:hover {
+		background: var(--white-fade);
+	}
 }
 
 @mixin separatorLine {

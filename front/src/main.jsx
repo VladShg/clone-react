@@ -1,16 +1,13 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import "./index.scss"
-import { BrowserRouter } from "react-router-dom"
 import AuthProvider from "./components/context/AuthContext"
-import Home from "./pages/Home"
+import Router from "./Router"
 
 ReactDOM.render(
 	<React.StrictMode>
 		<AuthProvider>
-			<BrowserRouter>
-				<Home />
-			</BrowserRouter>
+			<Router />
 		</AuthProvider>
 	</React.StrictMode>,
 	document.getElementById("root")
