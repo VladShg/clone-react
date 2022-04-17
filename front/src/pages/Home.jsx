@@ -47,7 +47,7 @@ export default function Home() {
 							<i className="fa-solid fa-ellipsis" />
 							<span>More</span>
 						</HomeLink>
-						<ThemedLink to="/tweet" theme="primary" className={styles.bottom}>
+						<ThemedLink to="/tweet" theme="primary">
 							Tweet
 						</ThemedLink>
 					</div>

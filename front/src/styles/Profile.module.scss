@@ -1,7 +1,4 @@
-@use "breakpoints";
-
 .container {
-	@include breakpoints.home-size-limit;
 	display: flex;
 	align-items: center;
 	font-size: 24px;
