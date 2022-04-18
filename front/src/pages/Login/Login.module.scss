@@ -69,8 +69,9 @@
 	color: black;
 
 	background: var(--white);
-	transition: .2s ease background;
+	transition: 0.2s ease background;
 	&:hover {
+		cursor: pointer;
 		background: var(--white-fade);
 	}
 }
@@ -79,7 +80,7 @@
 	@include link;
 	color: var(--white);
 	background: var(--main);
-	transition: .2s ease background;
+	transition: 0.2s ease background;
 	&:hover {
 		background: var(--main-fade);
 	}
@@ -89,7 +90,7 @@
 	@include link;
 	border: 1px solid var(--border-grey);
 	color: var(--main);
-	transition: .2s ease background;
+	transition: 0.2s ease background;
 	font-weight: bold;
 	&:hover {
 		background: var(--white-fade);

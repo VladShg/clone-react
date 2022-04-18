@@ -12,6 +12,9 @@ export class UserEntity implements User {
 	@Exclude()
 	password: string;
 
+	@Exclude()
+	googleId: string | null;
+
 	created_at: Date;
 	updated_at: Date;
 
