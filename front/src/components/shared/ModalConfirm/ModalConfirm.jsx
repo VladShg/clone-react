@@ -12,7 +12,7 @@ export default function ModalConfirm({ isOpen, setOpen, children }) {
 	const content = useRef(null)
 
 	const checkClick = (event) => {
-		if (!content.current.contains(event.target)) {
+		if (isOpen && !content.current.contains(event.target)) {
 			setOpen(false)
 		}
 	}

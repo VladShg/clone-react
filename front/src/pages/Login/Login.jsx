@@ -8,7 +8,7 @@ import ModalConfirm from "../../components/shared/ModalConfirm/ModalConfirm"
 import { API_URL, CLIENT_ID } from "../../config"
 
 export default function Login() {
-	const [isModalOpen, setModalOpen] = useState(true)
+	const [isModalOpen, setModalOpen] = useState(false)
 
 	const onLogin = async (googleResponse) => {
 		let request = await fetch(`{API_URL}/auth/google/login/`, {
