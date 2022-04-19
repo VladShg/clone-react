@@ -1,14 +1,15 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import "./index.scss"
-import AuthProvider from "./components/context/AuthContext"
 import Router from "./Router"
+import { Provider } from "react-redux"
+import { rootStore } from "./store/main"
 
 ReactDOM.render(
 	<React.StrictMode>
-		<AuthProvider>
+		<Provider store={rootStore}>
 			<Router />
-		</AuthProvider>
+		</Provider>
 	</React.StrictMode>,
 	document.getElementById("root")
 )

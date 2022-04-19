@@ -1,13 +1,17 @@
-import React from "react"
+import React, { useState } from "react"
 import styles from "./Login.module.scss"
 import backgroundImage from "../../media/background/painted.png"
 import classNames from "classnames"
 import { Link } from "react-router-dom"
 import GoogleLogin from "react-google-login"
+import ModalConfirm from "../../components/shared/ModalConfirm/ModalConfirm"
+import { API_URL, CLIENT_ID } from "../../config"
 
 export default function Login() {
+	const [isModalOpen, setModalOpen] = useState(true)
+
 	const onLogin = async (googleResponse) => {
-		let request = await fetch("http://127.0.0.1:5000/auth/google/login/", {
+		let request = await fetch(`{API_URL}/auth/google/login/`, {
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -20,7 +24,7 @@ export default function Login() {
 	}
 
 	const onSignUp = async (googleResponse) => {
-		let request = await fetch("http://127.0.0.1:5000/auth/google/signup/", {
+		let request = await fetch(`${API_URL}/auth/google/signup/`, {
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -49,7 +53,7 @@ export default function Login() {
 					<h1>Happening now</h1>
 					<h2>Join Crower today.</h2>
 					<GoogleLogin
-						clientId="30844922821-htjb9q45jeuvn95dapfkm2743s52eqoo.apps.googleusercontent.com"
+						clientId={CLIENT_ID}
 						render={(renderProps) => (
 							<button
 								className={styles.signupService}

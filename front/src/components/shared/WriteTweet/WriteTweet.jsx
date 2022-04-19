@@ -1,12 +1,13 @@
-import React, { useContext, useState } from "react"
-import { AuthContext } from "../../context/AuthContext"
+import React, { useState } from "react"
+import { useSelector } from "react-redux"
+import { authSelector } from "../../../store/auth/authSlice"
 import Avatar from "../Avatar/Avatar"
 import Button from "../Button/Button"
 import WordCounter from "../WordCounter/WordCounter"
 import styles from "./WriteTweet.module.scss"
 
 export default function WriteTweet() {
-	const { user } = useContext(AuthContext)
+	const { user } = useSelector(authSelector)
 	const [input, setInput] = useState("")
 	const maxLength = 140
 
