@@ -82,6 +82,9 @@ export default function Login() {
 					<Link to="/signup" className={styles.signIn}>
 						Sign in
 					</Link>
+					<ModalConfirm isOpen={isModalOpen} setOpen={setModalOpen}>
+						<h1>hello</h1>
+					</ModalConfirm>
 				</div>
 			</div>
 		</div>

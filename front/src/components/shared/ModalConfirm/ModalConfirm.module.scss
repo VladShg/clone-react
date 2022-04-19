@@ -1,0 +1,17 @@
+.wrapper {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: var(--grey);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.container {
+	background: var(--white);
+	border-radius: 20px;
+	padding: 20px;
+}
