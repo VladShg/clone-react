@@ -7,6 +7,9 @@ export class UserEntity implements User {
 	username: string;
 
 	@Exclude()
+	birth: Date | null;
+
+	@Exclude()
 	email: string;
 
 	@Exclude()
