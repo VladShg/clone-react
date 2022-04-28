@@ -1,6 +1,6 @@
-import React from "react"
-import styles from "./Header.module.scss"
-import PropTypes from "prop-types"
+import React from 'react'
+import styles from './Header.module.scss'
+import PropTypes from 'prop-types'
 
 Header.propTypes = {
 	children: PropTypes.oneOfType([

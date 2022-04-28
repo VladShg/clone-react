@@ -1,14 +1,14 @@
-import React, { useState } from "react"
-import { useSelector } from "react-redux"
-import { authSelector } from "../../../store/auth/authSlice"
-import Avatar from "../Avatar/Avatar"
-import Button from "../Button/Button"
-import WordCounter from "../WordCounter/WordCounter"
-import styles from "./WriteTweet.module.scss"
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { authSelector } from '../../../store/auth/authSlice'
+import Avatar from '../Avatar/Avatar'
+import Button from '../Button/Button'
+import WordCounter from '../WordCounter/WordCounter'
+import styles from './WriteTweet.module.scss'
 
 export default function WriteTweet() {
 	const { user } = useSelector(authSelector)
-	const [input, setInput] = useState("")
+	const [input, setInput] = useState('')
 	const maxLength = 140
 
 	let isDisabled = !input || maxLength < input.length

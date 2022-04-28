@@ -3,5 +3,5 @@
 	"tabWidth": 2,
 	"endOfLine": "auto",
 	"semi": false,
-	"singleQuote": false
+	"singleQuote": true
 }

@@ -1,7 +1,7 @@
-import React from "react"
-import PropTypes from "prop-types"
-import classNames from "classnames"
-import styles from "./avatar.module.scss"
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import styles from './avatar.module.scss'
 
 Avatar.propTypes = {
 	src: PropTypes.string,

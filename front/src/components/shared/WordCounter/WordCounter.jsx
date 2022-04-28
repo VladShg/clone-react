@@ -1,6 +1,6 @@
-import React from "react"
-import PropTypes from "prop-types"
-import styles from "./WordCounter.module.scss"
+import React from 'react'
+import PropTypes from 'prop-types'
+import styles from './WordCounter.module.scss'
 
 export default function WordCounter({ text, size = 30 }) {
 	const maxLength = 140
@@ -14,19 +14,19 @@ export default function WordCounter({ text, size = 30 }) {
 
 	let caption = null
 	let hasCircle = true
-	let circleColor = "var(--main)"
-	let textColor = "black"
+	let circleColor = 'var(--main)'
+	let textColor = 'black'
 
 	if (text.length >= maxLength) {
 		caption = maxLength - text.length
-		circleColor = "red"
-		textColor = "red"
+		circleColor = 'red'
+		textColor = 'red'
 		if (text.length - maxLength >= 10) {
 			hasCircle = false
 		}
 	} else if (text.length >= maxLength - warningTreshold) {
 		caption = maxLength - text.length
-		circleColor = "orange"
+		circleColor = 'orange'
 	}
 
 	let circleShrink = null
@@ -73,7 +73,7 @@ const Circle = ({ color, pct, size, shrink = 0.6 }) => {
 			r={radius}
 			cx={size / 2}
 			cy={size / 2}
-			stroke={strokePct !== circ ? color : ""} // remove color as 0% sets full circumference
+			stroke={strokePct !== circ ? color : ''} // remove color as 0% sets full circumference
 			strokeDasharray={circ}
 			strokeDashoffset={pct ? strokePct : 0}
 		></circle>
@@ -95,7 +95,7 @@ const Text = ({ content, size, color }) => {
 			x="50%"
 			y="50%"
 			fill={color}
-			fontSize={size / 2.5 + "px"}
+			fontSize={size / 2.5 + 'px'}
 		>
 			{content}
 		</text>

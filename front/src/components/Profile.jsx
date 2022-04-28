@@ -1,8 +1,8 @@
-import React from "react"
-import { useSelector } from "react-redux"
-import { authSelector } from "../store/auth/authSlice"
-import { ProfileStyles as styles } from "../styles/_Styles"
-import Avatar from "./shared/Avatar/Avatar"
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { authSelector } from '../store/auth/authSlice'
+import { ProfileStyles as styles } from '../styles/_Styles'
+import Avatar from './shared/Avatar/Avatar'
 
 export default function Profile() {
 	const { user } = useSelector(authSelector)
@@ -12,7 +12,7 @@ export default function Profile() {
 			<Avatar src={avatar} />
 			<div className={styles.description}>
 				<span>{name}</span>
-				<span className={styles.username}>{"@" + username}</span>
+				<span className={styles.username}>{'@' + username}</span>
 			</div>
 		</div>
 	)
