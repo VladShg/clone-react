@@ -20,7 +20,7 @@ module.exports = {
 		'prettier/prettier': 'warn',
 		'arrow-body-style': 'off',
 		'prefer-arrow-callback': 'off',
-		'react/prop-types': 'warn',
+		'react/prop-types': 'off',
 	},
 	ignorePatterns: ['.eslintrc.js'],
 }

@@ -25,7 +25,6 @@ export const authApi = createApi({
 		}),
 		googleConnect: builder.query({
 			query: (token) => {
-				console.log('token', token)
 				return {
 					url: '/google/connect',
 					method: 'POST',
@@ -38,9 +37,9 @@ export const authApi = createApi({
 				return {
 					url: '/lookup',
 					method: 'GET',
-					params: params
+					params: params,
 				}
-			}
+			},
 		}),
 		emailLogin: builder.query({
 			query: (username, password) => {
@@ -49,10 +48,6 @@ export const authApi = createApi({
 					method: 'POST',
 					body: JSON.stringify({ username, password }),
 				}
-			},
-			transformResponse: (response, meta, arg) => {
-				console.log('Transform - email', response, meta, arg)
-				return response.data
 			},
 		}),
 	}),

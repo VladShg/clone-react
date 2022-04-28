@@ -1,55 +1,42 @@
-import React, { useState } from "react"
-import styles from "./Login.module.scss"
-import backgroundImage from "../../media/background/painted.png"
-import classNames from "classnames"
-import { Link } from "react-router-dom"
-import GoogleLogin from "react-google-login"
-import ModalConfirm from "../../components/shared/ModalConfirm/ModalConfirm"
-import { API_URL, CLIENT_ID } from "../../config"
+import React, { useState } from 'react'
+import styles from './Login.module.scss'
+import backgroundImage from '../../media/background/painted.png'
+import classNames from 'classnames'
+import { useLazyGoogleConnectQuery } from './../../services/authApi'
+import { Link } from 'react-router-dom'
+import GoogleLogin from 'react-google-login'
+import { CLIENT_ID } from '../../config'
+import ModalRegister from '../../components/shared/Modal/ModalRegister/ModalRegister'
 
 export default function Login() {
-	const [isModalOpen, setModalOpen] = useState(false)
-
-	const onLogin = async (googleResponse) => {
-		let request = await fetch(`{API_URL}/auth/google/login/`, {
-			headers: {
-				"Content-Type": "application/json",
-			},
-			method: "POST",
-			body: JSON.stringify({
-				token: googleResponse.accessToken,
-			}),
-		})
-		let response = await request.json()
-	}
+	const [isModalOpen, setModalOpen] = useState(true)
+	const [triggerConnect] = useLazyGoogleConnectQuery()
+	const [profile, setProfile] = useState(null)
 
 	const onSignUp = async (googleResponse) => {
-		let request = await fetch(`${API_URL}/auth/google/signup/`, {
-			headers: {
-				"Content-Type": "application/json",
-			},
-			method: "POST",
-			body: JSON.stringify({
-				token: googleResponse.accessToken,
-				...googleResponse.profileObj,
-			}),
-		})
-		let response = await request.json()
-	}
+		const token = googleResponse.accessToken
+		let connectToken = await triggerConnect(token)
+		if (connectToken.isSuccess) {
+			setModalOpen(true)
 
-	const logResponse = (data, context) => {
-		console.log(data, context)
+			const profileObj = googleResponse.profileObj
+			let name = [profileObj.name]
+			if (profileObj.familyName) {
+				name.push(profileObj.familyName)
+			}
+			setProfile({ name: name.join(' '), email: profileObj.email })
+		}
 	}
 
 	return (
 		<div className={styles.container}>
 			<div className={styles.background}>
-				<i className={classNames("fa-solid fa-crow", styles.backgroundLogo)} />
+				<i className={classNames('fa-solid fa-crow', styles.backgroundLogo)} />
 				<img src={backgroundImage} alt="wall" />
 			</div>
 			<div>
 				<div className={styles.loginContainer}>
-					<i className={classNames("fa-solid fa-crow", styles.logo)} />
+					<i className={classNames('fa-solid fa-crow', styles.logo)} />
 					<h1>Happening now</h1>
 					<h2>Join Crower today.</h2>
 					<GoogleLogin
@@ -63,8 +50,7 @@ export default function Login() {
 								Sign up with Google
 							</button>
 						)}
-						cookiePolicy={"single_host_origin"}
-						onFailure={(data) => logResponse("failure", data)}
+						cookiePolicy={'single_host_origin'}
 						onSuccess={onSignUp}
 					/>
 					<Link to="/signup" className={styles.signupService}>
@@ -82,9 +68,11 @@ export default function Login() {
 					<Link to="/signup" className={styles.signIn}>
 						Sign in
 					</Link>
-					<ModalConfirm isOpen={isModalOpen} setOpen={setModalOpen}>
-						<h1>hello</h1>
-					</ModalConfirm>
+					<ModalRegister
+						isOpen={isModalOpen}
+						setOpen={setModalOpen}
+						profile={profile}
+					/>
 				</div>
 			</div>
 		</div>

@@ -1,0 +1,130 @@
+.wrapper {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: var(--grey);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.container {
+	position: relative;
+	background: var(--white);
+	border-radius: 20px;
+	padding: 60px 80px;
+	height: fit-content;
+	min-height: 200px;
+
+	width: fit-content;
+	max-width: 500px;
+
+	> *:last-child {
+		margin-bottom: 0px !important;
+	}
+}
+
+.Button {
+	background-color: var(--subtle);
+	border-radius: 9999px;
+	color: var(--white);
+	border: none;
+	outline: none;
+
+	padding: 16px 10px;
+	width: 100%;
+
+	&[disabled] {
+		background-color: var(--grey);
+	}
+
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.Input,
+.DatePicker {
+	color: var(--black);
+	border: 1px solid var(--border-grey);
+	font-size: 15px;
+	line-height: 16px;
+	padding: 16px 10px;
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+
+	margin-bottom: 20px;
+
+	::placeholder {
+		color: var(--subtle);
+	}
+}
+
+.Close,
+.Back {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+
+	font-size: 24px;
+	transition: 0.2s ease transform;
+
+	&:hover {
+		transform: translateY(-2px);
+		cursor: pointer;
+	}
+}
+
+.Warning {
+	min-height: 30px;
+	width: 100%;
+	font-size: 14px;
+	line-height: 16px;
+	color: red;
+	margin-bottom: 20px;
+}
+
+.Title {
+	color: var(--black);
+	font-weight: 700px;
+	font-size: 31px;
+	line-height: 36px;
+	margin: 0;
+	margin-bottom: 40px;
+}
+
+.SubTitle {
+	color: var(--black);
+	font-weight: 700px;
+	font-size: 15px;
+	line-height: 20px;
+	margin: 0;
+	margin-bottom: 20px;
+}
+
+.LogoContainer {
+	position: absolute;
+	top: 5px;
+	right: 50%;
+	transform: translateX(50%);
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 10px 0;
+	> svg {
+		font-size: 32px;
+		color: var(--main);
+	}
+}
+
+.Description {
+	color: var(--subtle);
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 16px;
+	margin-bottom: 20px;
+}
