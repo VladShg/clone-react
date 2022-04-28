@@ -33,6 +33,15 @@ export const authApi = createApi({
 				}
 			},
 		}),
+		validateProfile: builder.query({
+			query: (params) => {
+				return {
+					url: '/lookup',
+					method: 'GET',
+					params: params
+				}
+			}
+		}),
 		emailLogin: builder.query({
 			query: (username, password) => {
 				return {
@@ -49,4 +58,4 @@ export const authApi = createApi({
 	}),
 })
 
-export const { useLazyGoogleConnectQuery } = authApi
+export const { useLazyGoogleConnectQuery, useValidateProfileQuery } = authApi

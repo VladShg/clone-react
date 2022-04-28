@@ -2,7 +2,9 @@ import {
 	BadRequestException,
 	Body,
 	Controller,
+	Get,
 	Post,
+	Query,
 	UsePipes,
 	ValidationPipe,
 } from '@nestjs/common';
@@ -13,6 +15,8 @@ import { LoginByUsernameDto } from './dto/login-username.dto';
 import { TokenDto } from './dto/token.dto';
 import { GoogleSignupDto } from './dto/google-signup.dto';
 import { TokenIsValidDto } from './dto/tokenIsValid.dto';
+import { IsAvailableDto } from './dto/is-available.dto';
+import { User } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -64,5 +68,29 @@ export class AuthController {
 		const user = await this.authService.validateUser(where, password);
 		const token = this.authService.generateToken(user);
 		return { access_token: token };
+	}
+
+	@Get('/lookup')
+	async lookupUser(
+		@Query('email') email?: string,
+		@Query('username') username?: string,
+	): Promise<IsAvailableDto> {
+		let user: User;
+		try {
+			if (email) {
+				user = await this.authService.getUser({ email: email });
+			} else if (username) {
+				user = await this.authService.getUser({ username: username });
+			} else {
+				throw new BadRequestException('Params not provided');
+			}
+		} catch {
+			return { isAvailable: true };
+		}
+
+		if (user) {
+			return { isAvailable: false };
+		}
+		return { isAvailable: true };
 	}
 }
