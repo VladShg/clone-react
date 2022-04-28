@@ -1,9 +1,9 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import "./index.scss"
-import Router from "./routes/Router"
-import { Provider } from "react-redux"
-import { rootStore } from "./store/main"
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './index.scss'
+import Router from './routes/Router'
+import { Provider } from 'react-redux'
+import { rootStore } from './store/rootStore'
 
 ReactDOM.render(
 	<React.StrictMode>
@@ -11,5 +11,5 @@ ReactDOM.render(
 			<Router />
 		</Provider>
 	</React.StrictMode>,
-	document.getElementById("root")
+	document.getElementById('root')
 )
