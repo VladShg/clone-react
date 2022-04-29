@@ -5,6 +5,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { hashPassword, validatePassword } from 'src/utils/bcrypt';
 import { Auth, google } from 'googleapis';
 import { GoogleProfile } from './interface/google-profile.interface';
+import { Octokit } from '@octokit/core';
+import { createOAuthUserAuth } from '@octokit/auth-oauth-user';
+import { GitHubProfileDto } from './dto/github-profile.dto';
+
 @Injectable()
 export class AuthService {
 	private oauthClient: Auth.OAuth2Client;
@@ -27,6 +31,29 @@ export class AuthService {
 			},
 		});
 		return user;
+	}
+
+	async signUpWithGitHub(code: string): Promise<GitHubProfileDto> {
+		try {
+			const octokit = new Octokit({
+				authStrategy: createOAuthUserAuth,
+				auth: {
+					clientId: process.env.GITHUB_CLIENT_ID,
+					clientSecret: process.env.GITHUB_SECRET_KEY,
+					code: code,
+				},
+			});
+			const { data } = await octokit.request('GET /user', {});
+
+			return {
+				githubId: data.id,
+				email: data.email || '',
+				name: data.name || '',
+				username: data.login || '',
+			};
+		} catch (e) {
+			throw new BadRequestException(`Failed to authorize: ${e}`);
+		}
 	}
 
 	async loginGoogleUser(token: string): Promise<User> {
