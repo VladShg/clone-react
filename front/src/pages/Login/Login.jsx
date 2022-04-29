@@ -40,7 +40,6 @@ export default function Login() {
 		const token = googleResponse.accessToken
 		let connectToken = await triggerGoogleConnect(token)
 		if (connectToken.isSuccess) {
-
 			const profileObj = googleResponse.profileObj
 			let name = [profileObj.name]
 			if (profileObj.familyName) {
