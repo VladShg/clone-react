@@ -38,6 +38,7 @@ export default function ModalRegister({ isOpen, setOpen }) {
 				<Modal.Title>Create your account</Modal.Title>
 				<Modal.Input
 					required
+					maxLength="50"
 					value={name}
 					onChange={(e) => dispatch(updateProfile({ name: e.target.value }))}
 					placeholder="Name"
@@ -47,6 +48,7 @@ export default function ModalRegister({ isOpen, setOpen }) {
 				<Modal.Input
 					required
 					value={email}
+					maxLength="50"
 					onChange={(e) => dispatch(updateProfile({ email: e.target.value }))}
 					placeholder="Email"
 					type="email"
@@ -62,6 +64,8 @@ export default function ModalRegister({ isOpen, setOpen }) {
 				<Modal.DatePicker
 					required
 					value={birth}
+					min="1900-01-01"
+					max={new Date().toISOString().slice(0, 10)}
 					onChange={(e) => dispatch(updateProfile({ birth: e.target.value }))}
 				/>
 				<Modal.Button disabled={isNextDisabled} type="submit">
