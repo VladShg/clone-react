@@ -1,32 +1,52 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import styles from './Login.module.scss'
 import backgroundImage from '../../media/background/painted.png'
 import classNames from 'classnames'
-import { useLazyGoogleConnectQuery } from './../../services/authApi'
-import { Link } from 'react-router-dom'
+import {
+	useLazyGitHubConnectQuery,
+	useLazyGoogleConnectQuery,
+} from './../../services/authApi'
+import { Link, useSearchParams } from 'react-router-dom'
 import GoogleLogin from 'react-google-login'
-import { CLIENT_ID } from '../../config'
 import ModalRegister from '../../components/shared/Modal/ModalRegister/ModalRegister'
-import { useDispatch } from 'react-redux'
-import { updateProfile } from '../../store/auth/registerSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+	registerSelector,
+	setModal,
+	loadProfile,
+} from '../../store/auth/registerSlice'
+import LoginGitHub from '../../components/shared/LoginGitHub/LoginGitHub'
+import config from '../../config'
 
 export default function Login() {
-	const [isModalOpen, setModalOpen] = useState(true)
-	const [triggerConnect] = useLazyGoogleConnectQuery()
+	const [triggerGoogleConnect] = useLazyGoogleConnectQuery()
+	const [triggerGitHubConnect] = useLazyGitHubConnectQuery()
+	const [params, setSearchParams] = useSearchParams()
+	const { isModalOpen } = useSelector(registerSelector)
 	const dispatch = useDispatch()
+
+	useEffect(async () => {
+		if (params.has('code')) {
+			setSearchParams(new URLSearchParams())
+			const code = params.get('code')
+			let response = await triggerGitHubConnect(code)
+			let profile = response.data
+
+			dispatch(loadProfile({ ...profile }))
+		}
+	}, [])
 
 	const onSignUp = async (googleResponse) => {
 		const token = googleResponse.accessToken
-		let connectToken = await triggerConnect(token)
+		let connectToken = await triggerGoogleConnect(token)
 		if (connectToken.isSuccess) {
-			setModalOpen(true)
 
 			const profileObj = googleResponse.profileObj
 			let name = [profileObj.name]
 			if (profileObj.familyName) {
 				name.push(profileObj.familyName)
 			}
-			dispatch(updateProfile({ name: name.join(' '), email: profileObj.email }))
+			dispatch(loadProfile({ name: name.join(' '), email: profileObj.email }))
 		}
 	}
 
@@ -42,7 +62,7 @@ export default function Login() {
 					<h1>Happening now</h1>
 					<h2>Join Crower today.</h2>
 					<GoogleLogin
-						clientId={CLIENT_ID}
+						clientId={config.google.CLIENT_ID}
 						render={(renderProps) => (
 							<button
 								className={styles.signupService}
@@ -55,9 +75,7 @@ export default function Login() {
 						cookiePolicy={'single_host_origin'}
 						onSuccess={onSignUp}
 					/>
-					<Link to="/signup" className={styles.signupService}>
-						Sign up with Apple
-					</Link>
+					<LoginGitHub className={styles.signupService} />
 					<span className={styles.separator}>or</span>
 					<Link to="/signup" className={styles.signupManual}>
 						Sign up with phone or email
@@ -70,7 +88,10 @@ export default function Login() {
 					<Link to="/signup" className={styles.signIn}>
 						Sign in
 					</Link>
-					<ModalRegister isOpen={isModalOpen} setOpen={setModalOpen} />
+					<ModalRegister
+						isOpen={isModalOpen}
+						setOpen={(value) => dispatch(setModal(value))}
+					/>
 				</div>
 			</div>
 		</div>

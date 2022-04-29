@@ -19,9 +19,7 @@ export default function ModalRegister({ isOpen, setOpen }) {
 
 	useEffect(() => {
 		if (!isOpen) {
-			dispatch(
-				updateProfile({ name: '', email: '', birth: null, username: '' })
-			)
+			dispatch(updateProfile({ name: '', email: '', birth: '', username: '' }))
 		}
 	}, [isOpen])
 

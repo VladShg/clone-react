@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { API_URL } from '../config'
+import config from '../config'
 
 export const authApi = createApi({
 	reducerPath: 'authApi',
-	baseQuery: fetchBaseQuery({ baseUrl: `${API_URL}/auth` }),
+	baseQuery: fetchBaseQuery({ baseUrl: `${config.API_URL}/auth` }),
 	endpoints: (builder) => ({
 		googleLogin: builder.query({
 			query: (token) => {
@@ -32,6 +32,15 @@ export const authApi = createApi({
 				}
 			},
 		}),
+		gitHubConnect: builder.query({
+			query: (code) => {
+				return {
+					url: '/github/connect',
+					method: 'POST',
+					body: { code },
+				}
+			},
+		}),
 		validateProfile: builder.query({
 			query: (params) => {
 				return {
@@ -53,4 +62,8 @@ export const authApi = createApi({
 	}),
 })
 
-export const { useLazyGoogleConnectQuery, useValidateProfileQuery } = authApi
+export const {
+	useLazyGoogleConnectQuery,
+	useLazyGitHubConnectQuery,
+	useValidateProfileQuery,
+} = authApi
