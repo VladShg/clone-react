@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useValidateProfileQuery } from '../../../../services/authApi'
+import {
+	registerSelector,
+	updateProfile,
+} from '../../../../store/auth/registerSlice'
 import Modal from '../Modal'
 
-export default function ModalRegister({ isOpen, setOpen, profile }) {
-	let [name, setName] = useState('')
-	let [email, setEmail] = useState('')
-	let [date, setDate] = useState(null)
+export default function ModalRegister({ isOpen, setOpen }) {
+	const { name, email, birth } = useSelector(registerSelector).profile
+	const dispatch = useDispatch()
 
 	// Fetch if email is not empty
 	let { data, isLoading, isFetching } = useValidateProfileQuery(
@@ -15,21 +19,14 @@ export default function ModalRegister({ isOpen, setOpen, profile }) {
 
 	useEffect(() => {
 		if (!isOpen) {
-			setName('')
-			setEmail('')
-			setDate(null)
+			dispatch(
+				updateProfile({ name: '', email: '', birth: null, username: '' })
+			)
 		}
-	})
-
-	useEffect(() => {
-		if (profile) {
-			setName(profile.name)
-			setEmail(profile.email)
-		}
-	}, [profile])
+	}, [isOpen])
 
 	const isNotValidEmail = !isFetching && !isLoading && data && !data.isAvailable
-	const isNextDisabled = !date || !email || !name || isNotValidEmail
+	const isNextDisabled = !birth || !email || !name || isNotValidEmail
 
 	return (
 		<Modal isOpen={isOpen} setOpen={setOpen}>
@@ -44,7 +41,7 @@ export default function ModalRegister({ isOpen, setOpen, profile }) {
 				<Modal.Input
 					required
 					value={name}
-					onChange={(e) => setName(e.target.value)}
+					onChange={(e) => dispatch(updateProfile({ name: e.target.value }))}
 					placeholder="Name"
 					type="text"
 				/>
@@ -52,7 +49,7 @@ export default function ModalRegister({ isOpen, setOpen, profile }) {
 				<Modal.Input
 					required
 					value={email}
-					onChange={(e) => setEmail(e.target.value)}
+					onChange={(e) => dispatch(updateProfile({ email: e.target.value }))}
 					placeholder="Email"
 					type="email"
 				/>
@@ -66,8 +63,8 @@ export default function ModalRegister({ isOpen, setOpen, profile }) {
 				</Modal.Description>
 				<Modal.DatePicker
 					required
-					value={date}
-					onChange={(e) => setDate(e.target.value)}
+					value={birth}
+					onChange={(e) => dispatch(updateProfile({ birth: e.target.value }))}
 				/>
 				<Modal.Button disabled={isNextDisabled} type="submit">
 					Next

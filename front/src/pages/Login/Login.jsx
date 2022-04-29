@@ -7,11 +7,13 @@ import { Link } from 'react-router-dom'
 import GoogleLogin from 'react-google-login'
 import { CLIENT_ID } from '../../config'
 import ModalRegister from '../../components/shared/Modal/ModalRegister/ModalRegister'
+import { useDispatch } from 'react-redux'
+import { updateProfile } from '../../store/auth/registerSlice'
 
 export default function Login() {
 	const [isModalOpen, setModalOpen] = useState(true)
 	const [triggerConnect] = useLazyGoogleConnectQuery()
-	const [profile, setProfile] = useState(null)
+	const dispatch = useDispatch()
 
 	const onSignUp = async (googleResponse) => {
 		const token = googleResponse.accessToken
@@ -24,7 +26,7 @@ export default function Login() {
 			if (profileObj.familyName) {
 				name.push(profileObj.familyName)
 			}
-			setProfile({ name: name.join(' '), email: profileObj.email })
+			dispatch(updateProfile({ name: name.join(' '), email: profileObj.email }))
 		}
 	}
 
@@ -68,11 +70,7 @@ export default function Login() {
 					<Link to="/signup" className={styles.signIn}>
 						Sign in
 					</Link>
-					<ModalRegister
-						isOpen={isModalOpen}
-						setOpen={setModalOpen}
-						profile={profile}
-					/>
+					<ModalRegister isOpen={isModalOpen} setOpen={setModalOpen} />
 				</div>
 			</div>
 		</div>

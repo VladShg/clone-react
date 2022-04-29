@@ -27,7 +27,7 @@ const authReducer = authSlice.reducer
 
 export const { setToken, logout } = authSlice.actions
 export const authSelector = (state) => {
-	return { token: state.authReducer.token, user: state.authReducer.user }
+	return { token: state.auth.token, user: state.auth.user }
 }
 
 export default authReducer
