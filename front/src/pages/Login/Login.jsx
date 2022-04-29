@@ -20,10 +20,13 @@ import config from '../../config'
 
 export default function Login() {
 	const [triggerGoogleConnect] = useLazyGoogleConnectQuery()
-	const [triggerGitHubConnect] = useLazyGitHubConnectQuery()
+	const [triggerGitHubConnect, gitHubResponse] = useLazyGitHubConnectQuery()
 	const [params, setSearchParams] = useSearchParams()
 	const { isModalOpen } = useSelector(registerSelector)
 	const dispatch = useDispatch()
+
+	let inputDisabled = gitHubResponse.isLoading || gitHubResponse.isFetching
+	let isGitHubLoading = gitHubResponse.isLoading || gitHubResponse.isFetching
 
 	useEffect(async () => {
 		if (params.has('code')) {
@@ -66,7 +69,7 @@ export default function Login() {
 							<button
 								className={styles.signupService}
 								onClick={renderProps.onClick}
-								disabled={renderProps.disabled}
+								disabled={renderProps.disabled || inputDisabled}
 							>
 								Sign up with Google
 							</button>
@@ -74,9 +77,16 @@ export default function Login() {
 						cookiePolicy={'single_host_origin'}
 						onSuccess={onSignUp}
 					/>
-					<LoginGitHub className={styles.signupService} />
+					<LoginGitHub
+						spinner={isGitHubLoading}
+						className={styles.signupService}
+						disabled={inputDisabled}
+					/>
 					<span className={styles.separator}>or</span>
-					<Link to="/signup" className={styles.signupManual}>
+					<Link
+						to={!inputDisabled ? '/signup' : '##'}
+						className={styles.signupManual}
+					>
 						Sign up with phone or email
 					</Link>
 					<span className={styles.termsNotice}>
@@ -84,7 +94,10 @@ export default function Login() {
 						including Cookie Use.
 					</span>
 					<h3>Already have an account?</h3>
-					<Link to="/signup" className={styles.signIn}>
+					<Link
+						to={!inputDisabled ? '/signup' : '##'}
+						className={styles.signIn}
+					>
 						Sign in
 					</Link>
 					<ModalRegister

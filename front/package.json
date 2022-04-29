@@ -15,7 +15,8 @@
 		"react-google-login": "^5.2.2",
 		"react-redux": "^7.2.6",
 		"react-router-dom": "6",
-		"redux": "^4.2.0"
+		"redux": "^4.2.0",
+		"spinners-react": "^1.0.7"
 	},
 	"devDependencies": {
 		"@redux-devtools/core": "^3.11.0",

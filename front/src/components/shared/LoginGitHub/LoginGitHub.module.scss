@@ -1,0 +1,22 @@
+.Spinner {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+
+	right: 20px;
+	top: 50%;
+	transform: translateY(-50%);
+
+	color: var(--main) !important;
+	> circle:first-child {
+		stroke: var(--gray-fade);
+	}
+
+	> circle {
+		stroke-width: 8px;
+	}
+}
+
+.Link {
+	position: relative;
+}
