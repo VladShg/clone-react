@@ -128,3 +128,28 @@
 	line-height: 16px;
 	margin-bottom: 20px;
 }
+
+.Separator {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.SeparatorText {
+	flex-grow: 0;
+	padding: 0px 10px;
+}
+
+.SeparatorLine {
+	flex-grow: 1;
+	height: 2px;
+	background-color: var(--border-grey);
+}
+
+.Link {
+	color: var(--main);
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 16px;
+	margin-bottom: 20px;
+}

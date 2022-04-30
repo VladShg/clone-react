@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
 	step: 1,
-	isModalOpen: false,
+	isLoginModalOpen: false,
+	isRegisterModalOpen: false,
 	profile: {
 		name: '',
 		username: '',
@@ -24,7 +25,17 @@ const registerSlice = createSlice({
 		},
 		loadProfile(state, action) {
 			state.profile = { ...state.profile, ...action.payload }
-			state.isModalOpen = true
+			state.isRegisterModalOpen = true
+		},
+		closeRegisterModal(state) {
+			state.step = 1
+			state.isRegisterModalOpen = false
+			state.profile.name = ''
+			state.profile.username = ''
+			state.profile.email = ''
+			state.profile.birth = ''
+			state.profile.googleId = ''
+			state.profile.githubId = ''
 		},
 		nextStep(state) {
 			state.step = Math.min(state.step + 1, REGISTER_STEPS)
@@ -32,16 +43,27 @@ const registerSlice = createSlice({
 		previousStep(state) {
 			state.step = Math.max(state.step - 1, 1)
 		},
-		setModal(state, action) {
-			state.isModalOpen = action.payload
+		setLoginModal(state, action) {
+			state.isLoginModalOpen = action.payload
+		},
+		setRegisterModal(state, action) {
+			state.isRegisterModalOpen = action.payload
 		},
 	},
 })
 
 const registerReducer = registerSlice.reducer
 
-export const { updateProfile, loadProfile, nextStep, previousStep, setModal } =
-	registerSlice.actions
+export const {
+	updateProfile,
+	loadProfile,
+	nextStep,
+	previousStep,
+	setLoginModal,
+	setRegisterModal,
+	resetInput,
+	closeRegisterModal,
+} = registerSlice.actions
 export const registerSelector = (state) => {
 	return { ...state.register }
 }

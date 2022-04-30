@@ -12,17 +12,21 @@ import ModalRegister from '../../components/shared/Modal/ModalRegister/ModalRegi
 import { useDispatch, useSelector } from 'react-redux'
 import {
 	registerSelector,
-	setModal,
+	setRegisterModal,
+	setLoginModal,
+	closeRegisterModal,
 	loadProfile,
 } from '../../store/auth/registerSlice'
 import LoginGitHub from '../../components/shared/LoginGitHub/LoginGitHub'
 import config from '../../config'
+import ModalLogin from '../../components/shared/Modal/ModalLogin/ModalLogin'
 
 export default function Login() {
 	const [triggerGoogleConnect] = useLazyGoogleConnectQuery()
 	const [triggerGitHubConnect, gitHubResponse] = useLazyGitHubConnectQuery()
 	const [params, setSearchParams] = useSearchParams()
-	const { isModalOpen } = useSelector(registerSelector)
+	const { isRegisterModalOpen, isLoginModalOpen } =
+		useSelector(registerSelector)
 	const dispatch = useDispatch()
 
 	let inputDisabled = gitHubResponse.isLoading || gitHubResponse.isFetching
@@ -32,23 +36,30 @@ export default function Login() {
 		if (params.has('code')) {
 			setSearchParams(new URLSearchParams())
 			const code = params.get('code')
-			let response = await triggerGitHubConnect(code)
-			let profile = response.data
-
-			dispatch(loadProfile({ ...profile }))
+			let { data, error, isSuccess } = await triggerGitHubConnect(code)
+			if (isSuccess) {
+				let profile = data
+				dispatch(loadProfile({ ...profile }))
+			} else if (error.code === 409) {
+				// TODO: call user auth method
+				alert('user is already present')
+			}
 		}
 	}, [])
 
 	const onSignUp = async (googleResponse) => {
 		const token = googleResponse.accessToken
-		let connectToken = await triggerGoogleConnect(token)
-		if (connectToken.isSuccess) {
+		let { error, isSuccess } = await triggerGoogleConnect(token)
+		if (isSuccess) {
 			const profileObj = googleResponse.profileObj
 			let name = [profileObj.name]
 			if (profileObj.familyName) {
 				name.push(profileObj.familyName)
 			}
 			dispatch(loadProfile({ name: name.join(' '), email: profileObj.email }))
+		} else if (error.code === 409) {
+			// TODO: call user auth method
+			alert('user is already present')
 		}
 	}
 
@@ -83,27 +94,39 @@ export default function Login() {
 						disabled={inputDisabled}
 					/>
 					<span className={styles.separator}>or</span>
-					<Link
-						to={!inputDisabled ? '/signup' : '##'}
+					<button
 						className={styles.signupManual}
+						onClick={() => {
+							dispatch(setRegisterModal(true))
+						}}
 					>
-						Sign up with phone or email
-					</Link>
+						Sign up with email
+					</button>
 					<span className={styles.termsNotice}>
 						By signing up, you agree to the Terms of Service and Privacy Policy,
 						including Cookie Use.
 					</span>
 					<h3>Already have an account?</h3>
-					<Link
-						to={!inputDisabled ? '/signup' : '##'}
+					<button
 						className={styles.signIn}
+						onClick={() => dispatch(setLoginModal(true))}
 					>
 						Sign in
-					</Link>
+					</button>
 					<ModalRegister
-						isOpen={isModalOpen}
-						setOpen={(value) => dispatch(setModal(value))}
+						isOpen={isRegisterModalOpen}
+						setOpen={(value) => {
+							if (!value) {
+								dispatch(closeRegisterModal())
+							} else {
+								dispatch(setRegisterModal(value))
+							}
+						}}
 					/>
+					<ModalLogin
+						isOpen={isLoginModalOpen}
+						setOpen={(value) => dispatch(setLoginModal(value))}
+					></ModalLogin>
 				</div>
 			</div>
 		</div>

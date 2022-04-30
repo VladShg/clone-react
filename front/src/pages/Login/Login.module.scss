@@ -81,19 +81,25 @@
 	color: var(--white);
 	background: var(--main);
 	transition: 0.2s ease background;
+
+	border: none;
+	outline: none;
 	&:hover {
 		background: var(--main-fade);
+		cursor: pointer;
 	}
 }
 
 .signIn {
 	@include link;
 	border: 1px solid var(--border-grey);
+	background: var(--white);
 	color: var(--main);
 	transition: 0.2s ease background;
 	font-weight: bold;
 	&:hover {
 		background: var(--white-fade);
+		cursor: pointer;
 	}
 }
 

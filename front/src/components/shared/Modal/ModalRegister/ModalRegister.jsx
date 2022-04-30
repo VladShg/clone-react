@@ -17,12 +17,6 @@ export default function ModalRegister({ isOpen, setOpen }) {
 		{ skip: !email }
 	)
 
-	useEffect(() => {
-		if (!isOpen) {
-			dispatch(updateProfile({ name: '', email: '', birth: '', username: '' }))
-		}
-	}, [isOpen])
-
 	const isNotValidEmail = !isFetching && !isLoading && data && !data.isAvailable
 	const isNextDisabled = !birth || !email || !name || isNotValidEmail
 

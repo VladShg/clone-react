@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react'
 import styles from './Modal.module.scss'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { Link } from 'react-router-dom'
 
 Modal.propTypes = {
 	isOpen: PropTypes.bool.isRequired,
@@ -11,7 +12,7 @@ Modal.propTypes = {
 
 const ModalContext = React.createContext(null)
 
-export default function Modal({ isOpen, setOpen, children }) {
+export default function Modal({ isOpen, setOpen, children, className }) {
 	const content = useRef(null)
 
 	const checkClick = (event) => {
@@ -34,10 +35,11 @@ export default function Modal({ isOpen, setOpen, children }) {
 		setOpen,
 	}
 
+	const containerStyles = classNames(styles.container, className || '')
 	return (
 		<ModalContext.Provider value={value}>
 			<div className={styles.wrapper}>
-				<div ref={content} className={styles.container}>
+				<div ref={content} className={containerStyles}>
 					{children}
 				</div>
 			</div>
@@ -66,6 +68,30 @@ Modal.Back = function ModalBack({ className, ...props }) {
 		<div className={classNames(className || '', styles.Back)} {...props}>
 			<i className="fas fa-arrow-left" />
 		</div>
+	)
+}
+
+Modal.Separator = function ModalSeparator({ children }) {
+	return (
+		<div className={styles.Separator}>
+			<div className={styles.SeparatorLine}></div>
+			<div className={styles.SeparatorText}>{children}</div>
+			<div className={styles.SeparatorLine}></div>
+		</div>
+	)
+}
+
+Modal.Link = function ModalLink({
+	children,
+	className,
+	href = '##',
+	...props
+}) {
+	let classes = classNames(styles.Link, className || '')
+	return (
+		<Link to={href} className={classes} {...props}>
+			{children}
+		</Link>
 	)
 }
 
