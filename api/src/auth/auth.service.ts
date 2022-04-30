@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+	BadRequestException,
+	HttpCode,
+	HttpException,
+	HttpStatus,
+	Injectable,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -8,6 +14,8 @@ import { GoogleProfile } from './interface/google-profile.interface';
 import { Octokit } from '@octokit/core';
 import { createOAuthUserAuth } from '@octokit/auth-oauth-user';
 import { GitHubProfileDto } from './dto/github-profile.dto';
+import { TokenInfo } from 'google-auth-library';
+import { SignUpProfileDto } from './dto/signup-profile.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,20 +25,6 @@ export class AuthService {
 		const clientSecret = process.env.GOOGLE_SECRET_KEY;
 		const clientId = process.env.GOOGLE_CLIENT_ID;
 		this.oauthClient = new google.auth.OAuth2(clientId, clientSecret);
-	}
-
-	async signUpWithGoogle(token: string, profile: GoogleProfile): Promise<User> {
-		const tokenInfo = await this.oauthClient.getTokenInfo(token);
-		const user = await this.prisma.user.create({
-			data: {
-				googleId: profile.googleId,
-				email: tokenInfo.email,
-				name: profile.name,
-				username: profile.googleId,
-				password: await hashPassword(token),
-			},
-		});
-		return user;
 	}
 
 	async signUpWithGitHub(code: string): Promise<GitHubProfileDto> {
@@ -56,10 +50,54 @@ export class AuthService {
 		}
 	}
 
+	async checkWithGoogle(token: string) {
+		let tokenInfo: TokenInfo;
+		try {
+			tokenInfo = await this.oauthClient.getTokenInfo(token);
+		} catch {
+			throw new BadRequestException('token is not valid');
+		}
+		const user = this.prisma.user.findFirst({
+			where: { googleId: tokenInfo.user_id },
+		});
+		if (user) {
+			throw new HttpException('user is already present', HttpStatus.CONFLICT);
+		}
+	}
+
+	async signUpWithGoogle(
+		token: string,
+		profile: SignUpProfileDto,
+	): Promise<User> {
+		let tokenInfo: TokenInfo;
+		try {
+			tokenInfo = await this.oauthClient.getTokenInfo(token);
+		} catch {
+			throw new BadRequestException('token is not valid');
+		}
+
+		const user = await this.prisma.user.create({
+			data: {
+				googleId: tokenInfo.user_id,
+				email: profile.email,
+				name: profile.username,
+				username: profile.username,
+				birth: new Date(profile.birth),
+				password: profile.password || (await hashPassword(token)),
+			},
+		});
+		return user;
+	}
+
 	async loginGoogleUser(token: string): Promise<User> {
-		const tokenInfo = await this.oauthClient.getTokenInfo(token);
-		const user = this.prisma.user.findUnique({
-			where: { email: tokenInfo.email },
+		let tokenInfo: TokenInfo;
+		try {
+			tokenInfo = await this.oauthClient.getTokenInfo(token);
+		} catch {
+			throw new BadRequestException('token is not valid');
+		}
+		const user = this.prisma.user.findFirst({
+			where: { googleId: tokenInfo.user_id },
 		});
 		if (!user) throw new BadRequestException('user not found');
 		return user;

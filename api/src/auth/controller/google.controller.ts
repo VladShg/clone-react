@@ -1,8 +1,9 @@
 import {
-	BadRequestException,
 	Body,
 	Controller,
+	HttpStatus,
 	Post,
+	Res,
 	UsePipes,
 	ValidationPipe,
 } from '@nestjs/common';
@@ -10,7 +11,7 @@ import { AuthService } from '../auth.service';
 import { GoogleSignupDto } from '../dto/google-signup.dto';
 import { GoogleTokenDto } from '../dto/google-token.dto';
 import { TokenDto } from '../dto/token.dto';
-import { TokenIsValidDto } from '../dto/tokenIsValid.dto';
+import { Response } from 'express';
 
 @Controller('auth/google')
 export class GoogleController {
@@ -20,7 +21,7 @@ export class GoogleController {
 	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async signUpWithGoogle(@Body() data: GoogleTokenDto): Promise<TokenDto> {
 		const user = await this.authService.loginGoogleUser(data.token);
-		const token = await this.authService.generateToken(user);
+		const token = this.authService.generateToken(user);
 		return { access_token: token };
 	}
 
@@ -37,12 +38,9 @@ export class GoogleController {
 	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async connectWithGoogle(
 		@Body() data: GoogleTokenDto,
-	): Promise<TokenIsValidDto> {
-		try {
-			await this.authService.loginGoogleUser(data.token);
-		} catch (e) {
-			throw new BadRequestException('Token is not valid');
-		}
-		return { isValid: true };
+		@Res() response: Response,
+	): Promise<void> {
+		await this.authService.checkWithGoogle(data.token);
+		response.sendStatus(HttpStatus.OK);
 	}
 }

@@ -18,6 +18,9 @@ export class UserEntity implements User {
 	@Exclude()
 	googleId: string | null;
 
+	@Exclude()
+	gitHubId: number | null;
+
 	created_at: Date;
 	updated_at: Date;
 

@@ -6,7 +6,7 @@ import {
 	IsString,
 } from 'class-validator';
 
-export class GoogleSignupDto {
+export class SignUpProfileDto {
 	@IsEmail()
 	@IsNotEmpty()
 	email: string;
@@ -22,10 +22,6 @@ export class GoogleSignupDto {
 	@IsString()
 	@IsNotEmpty()
 	username: string;
-
-	@IsString()
-	@IsNotEmpty()
-	token: string;
 
 	@IsString()
 	@IsOptional()
