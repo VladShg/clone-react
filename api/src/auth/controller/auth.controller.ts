@@ -5,34 +5,52 @@ import {
 	Get,
 	Post,
 	Query,
+	Request,
+	UseGuards,
 	UsePipes,
 	ValidationPipe,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
+import { UserEntity } from 'src/entity/user.entity';
 import { AuthService } from '../auth.service';
 import { IsAvailableDto } from '../dto/is-available.dto';
-import { LoginByEmailDto } from '../dto/login-email.dto';
-import { LoginByUsernameDto } from '../dto/login-username.dto';
+import { LoginByCredentialsDto } from '../dto/login-credentials.dto';
+import { SignUpDto } from '../dto/signup.dto';
 import { TokenDto } from '../dto/token.dto';
 
 @Controller('auth')
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
-	@Post('/login/username')
+	@Post('/login')
 	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-	async loginByUsername(@Body() data: LoginByUsernameDto): Promise<TokenDto> {
+	async loginByUsername(
+		@Body() data: LoginByCredentialsDto,
+	): Promise<TokenDto> {
+		if (!data.email && !data.username) {
+			throw new BadRequestException('neither email or username provided');
+		}
+
 		const { password, ...where } = data;
 		const user = await this.authService.validateUser(where, password);
 		const access_token = this.authService.generateToken(user);
 		return { access_token };
 	}
 
-	@Post('/login/email')
+	@Get('/account')
+	@UseGuards(AuthGuard('jwt'))
 	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-	async loginByEmail(@Body() data: LoginByEmailDto): Promise<TokenDto> {
-		const { password, ...where } = data;
-		const user = await this.authService.validateUser(where, password);
+	async account(@Request() req): Promise<UserEntity> {
+		const user = await this.authService.getUser({ id: req.user });
+		const entity = new UserEntity(user);
+		return entity;
+	}
+
+	@Post('/signup')
+	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+	async signUp(@Body() data: SignUpDto): Promise<TokenDto> {
+		const user = await this.authService.signUp(data);
 		const token = this.authService.generateToken(user);
 		return { access_token: token };
 	}

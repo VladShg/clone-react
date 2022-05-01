@@ -13,7 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { hashPassword } from 'src/utils/bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserEntity } from './entity/user.entity';
+import { UserEntity } from '../entity/user.entity';
 import { UserService } from './user.service';
 
 @Controller('user')

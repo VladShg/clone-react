@@ -1,12 +1,14 @@
+import { Prisma } from '@prisma/client';
 import {
 	IsDateString,
 	IsEmail,
 	IsNotEmpty,
+	IsNumber,
 	IsOptional,
 	IsString,
 } from 'class-validator';
 
-export class GoogleSignupDto {
+export class SignUpDto implements Prisma.UserCreateInput {
 	@IsEmail()
 	@IsNotEmpty()
 	email: string;
@@ -24,10 +26,14 @@ export class GoogleSignupDto {
 	username: string;
 
 	@IsString()
-	@IsNotEmpty()
-	token: string;
+	@IsOptional()
+	password: string;
 
 	@IsString()
 	@IsOptional()
-	password: string;
+	googleId?: string;
+
+	@IsNumber()
+	@IsOptional()
+	gitHubId: number;
 }
