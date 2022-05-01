@@ -1,13 +1,8 @@
-import faker from '@faker-js/faker'
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
 	token: '',
-	user: {
-		name: faker.name.findName(),
-		username: faker.name.firstName(),
-		avatar: faker.image.avatar(),
-	},
+	user: null,
 }
 
 export const authSlice = createSlice({
@@ -19,13 +14,17 @@ export const authSlice = createSlice({
 		},
 		logout(state) {
 			state.token = ''
+			state.user = null
+		},
+		setUser(state, action) {
+			state.user = action.payload
 		},
 	},
 })
 
 const authReducer = authSlice.reducer
 
-export const { setToken, logout } = authSlice.actions
+export const { setToken, logout, setUser } = authSlice.actions
 export const authSelector = (state) => {
 	return { token: state.auth.token, user: state.auth.user }
 }

@@ -10,16 +10,25 @@ export const authApi = createApi({
 				return {
 					url: '/google/login',
 					method: 'POST',
-					body: JSON.stringify({ token }),
+					body: { token },
 				}
 			},
 		}),
-		googleSignUp: builder.query({
-			query: (token) => {
+		gitHubLogin: builder.query({
+			query: (code) => {
 				return {
-					url: '/google/signup',
+					url: '/github/login',
 					method: 'POST',
-					body: JSON.stringify({ token }),
+					body: { code },
+				}
+			},
+		}),
+		signUp: builder.query({
+			query: (body) => {
+				return {
+					url: '/signup',
+					method: 'POST',
+					body: body,
 				}
 			},
 		}),
@@ -63,6 +72,9 @@ export const authApi = createApi({
 })
 
 export const {
+	useLazyGitHubLoginQuery,
+	useLazyGoogleLoginQuery,
+	useLazySignUpQuery,
 	useLazyGoogleConnectQuery,
 	useLazyGitHubConnectQuery,
 	useValidateProfileQuery,
