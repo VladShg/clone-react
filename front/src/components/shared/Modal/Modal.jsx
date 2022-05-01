@@ -13,10 +13,10 @@ Modal.propTypes = {
 const ModalContext = React.createContext(null)
 
 export default function Modal({ isOpen, setOpen, children, className }) {
-	const content = useRef(null)
+	const wrapper = useRef(null)
 
 	const checkClick = (event) => {
-		if (isOpen && !content.current.contains(event.target)) {
+		if (event.target === wrapper.current) {
 			setOpen(false)
 		}
 	}
@@ -38,10 +38,8 @@ export default function Modal({ isOpen, setOpen, children, className }) {
 	const containerStyles = classNames(styles.container, className || '')
 	return (
 		<ModalContext.Provider value={value}>
-			<div className={styles.wrapper}>
-				<div ref={content} className={containerStyles}>
-					{children}
-				</div>
+			<div ref={wrapper} className={styles.wrapper}>
+				<div className={containerStyles}>{children}</div>
 			</div>
 		</ModalContext.Provider>
 	)
