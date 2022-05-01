@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
 import { authApi } from '../services/authApi'
+import { userApi } from '../services/userApi'
 import authReducer from './auth/authSlice'
 import registerReducer from './auth/registerSlice'
 
 export const rootStore = configureStore({
 	reducer: {
 		[authApi.reducerPath]: authApi.reducer,
+		[userApi.reducerPath]: userApi.reducer,
 		auth: authReducer,
 		register: registerReducer,
 	},

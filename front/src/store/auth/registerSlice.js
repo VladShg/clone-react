@@ -8,9 +8,11 @@ const initialState = {
 		name: '',
 		username: '',
 		email: '',
+		password: '',
+		passwordConfirm: '',
 		birth: '',
-		googleId: '',
-		githubId: '',
+		googleId: null,
+		gitHubId: null,
 	},
 }
 
@@ -33,9 +35,11 @@ const registerSlice = createSlice({
 			state.profile.name = ''
 			state.profile.username = ''
 			state.profile.email = ''
+			state.profile.password = ''
+			state.profile.passwordConfirm = ''
 			state.profile.birth = ''
-			state.profile.googleId = ''
-			state.profile.githubId = ''
+			state.profile.googleId = null
+			state.profile.gitHubId = null
 		},
 		nextStep(state) {
 			state.step = Math.min(state.step + 1, REGISTER_STEPS)

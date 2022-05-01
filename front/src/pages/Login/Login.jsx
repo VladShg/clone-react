@@ -5,8 +5,9 @@ import classNames from 'classnames'
 import {
 	useLazyGitHubConnectQuery,
 	useLazyGoogleConnectQuery,
+	useLazyGoogleLoginQuery,
 } from './../../services/authApi'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import GoogleLogin from 'react-google-login'
 import ModalRegister from '../../components/shared/Modal/ModalRegister/ModalRegister'
 import { useDispatch, useSelector } from 'react-redux'
@@ -20,8 +21,11 @@ import {
 import LoginGitHub from '../../components/shared/LoginGitHub/LoginGitHub'
 import config from '../../config'
 import ModalLogin from '../../components/shared/Modal/ModalLogin/ModalLogin'
+import { setToken } from '../../store/auth/authSlice'
 
 export default function Login() {
+	const [triggerGoogleLogin] = useLazyGoogleLoginQuery()
+	const [triggerGithubLogin] = useLazyGitHubConnectQuery()
 	const [triggerGoogleConnect] = useLazyGoogleConnectQuery()
 	const [triggerGitHubConnect, gitHubResponse] = useLazyGitHubConnectQuery()
 	const [params, setSearchParams] = useSearchParams()
@@ -37,12 +41,18 @@ export default function Login() {
 			setSearchParams(new URLSearchParams())
 			const code = params.get('code')
 			let { data, error, isSuccess } = await triggerGitHubConnect(code)
+			console.log(data, error, isSuccess)
 			if (isSuccess) {
-				let profile = data
+				let profile = { ...data }
+				profile.gitHubId = data.githubId
+				delete profile.githubId
+				console.log(profile, data)
 				dispatch(loadProfile({ ...profile }))
-			} else if (error.code === 409) {
-				// TODO: call user auth method
-				alert('user is already present')
+			} else if (error.status === 409) {
+				let authResponse = await triggerGithubLogin(code)
+				if (authResponse.isSuccess) {
+					dispatch(setToken(authResponse.data.access_token))
+				}
 			}
 		}
 	}, [])
@@ -56,10 +66,18 @@ export default function Login() {
 			if (profileObj.familyName) {
 				name.push(profileObj.familyName)
 			}
-			dispatch(loadProfile({ name: name.join(' '), email: profileObj.email }))
-		} else if (error.code === 409) {
-			// TODO: call user auth method
-			alert('user is already present')
+			dispatch(
+				loadProfile({
+					name: name.join(' '),
+					email: profileObj.email,
+					googleId: profileObj.googleId,
+				})
+			)
+		} else if (error.status === 409) {
+			let authResponse = await triggerGoogleLogin(token)
+			if (authResponse.isSuccess) {
+				dispatch(setToken(authResponse.data.access_token))
+			}
 		}
 	}
 
