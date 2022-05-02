@@ -88,7 +88,7 @@ export class AuthService {
 
 	async loginGoogleUser(token: string): Promise<User> {
 		const googleId = (await this.getGoogleUser(token)).id;
-		const user = this.prisma.user.findFirst({
+		const user = await this.prisma.user.findFirst({
 			where: { googleId },
 		});
 		if (!user) throw new BadRequestException('user not found');

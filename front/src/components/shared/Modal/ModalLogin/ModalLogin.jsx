@@ -1,4 +1,8 @@
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import { useLazyGoogleLoginQuery } from '../../../../services/authApi'
+import { setToken } from '../../../../store/auth/authSlice'
 import GitHubAuth from '../../AuthService/GitHubAuth'
 import GoogleAuth from '../../AuthService/GoogleAuth'
 import Modal from '../Modal'
@@ -6,12 +10,28 @@ import styles from './ModalLogin.module.scss'
 
 export default function ModalLogin({ isOpen, setOpen }) {
 	const [login, setLogin] = useState('')
+	const [triggerGooogleLogin] = useLazyGoogleLoginQuery()
+	const dispatch = useDispatch()
+
+	const onSignUp = async (googleResponse) => {
+		const token = googleResponse.accessToken
+		let { data, isSuccess } = await triggerGooogleLogin(token)
+		if (isSuccess) {
+			dispatch(setToken(data.access_token))
+		} else {
+			toast.error('Failed to login', {
+				position: 'bottom-center',
+			})
+		}
+	}
 
 	return (
 		<Modal isOpen={isOpen} setOpen={setOpen} className={styles.Modal}>
 			<Modal.Logo />
 			<Modal.Close />
-			<GoogleAuth className={styles.Auth}>Sign in with Google</GoogleAuth>
+			<GoogleAuth className={styles.Auth} onSignUp={onSignUp}>
+				Sign in with Google
+			</GoogleAuth>
 			<GitHubAuth className={styles.Auth} redirect="/login/github">
 				Sign in with Github
 			</GitHubAuth>
