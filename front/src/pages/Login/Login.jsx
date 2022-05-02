@@ -16,10 +16,10 @@ import {
 	closeRegisterModal,
 	loadProfile,
 } from '../../store/auth/registerSlice'
-import LoginGitHub from '../../components/shared/GitHubAuth/GitHubAuth'
 import ModalLogin from '../../components/shared/Modal/ModalLogin/ModalLogin'
 import toast, { Toaster } from 'react-hot-toast'
-import GoogleAuth from '../../components/shared/GoogleAuth/GoogleAuth'
+import GoogleAuth from '../../components/shared/AuthService/GoogleAuth'
+import GitHubAuth from '../../components/shared/AuthService/GitHubAuth'
 
 export default function Login() {
 	const [triggerGoogleConnect] = useLazyGoogleConnectQuery()
@@ -33,23 +33,31 @@ export default function Login() {
 	let isGitHubLoading = gitHubResponse.isLoading || gitHubResponse.isFetching
 
 	useEffect(async () => {
+		let updatedParams = new URLSearchParams(params)
 		if (params.has('code')) {
-			setSearchParams(new URLSearchParams())
 			const code = params.get('code')
 			let { data, error, isSuccess } = await triggerGitHubConnect(code)
-			console.log(data, error, isSuccess)
 			if (isSuccess) {
 				let profile = { ...data }
 				profile.gitHubId = data.githubId
 				delete profile.githubId
-				console.log(profile, data)
 				dispatch(loadProfile({ ...profile }))
 			} else if (error.status === 409) {
 				toast.error('Account already exist, please login instead', {
 					position: 'bottom-center',
 				})
 			}
+			updatedParams.delete('code')
+			setSearchParams(new URLSearchParams(params))
 		}
+		if (params.has('error')) {
+			toast.error(params.get('error'), {
+				position: 'bottom-center',
+			})
+			updatedParams.delete('code')
+		}
+		console.log(updatedParams)
+		setSearchParams(updatedParams)
 	}, [])
 
 	const onSignUp = async (googleResponse) => {
@@ -91,7 +99,7 @@ export default function Login() {
 						disabled={inputDisabled}
 						onSignUp={onSignUp}
 					/>
-					<LoginGitHub
+					<GitHubAuth
 						spinner={isGitHubLoading}
 						className={styles.signupService}
 						disabled={inputDisabled}

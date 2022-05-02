@@ -42,7 +42,7 @@ export class AuthController {
 	@UseGuards(AuthGuard('jwt'))
 	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async account(@Request() req): Promise<UserEntity> {
-		const user = await this.authService.getUser({ id: req.user });
+		const user = await this.authService.getUser({ id: req.user.userId });
 		const entity = new UserEntity(user);
 		return entity;
 	}

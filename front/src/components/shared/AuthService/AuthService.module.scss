@@ -1,0 +1,24 @@
+.Control {
+	font-family: Poppins, serif;;
+	font-size: 16px;
+	font-weight: 400 ;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	background: var(--white);
+
+	position: relative;
+	margin-bottom: 10px;
+	padding: 10px 0px;
+	box-sizing: border-box;
+	display: inline-block;
+
+	border: 1px solid var(--border-grey);
+	border-radius: 50px;
+
+	transition: 0.2s ease background;
+	&:hover {
+		cursor: pointer;
+		background: var(--white-fade);
+	}
+}

@@ -1,18 +1,20 @@
-import React from 'react'
+import classNames from 'classnames'
+import React, { Children } from 'react'
 import GoogleLogin from 'react-google-login'
 import config from '../../../config'
+import styles from './AuthService.module.scss'
 
-export default function GoogleAuth({ className, disabled, onSignUp }) {
+export default function GoogleAuth({ className, disabled, onSignUp, children }) {
 	return (
 		<GoogleLogin
 			clientId={config.google.CLIENT_ID}
 			render={(renderProps) => (
 				<button
-					className={className}
+					className={classNames(styles.Control, { [className]: !!className })}
 					onClick={renderProps.onClick}
 					disabled={renderProps.disabled || disabled}
 				>
-					Sign up with Google
+					{children || 'Sign up with Google'}
 				</button>
 			)}
 			cookiePolicy={'single_host_origin'}

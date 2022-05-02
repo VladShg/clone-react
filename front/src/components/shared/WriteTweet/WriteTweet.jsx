@@ -13,6 +13,10 @@ export default function WriteTweet() {
 
 	let isDisabled = !input || maxLength < input.length
 
+	if (!user) {
+		return null
+	}
+
 	return (
 		<div className={styles.container}>
 			<Avatar src={user.avatar} />

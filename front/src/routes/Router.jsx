@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import GitHubLogin from '../components/pages/GitHubLogin'
+import GitHubLogin from '../pages/GitHubLogin/GitHubLogin'
 import Home from '../pages/Home'
 import Login from '../pages/Login/Login'
 import AuthRoute from './AuthRoute'

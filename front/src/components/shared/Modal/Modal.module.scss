@@ -18,8 +18,9 @@
 	height: fit-content;
 	min-height: 200px;
 
-	width: fit-content;
-	max-width: 500px;
+	max-width: 50%;
+
+	box-sizing: border-box;
 
 	> *:last-child {
 		margin-bottom: 0px !important;

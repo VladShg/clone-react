@@ -162,9 +162,7 @@ function PartThree() {
 		if (!match) {
 			delete profile.password
 		}
-		console.log(profile)
 		let response = await triggerSignUp(profile)
-		console.log(response)
 	}
 
 	return (

@@ -3,21 +3,28 @@ import { useDispatch } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useLazyGitHubLoginQuery } from '../../services/authApi'
 import { setToken } from '../../store/auth/authSlice'
-import Spinner from '../shared/Spinner/Spinner'
+import Spinner from '../../components/shared/Spinner/Spinner'
 import styles from './GitHubLogin.module.scss'
 
 export default function GitHubLogin() {
 	const [trigger] = useLazyGitHubLoginQuery()
-	const params = useSearchParams()
+	const [params] = useSearchParams()
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 
 	useEffect(async () => {
-		if (params.includes('code')) {
-			let code = params['code']
+		console.log(params)
+		if (params.has('code')) {
+			const code = params.get('code')
+			console.log('code')
 			let { data, isSuccess } = await trigger(code)
 			if (isSuccess) {
 				dispatch(setToken(data.access_token))
+				navigate('/home')
+			} else {
+				let errorParams = new URLSearchParams()
+				errorParams.set('error', 'Failed to authorize')
+				navigate('/login' + errorParams)
 			}
 		} else {
 			navigate('/login')
