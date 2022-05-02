@@ -6,4 +6,36 @@
 	max-width: 400px;
 	padding-left: 80px;
 	padding-right: 80px;
+	
+}
+
+.PasswordContainer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 20px;
+	z-index: 2;
+	background: var(--white);;
+}
+
+.PasswordModal {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	padding: 40px 80px;
+	display: flex;
+	flex-direction: column;
+}
+
+.InputContainer {
+	flex-grow: 0;
+}
+
+.SubmitContainer {
+	flex-grow: 1;
+	display: flex;
+	align-items: flex-end;
 }

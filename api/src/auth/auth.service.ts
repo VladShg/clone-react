@@ -116,7 +116,7 @@ export class AuthService {
 	}
 
 	async validateUser(
-		where: Prisma.UserWhereUniqueInput,
+		where: Prisma.UserWhereInput,
 		password: string,
 	): Promise<User | null> {
 		const user = await this.prisma.user.findFirst({ where });

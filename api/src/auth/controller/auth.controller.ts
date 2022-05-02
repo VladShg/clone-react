@@ -28,12 +28,10 @@ export class AuthController {
 	async loginByUsername(
 		@Body() data: LoginByCredentialsDto,
 	): Promise<TokenDto> {
-		if (!data.email && !data.username) {
-			throw new BadRequestException('neither email or username provided');
-		}
-
-		const { password, ...where } = data;
-		const user = await this.authService.validateUser(where, password);
+		const user = await this.authService.validateUser(
+			{ OR: [{ email: data.login }, { username: data.login }] },
+			data.password,
+		);
 		const access_token = this.authService.generateToken(user);
 		return { access_token };
 	}

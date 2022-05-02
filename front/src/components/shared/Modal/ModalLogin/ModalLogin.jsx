@@ -1,14 +1,20 @@
+import classNames from 'classnames'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import { useLazyGoogleLoginQuery } from '../../../../services/authApi'
+import {
+	useLazyGoogleLoginQuery,
+	useLazyLoginQuery,
+} from '../../../../services/authApi'
 import { setToken } from '../../../../store/auth/authSlice'
 import GitHubAuth from '../../AuthService/GitHubAuth'
 import GoogleAuth from '../../AuthService/GoogleAuth'
 import Modal from '../Modal'
 import styles from './ModalLogin.module.scss'
+import { PasswordWindow } from './PasswordWindow'
 
 export default function ModalLogin({ isOpen, setOpen }) {
+	const [isPasswordOpen, setPasswordOpen] = useState(false)
 	const [login, setLogin] = useState('')
 	const [triggerGooogleLogin] = useLazyGoogleLoginQuery()
 	const dispatch = useDispatch()
@@ -25,8 +31,16 @@ export default function ModalLogin({ isOpen, setOpen }) {
 		}
 	}
 
+	const openPasswordWindow = (e) => {
+		e.preventDefault()
+		setPasswordOpen(true)
+	}
+
 	return (
 		<Modal isOpen={isOpen} setOpen={setOpen} className={styles.Modal}>
+			{isPasswordOpen && (
+				<PasswordWindow setOpen={setPasswordOpen} login={login} />
+			)}
 			<Modal.Logo />
 			<Modal.Close />
 			<GoogleAuth className={styles.Auth} onSignUp={onSignUp}>
@@ -37,12 +51,15 @@ export default function ModalLogin({ isOpen, setOpen }) {
 			</GitHubAuth>
 			<Modal.Description></Modal.Description>
 			<Modal.Separator>Or</Modal.Separator>
-			<Modal.Input
-				placeholder="Username or login"
-				value={login}
-				onChange={(e) => setLogin(e.target.value)}
-			></Modal.Input>
-			<Modal.Button>Continue</Modal.Button>
+			<form onSubmit={openPasswordWindow}>
+				<Modal.Input
+					placeholder="Username or login"
+					value={login}
+					required
+					onChange={(e) => setLogin(e.target.value)}
+				></Modal.Input>
+				<Modal.Button type="submit">Continue</Modal.Button>
+			</form>
 		</Modal>
 	)
 }

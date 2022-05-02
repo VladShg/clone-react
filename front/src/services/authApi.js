@@ -32,6 +32,15 @@ export const authApi = createApi({
 				}
 			},
 		}),
+		login: builder.query({
+			query: (body) => {
+				return {
+					url: '/login',
+					method: 'POST',
+					body: body,
+				}
+			},
+		}),
 		googleConnect: builder.query({
 			query: (token) => {
 				return {
@@ -72,6 +81,7 @@ export const authApi = createApi({
 })
 
 export const {
+	useLazyLoginQuery,
 	useLazyGitHubLoginQuery,
 	useLazyGoogleLoginQuery,
 	useLazySignUpQuery,
