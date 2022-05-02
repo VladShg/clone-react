@@ -4,6 +4,7 @@ import backgroundImage from '../../media/background/painted.png'
 import classNames from 'classnames'
 import {
 	useLazyGitHubConnectQuery,
+	useLazyGitHubLoginQuery,
 	useLazyGoogleConnectQuery,
 	useLazyGoogleLoginQuery,
 } from './../../services/authApi'
@@ -22,10 +23,11 @@ import LoginGitHub from '../../components/shared/LoginGitHub/LoginGitHub'
 import config from '../../config'
 import ModalLogin from '../../components/shared/Modal/ModalLogin/ModalLogin'
 import { setToken } from '../../store/auth/authSlice'
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function Login() {
 	const [triggerGoogleLogin] = useLazyGoogleLoginQuery()
-	const [triggerGithubLogin] = useLazyGitHubConnectQuery()
+	const [triggerGithubLogin] = useLazyGitHubLoginQuery()
 	const [triggerGoogleConnect] = useLazyGoogleConnectQuery()
 	const [triggerGitHubConnect, gitHubResponse] = useLazyGitHubConnectQuery()
 	const [params, setSearchParams] = useSearchParams()
@@ -49,10 +51,9 @@ export default function Login() {
 				console.log(profile, data)
 				dispatch(loadProfile({ ...profile }))
 			} else if (error.status === 409) {
-				let authResponse = await triggerGithubLogin(code)
-				if (authResponse.isSuccess) {
-					dispatch(setToken(authResponse.data.access_token))
-				}
+				toast.error('Account already exist, please login instead', {
+					position: 'bottom-center',
+				})
 			}
 		}
 	}, [])
@@ -74,10 +75,9 @@ export default function Login() {
 				})
 			)
 		} else if (error.status === 409) {
-			let authResponse = await triggerGoogleLogin(token)
-			if (authResponse.isSuccess) {
-				dispatch(setToken(authResponse.data.access_token))
-			}
+			toast.error('Account already exist, please login instead', {
+				position: 'bottom-center',
+			})
 		}
 	}
 
@@ -147,6 +147,7 @@ export default function Login() {
 					></ModalLogin>
 				</div>
 			</div>
+			<Toaster />
 		</div>
 	)
 }

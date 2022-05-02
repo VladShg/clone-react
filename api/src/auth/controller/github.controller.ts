@@ -18,7 +18,7 @@ export class GitHubController {
 	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async login(@Body() data: GitHubCodeDto): Promise<TokenDto> {
 		const user = await this.authService.loginWithGitHub(data.code);
-		const token = await this.authService.generateToken(user);
+		const token = this.authService.generateToken(user);
 		return { access_token: token };
 	}
 

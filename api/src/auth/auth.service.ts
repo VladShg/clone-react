@@ -8,11 +8,10 @@ import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { hashPassword, validatePassword } from 'src/utils/bcrypt';
-import { Auth, google } from 'googleapis';
+import { google } from 'googleapis';
 import { Octokit } from '@octokit/core';
 import { createOAuthUserAuth } from '@octokit/auth-oauth-user';
 import { GitHubProfileDto } from './dto/github-profile.dto';
-import { TokenInfo } from 'google-auth-library';
 import { GitHubUser } from './interfaces/github-user.interface';
 
 @Injectable()

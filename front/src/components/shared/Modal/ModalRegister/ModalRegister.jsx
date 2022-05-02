@@ -151,7 +151,7 @@ function PartThree() {
 
 	let match = password && passwordConfirm && password === passwordConfirm
 	let warning = ''
-	if (!match) {
+	if (password && passwordConfirm && !match) {
 		warning = "Passwords don't match"
 	}
 
