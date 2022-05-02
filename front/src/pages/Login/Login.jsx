@@ -4,12 +4,9 @@ import backgroundImage from '../../media/background/painted.png'
 import classNames from 'classnames'
 import {
 	useLazyGitHubConnectQuery,
-	useLazyGitHubLoginQuery,
 	useLazyGoogleConnectQuery,
-	useLazyGoogleLoginQuery,
 } from './../../services/authApi'
 import { useSearchParams } from 'react-router-dom'
-import GoogleLogin from 'react-google-login'
 import ModalRegister from '../../components/shared/Modal/ModalRegister/ModalRegister'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -19,15 +16,12 @@ import {
 	closeRegisterModal,
 	loadProfile,
 } from '../../store/auth/registerSlice'
-import LoginGitHub from '../../components/shared/LoginGitHub/LoginGitHub'
-import config from '../../config'
+import LoginGitHub from '../../components/shared/GitHubAuth/GitHubAuth'
 import ModalLogin from '../../components/shared/Modal/ModalLogin/ModalLogin'
-import { setToken } from '../../store/auth/authSlice'
 import toast, { Toaster } from 'react-hot-toast'
+import GoogleAuth from '../../components/shared/GoogleAuth/GoogleAuth'
 
 export default function Login() {
-	const [triggerGoogleLogin] = useLazyGoogleLoginQuery()
-	const [triggerGithubLogin] = useLazyGitHubLoginQuery()
 	const [triggerGoogleConnect] = useLazyGoogleConnectQuery()
 	const [triggerGitHubConnect, gitHubResponse] = useLazyGitHubConnectQuery()
 	const [params, setSearchParams] = useSearchParams()
@@ -92,19 +86,10 @@ export default function Login() {
 					<i className={classNames('fa-solid fa-crow', styles.logo)} />
 					<h1>Happening now</h1>
 					<h2>Join Crower today.</h2>
-					<GoogleLogin
-						clientId={config.google.CLIENT_ID}
-						render={(renderProps) => (
-							<button
-								className={styles.signupService}
-								onClick={renderProps.onClick}
-								disabled={renderProps.disabled || inputDisabled}
-							>
-								Sign up with Google
-							</button>
-						)}
-						cookiePolicy={'single_host_origin'}
-						onSuccess={onSignUp}
+					<GoogleAuth
+						className={styles.signupService}
+						disabled={inputDisabled}
+						onSignUp={onSignUp}
 					/>
 					<LoginGitHub
 						spinner={isGitHubLoading}
