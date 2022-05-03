@@ -51,9 +51,13 @@ export class AuthService {
 
 	async loginWithGitHub(code: string): Promise<User> {
 		const gitHubUser = await this.getGitHubUser(code);
-		return await this.prisma.user.findUnique({
+		const user = await this.prisma.user.findUnique({
 			where: { gitHubId: gitHubUser.id },
 		});
+		if (!user) {
+			throw new BadRequestException('user not found');
+		}
+		return user
 	}
 
 	async connectWithGitHub(code: string): Promise<GitHubProfileDto> {
