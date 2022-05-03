@@ -32,8 +32,8 @@ export class AuthController {
 			{ OR: [{ email: data.login }, { username: data.login }] },
 			data.password,
 		);
-		const access_token = this.authService.generateToken(user);
-		return { access_token };
+		const accessToken = this.authService.generateToken(user);
+		return { accessToken };
 	}
 
 	@Get('/account')
@@ -50,7 +50,7 @@ export class AuthController {
 	async signUp(@Body() data: SignUpDto): Promise<TokenDto> {
 		const user = await this.authService.signUp(data);
 		const token = this.authService.generateToken(user);
-		return { access_token: token };
+		return { accessToken: token };
 	}
 
 	@Get('/lookup')

@@ -15,6 +15,7 @@ import {
 	setLoginModal,
 	closeRegisterModal,
 	loadProfile,
+	resetInput,
 } from '../../store/auth/registerSlice'
 import ModalLogin from '../../components/shared/Modal/ModalLogin/ModalLogin'
 import toast, { Toaster } from 'react-hot-toast'
@@ -33,6 +34,7 @@ export default function Login() {
 	let isGitHubLoading = gitHubResponse.isLoading || gitHubResponse.isFetching
 
 	useEffect(async () => {
+		dispatch(resetInput())
 		let updatedParams = new URLSearchParams(params)
 		if (params.has('code')) {
 			const code = params.get('code')

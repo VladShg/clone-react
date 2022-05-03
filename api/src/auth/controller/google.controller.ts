@@ -20,7 +20,7 @@ export class GoogleController {
 	async signUpWithGoogle(@Body() data: GoogleTokenDto): Promise<TokenDto> {
 		const user = await this.authService.loginGoogleUser(data.token);
 		const token = this.authService.generateToken(user);
-		return { access_token: token };
+		return { accessToken: token };
 	}
 
 	@Post('/connect')

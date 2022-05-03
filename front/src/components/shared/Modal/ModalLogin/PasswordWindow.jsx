@@ -15,7 +15,7 @@ export const PasswordWindow = function ({ login, setOpen }) {
 		e.preventDefault()
 		const { data, isSuccess } = await triggerLogin({ login, password })
 		if (isSuccess) {
-			dispatch(setToken(data.access_token))
+			dispatch(setToken(data.accessToken))
 		} else {
 			setWarning('Wrong credentials')
 		}

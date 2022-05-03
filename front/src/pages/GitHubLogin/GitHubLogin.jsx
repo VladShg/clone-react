@@ -17,7 +17,7 @@ export default function GitHubLogin() {
 			const code = params.get('code')
 			let { data, isSuccess } = await trigger(code)
 			if (isSuccess) {
-				dispatch(setToken(data.access_token))
+				dispatch(setToken(data.accessToken))
 				navigate('/home')
 			} else {
 				let errorParams = new URLSearchParams()

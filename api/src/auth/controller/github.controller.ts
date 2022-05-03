@@ -19,7 +19,7 @@ export class GitHubController {
 	async login(@Body() data: GitHubCodeDto): Promise<TokenDto> {
 		const user = await this.authService.loginWithGitHub(data.code);
 		const token = this.authService.generateToken(user);
-		return { access_token: token };
+		return { accessToken: token };
 	}
 
 	@Post('/connect')

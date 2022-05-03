@@ -29,6 +29,7 @@ const registerSlice = createSlice({
 			state.profile = { ...state.profile, ...action.payload }
 			state.isRegisterModalOpen = true
 		},
+		resetInput: () => initialState,
 		closeRegisterModal(state) {
 			state.step = 1
 			state.isRegisterModalOpen = false

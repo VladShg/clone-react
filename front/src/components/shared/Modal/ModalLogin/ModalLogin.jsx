@@ -23,7 +23,7 @@ export default function ModalLogin({ isOpen, setOpen }) {
 		const token = googleResponse.accessToken
 		let { data, isSuccess } = await triggerGooogleLogin(token)
 		if (isSuccess) {
-			dispatch(setToken(data.access_token))
+			dispatch(setToken(data.accessToken))
 		} else {
 			toast.error('Failed to login', {
 				position: 'bottom-center',
