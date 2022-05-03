@@ -56,7 +56,7 @@ export default function Login() {
 			toast.error(params.get('error'), {
 				position: 'bottom-center',
 			})
-			updatedParams.delete('code')
+			updatedParams.delete('error')
 		}
 		setSearchParams(updatedParams)
 	}, [])

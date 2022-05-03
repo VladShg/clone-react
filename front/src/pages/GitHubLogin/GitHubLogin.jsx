@@ -21,8 +21,8 @@ export default function GitHubLogin() {
 				navigate('/home')
 			} else {
 				let errorParams = new URLSearchParams()
-				errorParams.set('error', 'Failed to authorize')
-				navigate('/login' + errorParams)
+				errorParams.set('error', 'Failed to login')
+				navigate('/login?' + errorParams)
 			}
 		} else {
 			navigate('/login')

@@ -1,11 +1,7 @@
-import classNames from 'classnames'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import {
-	useLazyGoogleLoginQuery,
-	useLazyLoginQuery,
-} from '../../../../services/authApi'
+import { useLazyGoogleLoginQuery } from '../../../../services/authApi'
 import { setToken } from '../../../../store/auth/authSlice'
 import GitHubAuth from '../../AuthService/GitHubAuth'
 import GoogleAuth from '../../AuthService/GoogleAuth'
