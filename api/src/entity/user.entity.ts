@@ -21,8 +21,8 @@ export class UserEntity implements User {
 	@Exclude()
 	gitHubId: number | null;
 
-	created_at: Date;
-	updated_at: Date;
+	createdAt: Date;
+	updatedAt: Date;
 
 	constructor(user: Partial<User>) {
 		Object.assign(this, user);

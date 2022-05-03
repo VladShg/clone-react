@@ -11,14 +11,50 @@ datasource db {
 }
 
 model User {
-  id         String    @id @default(uuid())
-  birth      DateTime?
-  name       String
-  username   String    @unique
-  email      String    @unique
-  password   String?
-  googleId   String?   @unique
-  gitHubId   Int?      @unique
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  id       String    @id @default(uuid())
+  birth    DateTime?
+  name     String
+  username String    @unique
+  email    String    @unique
+  password String?
+  googleId String?   @unique
+  gitHubId Int?      @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tweets Tweet[]
+  likes  Like[]
+}
+
+model Tweet {
+  id       String  @id @default(uuid())
+  author   User    @relation(fields: [authorId], references: [id])
+  authorId String
+  message  String?
+
+  isRetweet Boolean @default(false)
+  retweet   Tweet?  @relation("Retweets", fields: [retweetId], references: [id])
+  retweetId String?
+  retweets  Tweet[] @relation("Retweets")
+
+  isReply Boolean @default(false)
+  replyTo Tweet?  @relation("Replies", fields: [replyId], references: [id])
+  replyId String?
+  replies Tweet[] @relation("Replies")
+
+  likes     Like[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Like {
+  id       String  @id @default(uuid())
+  author   User    @relation(fields: [authorId], references: [id])
+  authorId String
+  tweet    Tweet?  @relation(fields: [tweetId], references: [id])
+  tweetId  String?
+
+  createdAt DateTime @default(now())
 }
