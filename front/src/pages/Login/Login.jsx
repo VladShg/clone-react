@@ -56,7 +56,6 @@ export default function Login() {
 			})
 			updatedParams.delete('code')
 		}
-		console.log(updatedParams)
 		setSearchParams(updatedParams)
 	}, [])
 

@@ -13,10 +13,8 @@ export default function GitHubLogin() {
 	const dispatch = useDispatch()
 
 	useEffect(async () => {
-		console.log(params)
 		if (params.has('code')) {
 			const code = params.get('code')
-			console.log('code')
 			let { data, isSuccess } = await trigger(code)
 			if (isSuccess) {
 				dispatch(setToken(data.access_token))
