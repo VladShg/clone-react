@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import GitHubLogin from '../pages/GitHubLogin/GitHubLogin'
-import Home from '../pages/Home'
+import Home from '../pages/Home/Home'
 import Login from '../pages/Login/Login'
 import AuthRoute from './AuthRoute'
 import PublicRoute from './PublicRoute'

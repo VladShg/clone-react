@@ -1,8 +1,8 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { authSelector, logout } from '../store/auth/authSlice'
-import { ProfileStyles as styles } from '../styles/_Styles'
-import Avatar from './shared/Avatar/Avatar'
+import { authSelector, logout } from '../../../store/auth/authSlice'
+import styles from './Profile.module.scss'
+import Avatar from '../Avatar/Avatar'
 
 export default function Profile() {
 	const { user } = useSelector(authSelector)

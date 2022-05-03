@@ -1,10 +1,10 @@
-import classNames from 'classnames'
 import React from 'react'
-import Feed from '../components/main/Feed'
-import HomeLink from '../components/shared/HomeLink/HomeLink'
-import Profile from '../components/Profile'
-import { HomeStyles as styles } from '../styles/_Styles'
-import ThemedLink from '../components/shared/ThemedLink'
+import classNames from 'classnames'
+import Feed from '../../components/main/Feed'
+import HomeLink from '../../components/shared/HomeLink/HomeLink'
+import Profile from '../../components/shared/Profile/Profile'
+import styles from './Home.module.scss'
+import ThemedLink from '../../components/shared/ThemedLink'
 
 export default function Home() {
 	return (

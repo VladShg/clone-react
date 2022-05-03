@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { HomeStyles as styles } from '../../../styles/_Styles'
+import styles from './HomeLink.module.scss'
 import PropTypes from 'prop-types'
 
 HomeLink.propTypes = {

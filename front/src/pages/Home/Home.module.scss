@@ -46,19 +46,11 @@
 .main {
 	display: flex;
 	width: 100%;
-	justify-content: space-around;
+	height: 100%;
+	justify-content: flex-start;
 	flex-direction: column;
 	gap: 10px;
 	flex-grow: 1;
-}
-
-a.active {
-	> svg {
-		font-weight: bold;
-	}
-	> span {
-		font-weight: bold;
-	}
 }
 
 a.navigation {
