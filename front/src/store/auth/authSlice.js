@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
+import Cookies from 'js-cookie'
 
 const initialState = {
-	token: '',
+	token: Cookies.get('token'),
 	user: null,
 }
 
@@ -10,11 +11,13 @@ export const authSlice = createSlice({
 	initialState,
 	reducers: {
 		setToken(state, action) {
+			Cookies.set('token', action.payload)
 			state.token = action.payload
 		},
 		logout(state) {
-			state.token = ''
+			Cookies.set('token', '')
 			state.user = null
+			state.token = ''
 		},
 		setUser(state, action) {
 			state.user = action.payload

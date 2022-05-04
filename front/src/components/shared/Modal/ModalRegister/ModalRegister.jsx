@@ -1,9 +1,11 @@
 import React from 'react'
+import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import {
 	useLazySignUpQuery,
 	useValidateProfileQuery,
 } from '../../../../services/authApi'
+import { setToken } from '../../../../store/auth/authSlice'
 import {
 	nextStep,
 	previousStep,
@@ -162,7 +164,14 @@ function PartThree() {
 		if (!match) {
 			delete profile.password
 		}
-		let response = await triggerSignUp(profile)
+		let { data, isSuccess } = await triggerSignUp(profile)
+		if (isSuccess) {
+			dispatch(setToken(data.accessToken))
+		} else {
+			toast.error('Failed to register, please try again', {
+				position: 'bottom-center',
+			})
+		}
 	}
 
 	return (

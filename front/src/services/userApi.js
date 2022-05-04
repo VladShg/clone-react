@@ -13,6 +13,7 @@ export const userApi = createApi({
 					headers: { Authorization: `Bearer ${token}` },
 				}
 			},
+			invalidatesTags: 'User',
 		}),
 	}),
 })
