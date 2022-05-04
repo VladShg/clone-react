@@ -1,15 +1,25 @@
-$gray-fade: #e7e7e8;
-
-.avatar {
+.Avatar {
 	display: flex;
+	position: relative;
 
 	> img {
 		width: 40px;
 		height: 40px;
-		background: $gray-fade;
+		background: var(--gray-fade);
 		border-radius: 50%;
+		position: absolute;
+		left: 0;
+		top: 0;
 	}
 	margin-right: 15px;
+}
+
+.Skeleton {
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	background: var(--gray-fade);
+	border-radius: 50%;
 }
 
 .alignCenter {

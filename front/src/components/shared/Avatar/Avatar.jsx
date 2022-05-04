@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import styles from './avatar.module.scss'
+import styles from './Avatar.module.scss'
 
 Avatar.propTypes = {
 	src: PropTypes.string,
@@ -10,14 +10,15 @@ Avatar.propTypes = {
 }
 
 export default function Avatar({ src, alignCenter, alignBottom }) {
-	const className = classNames(styles.avatar, {
+	const className = classNames(styles.Avatar, {
 		[styles.center]: Boolean(alignCenter),
 		[styles.bottom]: Boolean(alignBottom),
 	})
 
 	return (
 		<div className={className}>
-			<img src={src} />
+			{src && <img src={src} />}
+			<div className={styles.Skeleton} />
 		</div>
 	)
 }

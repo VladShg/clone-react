@@ -1,9 +1,7 @@
-$border-grey: rgb(239, 243, 244);
-
 .container {
 	display: flex;
 	padding: 20px 10px;
-	border-bottom: 1px solid $border-grey;
+	border-bottom: 1px solid var(--border-grey);
 }
 
 .inputRow {
@@ -29,7 +27,7 @@ $border-grey: rgb(239, 243, 244);
 
 	&:empty::before {
 		content: "What's happening?";
-		color: grey;
+		color: var(--grey);
 	}
 }
 
