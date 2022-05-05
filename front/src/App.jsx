@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Router from './routes/Router'
-import { useLazyAuthorizeQuery } from './services/userApi'
+import { useLazyAuthorizeQuery } from './services/authApi'
 import { authSelector, setToken, setUser } from './store/auth/authSlice'
 
 export default function App() {

@@ -3,19 +3,24 @@ import config from '../config'
 
 export const userApi = createApi({
 	reducerPath: 'userApi',
-	baseQuery: fetchBaseQuery({ baseUrl: `${config.API_URL}` }),
+	baseQuery: fetchBaseQuery({
+		baseUrl: `${config.API_URL}`,
+		prepareHeaders: (headers, { getState }) => {
+			const token = getState().auth.token
+			headers.set('authorization', `Bearer ${token}`)
+			return headers
+		},
+	}),
 	endpoints: (builder) => ({
-		authorize: builder.query({
-			query: (token) => {
+		getUser: builder.query({
+			query: (id) => {
 				return {
-					url: '/auth/account',
+					url: '/user/' + id,
 					method: 'GET',
-					headers: { Authorization: `Bearer ${token}` },
 				}
 			},
-			invalidatesTags: 'User',
 		}),
 	}),
 })
 
-export const { useLazyAuthorizeQuery } = userApi
+export const { useGetUserQuery } = userApi

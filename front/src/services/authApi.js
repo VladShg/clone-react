@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react'
 import config from '../config'
 
 export const authApi = createApi({
@@ -40,6 +40,16 @@ export const authApi = createApi({
 					body: body,
 				}
 			},
+		}),
+		authorize: builder.query({
+			query: (token) => {
+				return {
+					url: '/account',
+					method: 'GET',
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			},
+			invalidatesTags: (response) => [{ type: 'User', id: response.id }],
 		}),
 		googleConnect: builder.query({
 			query: (token) => {
@@ -88,4 +98,5 @@ export const {
 	useLazyGoogleConnectQuery,
 	useLazyGitHubConnectQuery,
 	useValidateProfileQuery,
+	useLazyAuthorizeQuery,
 } = authApi

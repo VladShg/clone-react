@@ -1,0 +1,121 @@
+.Container {
+	border-bottom: 1px solid var(--border-grey);
+	padding: 20px 10px;
+}
+
+.Tweet {
+	display: grid;
+	grid-template-columns: 60px auto;
+}
+
+.Meta {
+	display: flex;
+	gap: 5px;
+	justify-content: flex-start;
+}
+
+.Message {
+	margin-bottom: 10px;
+}
+
+.Name {
+	color: var(--black);
+	font-size: 15px;
+	font-weight: 700px;
+	line-height: 20px;
+}
+
+.Username {
+	font-size: 15px;
+	font-weight: 400px;
+	line-height: 20px;
+	color: var(--secondary);
+}
+
+.Date {
+	font-size: 15px;
+	font-weight: 400px;
+	line-height: 20px;
+	color: var(--secondary);
+}
+
+.Counters {
+	display: grid;
+	width: 90%;
+	grid-template-columns: repeat(4, 1fr);
+}
+
+@mixin Social($color-hover, $bg-hover) {
+	display: flex;
+	justify-content: flex-start;
+	gap: 10px;
+	align-items: center;
+	color: var(--secondary);
+	transition: 0.1s ease color;
+
+	&:hover {
+		cursor: pointer;
+		&[disabled] {
+			cursor: default;
+		}
+	}
+
+	&:hover {
+		color: $color-hover;
+		> div {
+			&::before {
+				opacity: 1;
+			}
+		}
+	}
+
+	> div {
+		position: relative;
+
+		&::before {
+			position: absolute;
+			content: '';
+			width: 20px;
+			height: 20px;
+			padding: 6px;
+			border-radius: 9999px;
+			z-index: -1;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			transition: 0.1s ease opacity;
+			background-color: $bg-hover;
+			opacity: 0;
+		}
+	}
+}
+
+.Like {
+	@include Social(#f9318e, #f7e0eb);
+}
+
+.Retweet {
+	@include Social(#1cc18a, #def1eb);
+}
+
+.Reply {
+	@include Social(#1d9bf0, #e1eef6);
+}
+
+.Share {
+	@include Social(#1d9bf0, #e1eef6);
+}
+
+.RetweetBadge {
+	color: var(--secondary);
+	margin-bottom: 5px;
+	margin-left: 60px;
+	position: relative;
+
+	> svg {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		left: -25px;
+	}
+}

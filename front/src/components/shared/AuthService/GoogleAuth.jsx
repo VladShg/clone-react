@@ -1,5 +1,5 @@
+import React from 'react'
 import classNames from 'classnames'
-import React, { Children } from 'react'
 import GoogleLogin from 'react-google-login'
 import config from '../../../config'
 import styles from './AuthService.module.scss'
