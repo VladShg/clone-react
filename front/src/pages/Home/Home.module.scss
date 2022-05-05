@@ -1,16 +1,19 @@
 .layout {
 	display: grid;
-	height: 100%;
+	min-height: 100%;
 	grid-template-columns: 1fr 1fr 1fr;
 }
 
 .section {
 	max-width: 100%;
-	overflow: hidden;
 }
 
 .dashboard {
+	position: sticky;
+	top: 0px;
+
 	display: grid;
+	max-height: 100vh;
 	gap: 20px;
 	grid-template-rows: 10% auto 10%;
 	margin-left: auto;
@@ -21,7 +24,6 @@
 	padding: 0px 12px;
 	margin-right: 5%;
 	box-sizing: border-box;
-	overflow: hidden;
 }
 
 .header {
