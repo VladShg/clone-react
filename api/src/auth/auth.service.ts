@@ -110,9 +110,11 @@ export class AuthService {
 	}
 
 	async signUp(data: Prisma.UserCreateInput): Promise<User> {
-		let password = '';
+		let password: string | null;
 		if (data.password) {
 			password = await hashPassword(data.password);
+		} else {
+			password = null;
 		}
 		return this.prisma.user.create({
 			data: { ...data, password: password, birth: new Date(data.birth) },
