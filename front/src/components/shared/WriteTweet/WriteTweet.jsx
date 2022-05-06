@@ -21,7 +21,7 @@ export default function WriteTweet() {
 
 	const submitTweet = async (e) => {
 		e.preventDefault()
-		const response = await createTweet({ message: input })
+		await createTweet(input)
 	}
 
 	return (

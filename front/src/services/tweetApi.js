@@ -49,31 +49,31 @@ export const tweetApi = createApi({
 			invalidatesTags: [{ type: 'Tweet', id: 'List' }],
 		}),
 		create: builder.mutation({
-			query: (body) => {
+			query: (message) => {
 				return {
 					url: '/',
 					method: 'POST',
-					body: body,
+					body: { message },
 				}
 			},
 			invalidatesTags: [{ type: 'Tweet', id: 'List' }],
 		}),
 		like: builder.mutation({
-			query: (tweetId) => {
+			query: (id) => {
 				return {
 					url: '/like',
 					method: 'POST',
-					body: { id: tweetId },
+					body: { id },
 				}
 			},
 			invalidatesTags: (result, error, arg) => [{ type: 'Tweet', id: arg }],
 		}),
 		retweet: builder.mutation({
-			query: (tweetId) => {
+			query: (id) => {
 				return {
 					url: '/retweet',
 					method: 'POST',
-					body: { tweetId: tweetId },
+					body: { id },
 				}
 			},
 			invalidatesTags: (result, error, arg) => {

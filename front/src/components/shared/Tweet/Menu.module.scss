@@ -14,15 +14,15 @@
 	padding: 10px;
 	background: var(--white);
 	svg, button {
-		transform: 0.1 ease all;
+		transition: 0.1 ease all;
 	}
 	&:hover {
 		cursor: pointer;
-		background: #e1eef6;
+		background: var(--focus-main-bg);
 		svg,
 		button {
 			cursor: pointer;
-			color: #1d9bf0;
+			color: var(--focus-main);
 		}
 	}
 	z-index: 2;
@@ -43,10 +43,10 @@
 }
 
 .Item {
-	transform: 0.1 ease color;
+	transition: 0.1 ease color;
 	&:hover {
 		cursor: pointer;
-		color: var(--main);
+		color: var(--focus-main);
 	}
 }
 

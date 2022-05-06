@@ -95,10 +95,7 @@ export class TweetController {
 		@Body() body: RetweetDto,
 		@Req() request: RequestWithUser,
 	): Promise<TweetEntity> {
-		const retweet = await this.tweetService.retweet(
-			request.user.id,
-			body.tweetId,
-		);
+		const retweet = await this.tweetService.retweet(request.user.id, body.id);
 		if (!retweet) {
 			throw new HttpException({}, HttpStatus.NO_CONTENT);
 		} else {

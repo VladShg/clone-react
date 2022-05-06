@@ -113,19 +113,19 @@
 }
 
 .Like {
-	@include Social(#f9318e, #f7e0eb);
+	@include Social(var(--focus-red), var(--focus-red-bg));
 }
 
 .Retweet {
-	@include Social(#1cc18a, #def1eb);
+	@include Social(var(--focus-green), var(--focus-green-bg));
 }
 
 .Reply {
-	@include Social(#1d9bf0, #e1eef6);
+	@include Social(var(--focus-main), var(--focus-main-bg));
 }
 
 .Share {
-	@include Social(#1d9bf0, #e1eef6);
+	@include Social(var(--focus-main), var(--focus-main-bg));
 }
 
 .RetweetBadge {
