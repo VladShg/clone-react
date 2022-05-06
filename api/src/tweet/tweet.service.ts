@@ -83,15 +83,17 @@ export class TweetService {
 				data: { authorId: authorId, tweetId: tweetId, isRetweet: true },
 				include: {
 					author: true,
+					tweet: {
+						include: {
+							author: true,
+							_count: {
+								select: { likes: true, replies: true, retweets: true },
+							},
+						},
+					},
 				},
 			});
-			const originalTweet = await this.prisma.tweet.findUnique({
-				where: { id: tweetId },
-				include: {
-					_count: { select: { likes: true, replies: true, retweets: true } },
-				},
-			});
-			return { tweet: originalTweet, ...retweet };
+			return retweet;
 		}
 	}
 }
