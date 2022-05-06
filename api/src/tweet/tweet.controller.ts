@@ -2,6 +2,7 @@ import {
 	Body,
 	ClassSerializerInterceptor,
 	Controller,
+	Delete,
 	Get,
 	HttpException,
 	HttpStatus,
@@ -18,6 +19,7 @@ import { LikeEntity } from 'src/entity/like.entity';
 import { TweetEntity } from 'src/entity/tweet.entity';
 import { RequestWithUser } from 'src/types/RequestWithUser';
 import { CreateTweetDto } from './dto/create.dto';
+import { DeleteTweetDto } from './dto/delete.dto';
 import { LikeTweetDto } from './dto/like.dto';
 import { RetweetDto } from './dto/retweet.dto';
 import { TweetService } from './tweet.service';
@@ -41,6 +43,14 @@ export class TweetController {
 	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async getTweet(@Param('id') id: string): Promise<TweetEntity> {
 		const tweet = await this.tweetService.get({ id: id });
+		return new TweetEntity(tweet);
+	}
+
+	@Delete('/')
+	@UseGuards(AuthGuard('jwt'))
+	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+	async deleteTweet(@Body() body: DeleteTweetDto): Promise<TweetEntity> {
+		const tweet = await this.tweetService.delete(body);
 		return new TweetEntity(tweet);
 	}
 

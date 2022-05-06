@@ -51,6 +51,10 @@ export class TweetService {
 		});
 	}
 
+	async delete(where: Prisma.TweetWhereUniqueInput): Promise<Tweet> {
+		return await this.prisma.tweet.delete({ where: where });
+	}
+
 	async like(
 		author: Prisma.UserWhereUniqueInput,
 		tweet: Prisma.TweetWhereUniqueInput,

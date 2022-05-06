@@ -38,6 +38,16 @@ export const tweetApi = createApi({
 				return tags
 			},
 		}),
+		delete: builder.mutation({
+			query: (id) => {
+				return {
+					url: '/',
+					method: 'DELETE',
+					body: { id },
+				}
+			},
+			invalidatesTags: [{ type: 'Tweet', id: 'List' }],
+		}),
 		create: builder.mutation({
 			query: (body) => {
 				return {
@@ -86,4 +96,5 @@ export const {
 	useRetweetMutation,
 	useCreateMutation,
 	useGetTweetQuery,
+	useDeleteMutation,
 } = tweetApi

@@ -7,6 +7,7 @@ import {
 } from '../../../services/tweetApi'
 import { authSelector } from '../../../store/auth/authSlice'
 import Avatar from '../Avatar/Avatar'
+import Menu from './Menu'
 import styles from './Tweet.module.scss'
 
 export default function Tweet({ id }) {
@@ -55,7 +56,6 @@ function Body({ tweet }) {
 	const [triggerLike] = useLikeMutation()
 	const [triggerRetweet] = useRetweetMutation()
 	const { user } = useSelector(authSelector)
-	const retweetDisabled = user.id === tweet.author.id
 
 	const onRetweet = async () => {
 		await triggerRetweet(tweet.id)
@@ -82,12 +82,15 @@ function Body({ tweet }) {
 		dateFormat = date.toLocaleDateString().slice(0, 5)
 	}
 
+	const isAuthor = user.id === tweet.author.id
+
 	return (
 		<>
 			<div className={styles.Avatar}>
 				<Avatar src="" />
 			</div>
 			<div className={styles.Content}>
+				{isAuthor && <Menu key={'menu' + tweet.id} id={tweet.id} />}
 				<div className={styles.Meta}>
 					<span className={styles.Name}>{tweet.author.name}</span>
 					<span className={styles.Username}>@{tweet.author.username}</span>
@@ -96,31 +99,27 @@ function Body({ tweet }) {
 				<div className={styles.Message}>{tweet.message}</div>
 				<div className={styles.Counters}>
 					<div className={styles.Reply}>
-						<div className="Icon">
+						<button className={styles.IconWrapper}>
 							<i className="fa-solid fa-comment"></i>
-						</div>
+						</button>
 						{tweet._count.replies}
 					</div>
 					<div className={styles.Retweet}>
-						<div
-							className="Icon"
-							disabled={retweetDisabled}
-							onClick={onRetweet}
-						>
+						<button className={styles.IconWrapper} onClick={onRetweet}>
 							<i className="fa-solid fa-retweet"></i>
-						</div>
+						</button>
 						{tweet._count.retweets}
 					</div>
 					<div className={styles.Like} onClick={onLike}>
-						<div className="Icon">
+						<button className={styles.IconWrapper}>
 							<i className="fa-solid fa-heart"></i>
-						</div>
+						</button>
 						{tweet._count.likes}
 					</div>
 					<div className={styles.Share}>
-						<div className="Icon">
+						<button className={styles.IconWrapper}>
 							<i className="fa-solid fa-share"></i>
-						</div>
+						</button>
 					</div>
 				</div>
 			</div>
