@@ -66,9 +66,21 @@ function Body({ tweet }) {
 	}
 
 	const date = new Date(tweet.createdAt)
-	const dateFormat = `${date.toLocaleDateString().slice(0, 5)} ${date
-		.toTimeString()
-		.slice(0, 5)}`
+	const now = new Date()
+	let dateFormat = ''
+	const hourDelta = (now.getTime() - date.getTime()) / 3600000
+	if (hourDelta < 1) {
+		const minuteDelta = (now.getTime() - date.getTime()) / 60000
+		if (minuteDelta >= 1) {
+			dateFormat = `${Math.floor(minuteDelta)} m`
+		} else {
+			dateFormat = 'now'
+		}
+	} else if (hourDelta < 24) {
+		dateFormat = `${Math.floor(hourDelta)} h`
+	} else {
+		dateFormat = date.toLocaleDateString().slice(0, 5)
+	}
 
 	return (
 		<>
