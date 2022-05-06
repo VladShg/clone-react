@@ -13,7 +13,8 @@
 	outline: none;
 	padding: 10px;
 	background: var(--white);
-	svg, button {
+	svg,
+	button {
 		transition: 0.1 ease all;
 	}
 	&:hover {

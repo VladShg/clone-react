@@ -8,5 +8,4 @@ import { TweetService } from './tweet.service';
 	controllers: [TweetController],
 	providers: [TweetService],
 })
-
 export class TweetModule {}

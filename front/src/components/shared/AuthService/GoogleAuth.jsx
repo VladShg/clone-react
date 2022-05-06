@@ -4,7 +4,12 @@ import GoogleLogin from 'react-google-login'
 import config from '../../../config'
 import styles from './AuthService.module.scss'
 
-export default function GoogleAuth({ className, disabled, onSignUp, children }) {
+export default function GoogleAuth({
+	className,
+	disabled,
+	onSignUp,
+	children,
+}) {
 	return (
 		<GoogleLogin
 			clientId={config.google.CLIENT_ID}

@@ -57,7 +57,7 @@ export class AuthService {
 		if (!user) {
 			throw new BadRequestException('user not found');
 		}
-		return user
+		return user;
 	}
 
 	async connectWithGitHub(code: string): Promise<GitHubProfileDto> {
