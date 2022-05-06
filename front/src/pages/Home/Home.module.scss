@@ -1,7 +1,7 @@
 .layout {
 	display: grid;
 	min-height: 100%;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: 1fr minmax(400px, 1fr) 1fr;
 }
 
 .section {
@@ -59,7 +59,7 @@ a.navigation {
 	border-radius: 9999px;
 	transition: 0.2s ease background;
 	font-size: 20px;
-	font-family: Poppins, serif;
+	font-family: Manrope, serif;
 	font-weight: normal;
 
 	&:hover {
