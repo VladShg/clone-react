@@ -1,4 +1,7 @@
-.container {
+.Wrapper {
+	position: relative;
+}
+.Container {
 	display: flex;
 	align-items: center;
 	font-size: 24px;
@@ -13,14 +16,71 @@
 	}
 }
 
-.description {
+.Description {
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
 	font-size: 15px;
 	font-weight: bold;
 
-	> .username {
+	> .Username {
 		font-weight: normal;
+	}
+
+	.Icon {
+		position: absolute;
+		right: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+}
+
+.DropDown {
+	position: absolute;
+	right: 50%;
+	top: -10px;
+	transform: translateY(-100%) translateX(50%);
+	width: 120%;
+	background: var(--white);
+	padding-bottom: 20px;
+	box-sizing: border-box;
+	border-radius: 20px;
+	border: 1px solid var(--border-grey);
+	opacity: 0;
+	visibility: hidden;
+	transition: 0.2s ease opacity;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 10px;
+
+	button {
+		background: var(--white);
+		outline: none;
+		border: none;
+		padding: 20px 10px;
+		width: 100%;
+		text-align: start;
+		transition: color 0.2s, background-color 0.2s ;
+
+		&:hover {
+			color: var(--focus-main);
+			cursor: pointer;
+			background-color: var(--focus-main-bg);
+		}
+	}
+
+	&.Open {
+		visibility: visible;
+		opacity: 1;
+	}
+
+	.InnerContainer {
+		&:hover {
+			background: var(--white);
+			cursor: default;
+		}
+		border-radius: 0px;
+		border-bottom: 1px solid var(--border-grey);
 	}
 }
