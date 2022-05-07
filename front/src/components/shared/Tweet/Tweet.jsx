@@ -7,7 +7,7 @@ import {
 } from '../../../services/tweetApi'
 import { authSelector } from '../../../store/auth/authSlice'
 import Avatar from '../Avatar/Avatar'
-import Menu from './Menu'
+import DeleteTweet from './DeleteTweet'
 import styles from './Tweet.module.scss'
 
 export default function Tweet({ id }) {
@@ -90,7 +90,7 @@ function Body({ tweet }) {
 				<Avatar src="" />
 			</div>
 			<div className={styles.Content}>
-				{isAuthor && <Menu key={'menu' + tweet.id} id={tweet.id} />}
+				{isAuthor && <DeleteTweet id={tweet.id} />}
 				<div className={styles.Meta}>
 					<span className={styles.Name}>{tweet.author.name}</span>
 					<span className={styles.Username}>@{tweet.author.username}</span>

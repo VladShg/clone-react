@@ -1,9 +1,9 @@
 import classNames from 'classnames'
 import React, { useRef, useState, useEffect } from 'react'
 import { useDeleteMutation } from '../../../services/tweetApi'
-import styles from './Menu.module.scss'
+import styles from './DeleteTweet.module.scss'
 
-export default function Menu({ id }) {
+export default function DeleteTweet({ id }) {
 	const [triggerDelete] = useDeleteMutation()
 	const [isOpen, setOpen] = useState(false)
 	const triggerRef = useRef(null)
@@ -22,17 +22,6 @@ export default function Menu({ id }) {
 		return () => document.removeEventListener('click', listener)
 	})
 
-	const dropdown = (
-		<ul
-			className={classNames(styles.Dropdown, { [styles.Open]: isOpen })}
-			ref={menuRef}
-		>
-			<li className={styles.Item} onClick={() => triggerDelete(id)}>
-				Delete
-			</li>
-		</ul>
-	)
-
 	return (
 		<>
 			<div className={styles.Menu}>
@@ -46,7 +35,14 @@ export default function Menu({ id }) {
 					>
 						<i className="fa-solid fa-ellipsis"></i>
 					</button>
-					{dropdown}
+					<ul
+						className={classNames(styles.Dropdown, { [styles.Open]: isOpen })}
+						ref={menuRef}
+					>
+						<li className={styles.Item} onClick={() => triggerDelete(id)}>
+							Delete
+						</li>
+					</ul>
 				</div>
 			</div>
 		</>
