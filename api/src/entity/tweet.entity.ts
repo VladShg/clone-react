@@ -1,5 +1,5 @@
 import { Tweet } from '@prisma/client';
-import { Type } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { IsNumber, IsString, ValidateNested } from 'class-validator';
 import { UserEntity } from './user.entity';
 
@@ -33,6 +33,9 @@ export class TweetEntity implements Tweet {
 
 	@IsString()
 	tweetId: string | null;
+
+	@Expose({ name: 'count' })
+	_count: object;
 
 	constructor(tweet: Partial<Tweet>) {
 		Object.assign(this, tweet);

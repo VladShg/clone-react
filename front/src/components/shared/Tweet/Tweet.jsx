@@ -44,10 +44,11 @@ export default function Tweet({ id }) {
 }
 
 function RetweetBadge({ author }) {
+	const { user } = useSelector(authSelector)
 	return (
 		<div className={styles.RetweetBadge}>
 			<i className="fa-solid fa-retweet"></i>
-			{author.name} Retweeted
+			{user.id === author.id ? 'You' : author.name} Retweeted
 		</div>
 	)
 }
@@ -102,19 +103,19 @@ function Body({ tweet }) {
 						<button className={styles.IconWrapper}>
 							<i className="fa-solid fa-comment"></i>
 						</button>
-						{tweet._count.replies}
+						{tweet.count.replies}
 					</div>
 					<div className={styles.Retweet}>
 						<button className={styles.IconWrapper} onClick={onRetweet}>
 							<i className="fa-solid fa-retweet"></i>
 						</button>
-						{tweet._count.retweets}
+						{tweet.count.retweets}
 					</div>
 					<div className={styles.Like} onClick={onLike}>
 						<button className={styles.IconWrapper}>
 							<i className="fa-solid fa-heart"></i>
 						</button>
-						{tweet._count.likes}
+						{tweet.count.likes}
 					</div>
 					<div className={styles.Share}>
 						<button className={styles.IconWrapper}>
