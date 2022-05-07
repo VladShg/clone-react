@@ -29,17 +29,17 @@ model User {
 
 model Tweet {
   id       String  @id @default(uuid())
-  author   User    @relation(fields: [authorId], references: [id])
+  author   User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
   message  String?
 
   isRetweet Boolean @default(false)
-  tweet     Tweet?  @relation("Retweets", fields: [tweetId], references: [id])
+  tweet     Tweet?  @relation("Retweets", fields: [tweetId], references: [id], onDelete: Cascade)
   tweetId   String?
   retweets  Tweet[] @relation("Retweets")
 
   isReply Boolean @default(false)
-  replyTo Tweet?  @relation("Replies", fields: [replyId], references: [id])
+  replyTo Tweet?  @relation("Replies", fields: [replyId], references: [id], onDelete: Cascade)
   replyId String?
   replies Tweet[] @relation("Replies")
 
@@ -51,9 +51,9 @@ model Tweet {
 
 model Like {
   id       String @id @default(uuid())
-  author   User   @relation(fields: [authorId], references: [id])
+  author   User   @relation(fields: [authorId], references: [id],  onDelete: Cascade)
   authorId String
-  tweet    Tweet  @relation(fields: [tweetId], references: [id])
+  tweet    Tweet  @relation(fields: [tweetId], references: [id], onDelete: Cascade)
   tweetId  String
 
   createdAt DateTime @default(now())
