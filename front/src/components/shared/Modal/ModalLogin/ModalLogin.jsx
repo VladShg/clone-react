@@ -42,7 +42,7 @@ export default function ModalLogin({ isOpen, setOpen }) {
 			<GoogleAuth className={styles.Auth} onSignUp={onSignUp}>
 				Sign in with Google
 			</GoogleAuth>
-			<GitHubAuth className={styles.Auth} redirect="/login/github">
+			<GitHubAuth className={styles.Auth} redirect="/auth/login/github">
 				Sign in with Github
 			</GitHubAuth>
 			<Modal.Description></Modal.Description>

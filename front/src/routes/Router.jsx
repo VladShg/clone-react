@@ -1,28 +1,43 @@
 import React from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import {
+	BrowserRouter,
+	Navigate,
+	Outlet,
+	Route,
+	Routes,
+} from 'react-router-dom'
 import GitHubLogin from '../pages/GitHubLogin/GitHubLogin'
-import Home from '../pages/Home/Home'
+import HomeLayout from '../pages/Home/HomeLayout'
 import Login from '../pages/Login/Login'
+import Feed from '../components/main/Feed'
 import AuthRoute from './AuthRoute'
 import PublicRoute from './PublicRoute'
 
 export default function Router() {
-	const auth = (children) => {
-		return <AuthRoute>{children}</AuthRoute>
-	}
+	const authLayout = (
+		<AuthRoute>
+			<HomeLayout />
+		</AuthRoute>
+	)
 
-	const unauthorized = (children) => {
-		return <PublicRoute>{children}</PublicRoute>
-	}
+	const publicLayout = (
+		<PublicRoute>
+			<Outlet />
+		</PublicRoute>
+	)
 
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/home" element={auth(<Home />)} />
-				<Route path="/login" element={unauthorized(<Login />)} />
-				<Route path="/login/github" element={unauthorized(<GitHubLogin />)} />
-				<Route path="/" element={auth(<Home />)} />
-				<Route path="*" element={auth(<Home />)} />
+				<Route path="/" element={authLayout}>
+					<Route path="home" element={<Feed />} />
+					<Route path="" element={<Navigate to="/home" replace />} />
+				</Route>
+				<Route path="/auth/" element={publicLayout}>
+					<Route path="login/github" element={<GitHubLogin />} />
+					<Route path="login" element={<Login />} />
+				</Route>
+				<Route path="*" element={<Navigate to="/home" replace />} />
 			</Routes>
 		</BrowserRouter>
 	)

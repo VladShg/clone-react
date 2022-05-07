@@ -8,7 +8,7 @@ export default function GitHubAuth({
 	className,
 	children,
 	spinner = false,
-	redirect = `/login`,
+	redirect = `/auth/login`,
 	...props
 }) {
 	const CLIENT_ID = 'Iv1.13f680a0cf5688c2'

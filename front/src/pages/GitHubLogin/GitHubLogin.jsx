@@ -22,7 +22,7 @@ export default function GitHubLogin() {
 			} else {
 				let errorParams = new URLSearchParams()
 				errorParams.set('error', 'Failed to login')
-				navigate('/login?' + errorParams)
+				navigate('/auth/login?' + errorParams)
 			}
 		} else {
 			navigate('/login')

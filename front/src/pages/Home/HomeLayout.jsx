@@ -1,12 +1,12 @@
 import React from 'react'
 import classNames from 'classnames'
-import Feed from '../../components/main/Feed'
 import HomeLink from '../../components/shared/HomeLink/HomeLink'
 import Profile from '../../components/shared/Profile/Profile'
-import styles from './Home.module.scss'
+import styles from './HomeLayout.module.scss'
 import ThemedLink from '../../components/shared/ThemedLink'
+import { Outlet } from 'react-router-dom'
 
-export default function Home() {
+export default function HomeLayout() {
 	return (
 		<>
 			<div className={styles.layout}>
@@ -54,9 +54,8 @@ export default function Home() {
 					<Profile />
 				</div>
 				<div className={styles.section}>
-					<Feed />
+					<Outlet />
 				</div>
-
 				<div className={styles.section}></div>
 			</div>
 		</>

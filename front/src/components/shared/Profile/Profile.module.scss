@@ -54,7 +54,7 @@
 	justify-content: center;
 	gap: 10px;
 
-	button {
+	.Item {
 		background: var(--white);
 		outline: none;
 		border: none;
@@ -62,8 +62,13 @@
 		width: 100%;
 		text-align: start;
 		transition: color 0.2s, background-color 0.2s ;
+		color: var(--black);
+		font-family: Manrope, serif;
+		font-size: 16px;
+		text-decoration: none;
 
 		&:hover {
+			text-decoration: none;
 			color: var(--focus-main);
 			cursor: pointer;
 			background-color: var(--focus-main-bg);

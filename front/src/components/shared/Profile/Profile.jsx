@@ -4,6 +4,7 @@ import { authSelector, logout } from '../../../store/auth/authSlice'
 import styles from './Profile.module.scss'
 import Avatar from '../Avatar/Avatar'
 import classNames from 'classnames'
+import { Link } from 'react-router-dom'
 
 export default function Profile() {
 	const { user } = useSelector(authSelector)
@@ -48,7 +49,10 @@ export default function Profile() {
 						<Username username={username} />
 					</Descryption>
 				</Container>
-				<button onClick={() => dispatch(logout())}>
+				<Link className={styles.Item} to="/profile">
+					Edit profile
+				</Link>
+				<button className={styles.Item} onClick={() => dispatch(logout())}>
 					Log out from @{username}
 				</button>
 			</div>
