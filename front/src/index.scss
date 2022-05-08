@@ -12,6 +12,10 @@ header.header {
 	height: 10vh;
 }
 
+body {
+	padding-left: calc(100vw - 100%)
+}
+
 #root,
 body,
 html {
