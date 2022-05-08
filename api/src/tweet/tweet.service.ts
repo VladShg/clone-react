@@ -41,6 +41,46 @@ export class TweetService {
 		});
 	}
 
+	async getRelations(
+		tweetId: string,
+		userId: string,
+	): Promise<TweetRelationDto> {
+		const like = await this.prisma.like.findFirst({
+			where: {
+				OR: [
+					{ authorId: userId, tweetId: tweetId },
+					{
+						authorId: userId,
+						tweet: { isRetweet: true, tweetId: tweetId },
+					},
+				],
+			},
+		});
+		const reply = await this.prisma.tweet.findFirst({
+			where: {
+				OR: [
+					{ authorId: userId, replyId: tweetId, isReply: true },
+					{
+						id: tweetId,
+						tweet: { authorId: userId, isReply: true },
+					},
+				],
+			},
+		});
+		const retweet = await this.prisma.tweet.findFirst({
+			where: {
+				OR: [
+					{ authorId: userId, tweetId: tweetId, isRetweet: true },
+					{
+						id: tweetId,
+						tweet: { authorId: userId },
+					},
+				],
+			},
+		});
+		return { like: !!like, reply: !!reply, retweet: !!retweet };
+	}
+
 	async listTweets(username: string): Promise<Tweet[]> {
 		const tweets = await this.prisma.tweet.findMany({
 			where: { author: { username } },

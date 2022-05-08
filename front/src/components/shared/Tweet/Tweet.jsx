@@ -1,9 +1,11 @@
+import classNames from 'classnames'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import {
 	useGetTweetQuery,
 	useLikeMutation,
 	useRetweetMutation,
+	useTweetRelationsQuery,
 } from '../../../services/tweetApi'
 import { authSelector } from '../../../store/auth/authSlice'
 import Avatar from '../Avatar/Avatar'
@@ -12,11 +14,13 @@ import styles from './Tweet.module.scss'
 
 export default function Tweet({ id }) {
 	const { data: tweet, isLoading } = useGetTweetQuery(id)
+	const { data: relations, isLoading: isRelationLoading } =
+		useTweetRelationsQuery(id)
 
 	// Retweet endpoint returns empty object {} when retweet is removed
 	// Second check is for it
 	// TODO: find a better way to check this
-	if (isLoading || !tweet.id) {
+	if (isLoading || isRelationLoading || !tweet.id) {
 		return null
 	}
 
@@ -27,6 +31,7 @@ export default function Tweet({ id }) {
 				<div className={styles.Tweet}>
 					<Body
 						tweet={tweet.tweet}
+						relations={relations}
 						badge={<RetweetBadge author={tweet.tweet.author} />}
 					/>
 				</div>
@@ -36,7 +41,7 @@ export default function Tweet({ id }) {
 		return (
 			<div className={styles.Container}>
 				<div className={styles.Tweet}>
-					<Body tweet={tweet} />
+					<Body tweet={tweet} relations={relations} />
 				</div>
 			</div>
 		)
@@ -53,10 +58,11 @@ function RetweetBadge({ author }) {
 	)
 }
 
-function Body({ tweet }) {
+function Body({ tweet, relations }) {
 	const [triggerLike] = useLikeMutation()
 	const [triggerRetweet] = useRetweetMutation()
 	const { user } = useSelector(authSelector)
+	const { like: isLiked, retweet: isRetweeted, reply: isReplied } = relations
 
 	const onRetweet = async () => {
 		await triggerRetweet(tweet.id)
@@ -99,19 +105,32 @@ function Body({ tweet }) {
 				</div>
 				<div className={styles.Message}>{tweet.message}</div>
 				<div className={styles.Counters}>
-					<div className={styles.Reply}>
+					<div
+						className={classNames(styles.Reply, {
+							[styles.Active]: isReplied,
+						})}
+					>
 						<button className={styles.IconWrapper}>
 							<i className="fa-solid fa-comment"></i>
 						</button>
 						{tweet.count.replies}
 					</div>
-					<div className={styles.Retweet}>
+					<div
+						className={classNames(styles.Retweet, {
+							[styles.Active]: isRetweeted,
+						})}
+					>
 						<button className={styles.IconWrapper} onClick={onRetweet}>
 							<i className="fa-solid fa-retweet"></i>
 						</button>
 						{tweet.count.retweets}
 					</div>
-					<div className={styles.Like} onClick={onLike}>
+					<div
+						className={classNames(styles.Like, {
+							[styles.Active]: isLiked,
+						})}
+						onClick={onLike}
+					>
 						<button className={styles.IconWrapper}>
 							<i className="fa-solid fa-heart"></i>
 						</button>

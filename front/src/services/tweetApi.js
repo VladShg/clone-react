@@ -88,6 +88,15 @@ export const tweetApi = createApi({
 			},
 			invalidatesTags: (result, error, arg) => [{ type: 'Tweet', id: arg }],
 		}),
+		tweetRelations: builder.query({
+			query: (id) => {
+				return {
+					url: `/${id}/relations`,
+					method: 'GET',
+				}
+			},
+			providesTags: (res, error, arg) => [{ type: 'Tweet', id: arg }],
+		}),
 		retweet: builder.mutation({
 			query: (id) => {
 				return {
@@ -111,6 +120,7 @@ export const tweetApi = createApi({
 })
 
 export const {
+	useTweetRelationsQuery,
 	useUserLikesQuery,
 	useUserTweetsQuery,
 	useGetFeedQuery,

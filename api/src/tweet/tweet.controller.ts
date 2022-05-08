@@ -45,6 +45,16 @@ export class TweetController {
 		const tweets = await this.tweetService.listLikes(username);
 		return tweets.map((tweet) => new TweetEntity(tweet));
 	}
+
+	@Get('/:tweetId/relations')
+	@UseGuards(AuthGuard('jwt'))
+	async getRelations(
+		@Param('tweetId') tweetId: string,
+		@Req() request: RequestWithUser,
+	): Promise<TweetRelationDto> {
+		return await this.tweetService.getRelations(tweetId, request.user.id);
+	}
+
 	@Get('/:id')
 	@UseGuards(AuthGuard('jwt'))
 	async getTweet(@Param('id') id: string): Promise<TweetEntity> {

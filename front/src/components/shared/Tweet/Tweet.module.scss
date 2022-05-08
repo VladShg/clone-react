@@ -62,6 +62,13 @@
 	transition: 0.1s ease color;
 	color: var(--secondary);
 
+	&.Active {
+		color: $color-hover;
+		svg {
+			color: $color-hover;
+		}
+	}
+
 	svg {
 		color: var(--secondary);
 	}
