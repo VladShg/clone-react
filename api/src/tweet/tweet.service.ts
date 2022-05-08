@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Like, Prisma, Tweet } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { TweetRelationDto } from './dto/relation.dto';
 
 @Injectable()
 export class TweetService {
@@ -36,6 +37,38 @@ export class TweetService {
 					},
 				},
 				_count: { select: { likes: true, replies: true, retweets: true } },
+			},
+		});
+	}
+
+	async listTweets(username: string): Promise<Tweet[]> {
+		const tweets = await this.prisma.tweet.findMany({
+			where: { author: { username } },
+			orderBy: { createdAt: 'desc' },
+			include: {
+				author: true,
+				tweet: {
+					include: {
+						author: true,
+						_count: { select: { likes: true, replies: true, retweets: true } },
+					},
+				},
+				_count: { select: { likes: true, replies: true, retweets: true } },
+			},
+		});
+		return tweets;
+	}
+
+	async listLikes(username: string): Promise<Like[]> {
+		return await this.prisma.like.findMany({
+			where: { author: { username } },
+			include: {
+				tweet: {
+					include: {
+						author: true,
+						_count: { select: { likes: true, replies: true, retweets: true } },
+					},
+				},
 			},
 		});
 	}

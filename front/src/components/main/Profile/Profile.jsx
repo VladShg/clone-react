@@ -1,9 +1,9 @@
 import React from 'react'
 import { NavLink, Outlet, useParams } from 'react-router-dom'
-import { useGetUserQuery } from '../../services/userApi'
+import { useGetUserQuery } from '../../../services/userApi'
 import styles from './Profile.module.scss'
-import Spinner from './../shared/Spinner/Spinner'
-import Avatar from '../shared/Avatar/Avatar'
+import Spinner from '../../shared/Spinner/Spinner'
+import Avatar from '../../shared/Avatar/Avatar'
 import classNames from 'classnames'
 
 export default function Profile() {

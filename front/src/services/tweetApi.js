@@ -38,6 +38,26 @@ export const tweetApi = createApi({
 				return tags
 			},
 		}),
+		userTweets: builder.query({
+			query: (username) => {
+				return {
+					url: `/${username}/tweets`,
+					method: 'GET',
+				}
+			},
+			transformResponse: (data) => data.map((item) => item.id),
+			providesTags: [{ type: 'Tweet', id: 'LIST' }],
+		}),
+		userLikes: builder.query({
+			query: (username) => {
+				return {
+					url: `/${username}/likes`,
+					method: 'GET',
+				}
+			},
+			transformResponse: (data) => data.map((item) => item.tweet.id),
+			providesTags: [{ type: 'Tweet', id: 'LIST' }],
+		}),
 		delete: builder.mutation({
 			query: (id) => {
 				return {
@@ -91,6 +111,8 @@ export const tweetApi = createApi({
 })
 
 export const {
+	useUserLikesQuery,
+	useUserTweetsQuery,
 	useGetFeedQuery,
 	useLikeMutation,
 	useRetweetMutation,

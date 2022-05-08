@@ -9,10 +9,12 @@ import {
 import GitHubLogin from '../pages/GitHubLogin/GitHubLogin'
 import HomeLayout from '../pages/Home/HomeLayout'
 import Login from '../pages/Login/Login'
-import Feed from '../components/main/Feed'
+import Feed from '../components/main/Feed/Feed'
 import AuthRoute from './AuthRoute'
 import PublicRoute from './PublicRoute'
-import Profile from '../components/main/Profile'
+import Profile from '../components/main/Profile/Profile'
+import ProfileTweets from '../components/main/Profile/ProfileTweets'
+import ProfileLikes from '../components/main/Profile/ProfileLikes'
 
 export default function Router() {
 	const authLayout = (
@@ -32,8 +34,11 @@ export default function Router() {
 			<Routes>
 				<Route path="/" element={authLayout}>
 					<Route path="home" element={<Feed />} />
-					<Route path="/profile/:username" element={<Profile />}>
-						<Route path="*" element={null} />
+					<Route path="/profile/" element={<Profile />}>
+						<Route path=":username" element={<ProfileTweets />} />
+						<Route path=":username/replies" element={<ProfileTweets />} />
+						<Route path=":username/likes" element={<ProfileLikes />} />
+						<Route path=":username/*" element={<ProfileTweets />} />
 					</Route>
 				</Route>
 				<Route path="/auth/" element={publicLayout}>

@@ -17,6 +17,7 @@ import { RequestWithUser } from 'src/types/RequestWithUser';
 import { CreateTweetDto } from './dto/create.dto';
 import { DeleteTweetDto } from './dto/delete.dto';
 import { LikeTweetDto } from './dto/like.dto';
+import { TweetRelationDto } from './dto/relation.dto';
 import { RetweetDto } from './dto/retweet.dto';
 import { TweetService } from './tweet.service';
 
@@ -31,6 +32,19 @@ export class TweetController {
 		return tweets.map((tweet) => new TweetEntity(tweet));
 	}
 
+	@Get('/:username/tweets')
+	@UseGuards(AuthGuard('jwt'))
+	async getTweets(@Param('username') username: string): Promise<TweetEntity[]> {
+		const tweets = await this.tweetService.listTweets(username);
+		return tweets.map((tweet) => new TweetEntity(tweet));
+	}
+
+	@Get('/:username/likes')
+	@UseGuards(AuthGuard('jwt'))
+	async getLikes(@Param('username') username: string): Promise<TweetEntity[]> {
+		const tweets = await this.tweetService.listLikes(username);
+		return tweets.map((tweet) => new TweetEntity(tweet));
+	}
 	@Get('/:id')
 	@UseGuards(AuthGuard('jwt'))
 	async getTweet(@Param('id') id: string): Promise<TweetEntity> {
