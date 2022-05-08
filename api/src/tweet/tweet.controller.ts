@@ -1,6 +1,5 @@
 import {
 	Body,
-	ClassSerializerInterceptor,
 	Controller,
 	Delete,
 	Get,
@@ -10,9 +9,6 @@ import {
 	Post,
 	Req,
 	UseGuards,
-	UseInterceptors,
-	UsePipes,
-	ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { LikeEntity } from 'src/entity/like.entity';
@@ -30,8 +26,6 @@ export class TweetController {
 
 	@Get('/feed')
 	@UseGuards(AuthGuard('jwt'))
-	@UseInterceptors(ClassSerializerInterceptor)
-	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async getFeed(): Promise<TweetEntity[]> {
 		const tweets = await this.tweetService.feed();
 		return tweets.map((tweet) => new TweetEntity(tweet));
@@ -39,8 +33,6 @@ export class TweetController {
 
 	@Get('/:id')
 	@UseGuards(AuthGuard('jwt'))
-	@UseInterceptors(ClassSerializerInterceptor)
-	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async getTweet(@Param('id') id: string): Promise<TweetEntity> {
 		const tweet = await this.tweetService.get({ id: id });
 		return new TweetEntity(tweet);
@@ -48,7 +40,6 @@ export class TweetController {
 
 	@Delete('/')
 	@UseGuards(AuthGuard('jwt'))
-	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async deleteTweet(@Body() body: DeleteTweetDto): Promise<TweetEntity> {
 		const tweet = await this.tweetService.delete(body);
 		return new TweetEntity(tweet);
@@ -56,8 +47,6 @@ export class TweetController {
 
 	@Post('/')
 	@UseGuards(AuthGuard('jwt'))
-	@UseInterceptors(ClassSerializerInterceptor)
-	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async createTweet(
 		@Body() body: CreateTweetDto,
 		@Req() req: RequestWithUser,
@@ -72,8 +61,6 @@ export class TweetController {
 
 	@Post('/like')
 	@UseGuards(AuthGuard('jwt'))
-	@UseInterceptors(ClassSerializerInterceptor)
-	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async likeTweet(
 		@Body() body: LikeTweetDto,
 		@Req() request: RequestWithUser,
@@ -89,8 +76,6 @@ export class TweetController {
 
 	@Post('/retweet')
 	@UseGuards(AuthGuard('jwt'))
-	@UseInterceptors(ClassSerializerInterceptor)
-	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async retweet(
 		@Body() body: RetweetDto,
 		@Req() request: RequestWithUser,

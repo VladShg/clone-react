@@ -7,8 +7,6 @@ import {
 	Query,
 	Request,
 	UseGuards,
-	UsePipes,
-	ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
@@ -25,7 +23,6 @@ export class AuthController {
 	constructor(private authService: AuthService) {}
 
 	@Post('/login')
-	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async loginByUsername(
 		@Body() data: LoginByCredentialsDto,
 	): Promise<TokenDto> {
@@ -39,7 +36,6 @@ export class AuthController {
 
 	@Get('/account')
 	@UseGuards(AuthGuard('jwt'))
-	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async account(@Request() req: RequestWithUser): Promise<UserEntity> {
 		const user = await this.authService.getUser({ id: req.user.id });
 		const entity = new UserEntity(user);
@@ -47,7 +43,6 @@ export class AuthController {
 	}
 
 	@Post('/signup')
-	@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 	async signUp(@Body() data: SignUpDto): Promise<TokenDto> {
 		const user = await this.authService.signUp(data);
 		const token = this.authService.generateToken(user);

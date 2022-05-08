@@ -1,15 +1,4 @@
-import {
-	Body,
-	ClassSerializerInterceptor,
-	Controller,
-	Get,
-	Param,
-	Post,
-	UseGuards,
-	UseInterceptors,
-	UsePipes,
-	ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { hashPassword } from 'src/utils/bcrypt';
@@ -22,7 +11,6 @@ export class UserController {
 	constructor(private userService: UserService) {}
 
 	@Post('/register')
-	@UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 	async register(@Body() data: CreateUserDto): Promise<User> {
 		data.password = await hashPassword(data.password);
 		const user = await this.userService.createUser(data);
@@ -30,7 +18,6 @@ export class UserController {
 	}
 
 	@Get('/:username')
-	@UseInterceptors(ClassSerializerInterceptor)
 	@UseGuards(AuthGuard('jwt'))
 	async getUser(@Param('username') username: string): Promise<UserEntity> {
 		const user = await this.userService.findOne({ username: username });
@@ -38,7 +25,6 @@ export class UserController {
 	}
 
 	@Get()
-	@UseInterceptors(ClassSerializerInterceptor)
 	@UseGuards(AuthGuard('jwt'))
 	async getUsers(): Promise<UserEntity[]> {
 		const users = await this.userService.findAll();
