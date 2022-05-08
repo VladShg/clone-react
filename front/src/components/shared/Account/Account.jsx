@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { authSelector, logout } from '../../../store/auth/authSlice'
-import styles from './Profile.module.scss'
+import styles from './Account.module.scss'
 import Avatar from '../Avatar/Avatar'
 import classNames from 'classnames'
 import { Link } from 'react-router-dom'
 
-export default function Profile() {
+export default function Account() {
 	const { user } = useSelector(authSelector)
 	const { name, username, avatar } = user || {}
 	const [menuOpen, setMenuOpen] = useState(false)

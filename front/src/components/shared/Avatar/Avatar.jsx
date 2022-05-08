@@ -9,16 +9,25 @@ Avatar.propTypes = {
 	alignBottom: PropTypes.bool,
 }
 
-export default function Avatar({ src, alignCenter, alignBottom }) {
-	const className = classNames(styles.Avatar, {
+export default function Avatar({
+	src,
+	className,
+	alignCenter,
+	alignBottom,
+	size = 40,
+}) {
+	const classes = classNames(styles.Avatar, {
 		[styles.center]: Boolean(alignCenter),
 		[styles.bottom]: Boolean(alignBottom),
+		[className]: !!className,
 	})
 
+	const style = { width: size + 'px', height: size + 'px' }
+
 	return (
-		<div className={className}>
-			{src && <img src={src} />}
-			<div className={styles.Skeleton} />
+		<div className={classes}>
+			{src && <img style={style} src={src} />}
+			<div style={style} className={styles.Skeleton} />
 		</div>
 	)
 }

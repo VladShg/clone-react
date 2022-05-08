@@ -1,12 +1,16 @@
 import React from 'react'
 import classNames from 'classnames'
 import HomeLink from '../../components/shared/HomeLink/HomeLink'
-import Profile from '../../components/shared/Profile/Profile'
 import styles from './HomeLayout.module.scss'
 import ThemedLink from '../../components/shared/ThemedLink'
 import { Outlet } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { authSelector } from '../../store/auth/authSlice'
+import Account from '../../components/shared/Account/Account'
 
 export default function HomeLayout() {
+	const { user } = useSelector(authSelector)
+
 	return (
 		<>
 			<div className={styles.layout}>
@@ -39,7 +43,10 @@ export default function HomeLayout() {
 							<i className="fa-regular fa-rectangle-list" />
 							<span>Lists</span>
 						</HomeLink>
-						<HomeLink className={styles.navigation} to="/profile">
+						<HomeLink
+							className={styles.navigation}
+							to={`/profile/${user?.username || ''}`}
+						>
 							<i className="fa-regular fa-user" />
 							<span>Profile</span>
 						</HomeLink>
@@ -51,7 +58,7 @@ export default function HomeLayout() {
 							Tweet
 						</ThemedLink>
 					</div>
-					<Profile />
+					<Account />
 				</div>
 				<div className={styles.section}>
 					<Outlet />

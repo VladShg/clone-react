@@ -1,0 +1,87 @@
+.SpinnerContainer {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.Avatar {
+	> * {
+		border: 3px solid var(--white);
+	}
+}
+
+.Spinner {
+	width: 100px;
+	height: 100px;
+}
+
+.Background {
+	height: 200px;
+	width: 100%;
+	background-color: var(--border-grey);
+}
+
+.JoinDate {
+	color: var(--secondary);
+	svg {
+		margin-right: 5px;
+	}
+}
+
+.Profile {
+	margin-top: -75px;
+	padding: 0px 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	margin-bottom: 20px;
+}
+
+.Name {
+	font-weight: bold;
+	display: block;
+}
+
+> .Username {
+	color: var(--secondary);
+	font-weight: normal;
+	display: block;
+}
+
+.Tabs {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	
+	.Tab {
+		text-align: center;
+		padding: 20px 0px;
+		color: var(--secondary);
+		text-decoration: none;
+		font-weight: bold;
+		transition: background 0.2s;
+
+		&:hover {
+			cursor: pointer;
+			background: var(--gray-fade);
+		}
+
+		&.ActiveTab {
+			color: var(--black);
+			position: relative;
+			&::after {
+				content: '';
+				position: absolute;
+				background: var(--main);
+				width: 60%;
+				height: 4px;
+				bottom: 0;
+				right: 50%;
+				border-radius: 20px;
+				transform: translateX(50%);
+			}
+		}
+	}
+
+}

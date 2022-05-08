@@ -12,6 +12,7 @@ import Login from '../pages/Login/Login'
 import Feed from '../components/main/Feed'
 import AuthRoute from './AuthRoute'
 import PublicRoute from './PublicRoute'
+import Profile from '../components/main/Profile'
 
 export default function Router() {
 	const authLayout = (
@@ -31,13 +32,15 @@ export default function Router() {
 			<Routes>
 				<Route path="/" element={authLayout}>
 					<Route path="home" element={<Feed />} />
-					<Route path="" element={<Navigate to="/home" replace />} />
+					<Route path="/profile/:username" element={<Profile />}>
+						<Route path="*" element={null} />
+					</Route>
 				</Route>
 				<Route path="/auth/" element={publicLayout}>
 					<Route path="login/github" element={<GitHubLogin />} />
 					<Route path="login" element={<Login />} />
 				</Route>
-				<Route path="*" element={<Navigate to="/home" replace />} />
+				<Route path="*" element={<Navigate to="/home" />} />
 			</Routes>
 		</BrowserRouter>
 	)
