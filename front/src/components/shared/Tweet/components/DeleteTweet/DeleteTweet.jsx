@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import React, { useRef, useState, useEffect } from 'react'
-import { useDeleteMutation } from '../../../services/tweetApi'
+import { useDeleteMutation } from '../../../../../services/tweetApi'
 import styles from './DeleteTweet.module.scss'
 
 export default function DeleteTweet({ id }) {

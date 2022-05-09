@@ -15,6 +15,7 @@ import PublicRoute from './PublicRoute'
 import Profile from '../components/main/Profile/Profile'
 import ProfileTweets from '../components/main/Profile/ProfileTweets'
 import ProfileLikes from '../components/main/Profile/ProfileLikes'
+import Status from '../components/main/Status/Status'
 
 export default function Router() {
 	const authLayout = (
@@ -34,12 +35,13 @@ export default function Router() {
 			<Routes>
 				<Route path="/" element={authLayout}>
 					<Route path="home" element={<Feed />} />
-					<Route path="/profile/" element={<Profile />}>
+					<Route path="profile" element={<Profile />}>
 						<Route path=":username" element={<ProfileTweets />} />
 						<Route path=":username/replies" element={<ProfileTweets />} />
 						<Route path=":username/likes" element={<ProfileLikes />} />
 						<Route path=":username/*" element={<ProfileTweets />} />
 					</Route>
+					<Route path="status/:username/:tweetId" element={<Status />} />
 				</Route>
 				<Route path="/auth/" element={publicLayout}>
 					<Route path="login/github" element={<GitHubLogin />} />

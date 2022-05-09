@@ -1,0 +1,70 @@
+.Container {
+	padding: 0px 15px;
+	position: relative;
+}
+
+.Head {
+	padding: 20px 0px;
+	border-bottom: 1px solid var(--border-grey);
+}
+
+.Author {
+	display: flex;
+	gap: 5px;
+
+	.Credentials {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		height: 100%;
+	}
+}
+
+.Message {
+	font-size: 23px;
+	padding: 20px 0px;
+}
+
+.CreatedAt {
+	font-size: 15px;
+	line-height: 20px;
+	padding: 10px 0px;
+	&::before {
+		display: none;
+	}
+}
+
+.Counters {
+	padding: 20px 0px;
+	border-bottom: 1px solid var(--border-grey);
+	display: flex;
+	gap: 20px;
+
+	.Label {
+		color: var(--secondary);
+		font-size: 15px;
+		line-height: 20px;
+	}
+	.Count {
+		display: inline-block;
+		margin-right: 5px;
+		color: var(--black);
+		font-weight: bold;
+		font-size: 15px;
+		line-height: 20px;
+	}
+}
+
+.Actions {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	padding: 20px 0px;
+	border-bottom: 1px solid var(--border-grey);
+
+	.Action {
+		svg {
+			font-size: 24px;
+		}
+	}
+}
