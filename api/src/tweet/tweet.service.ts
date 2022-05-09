@@ -46,37 +46,13 @@ export class TweetService {
 		userId: string,
 	): Promise<TweetRelationDto> {
 		const like = await this.prisma.like.findFirst({
-			where: {
-				OR: [
-					{ authorId: userId, tweetId: tweetId },
-					{
-						authorId: userId,
-						tweet: { isRetweet: true, tweetId: tweetId },
-					},
-				],
-			},
+			where: { authorId: userId, tweetId: tweetId },
 		});
 		const reply = await this.prisma.tweet.findFirst({
-			where: {
-				OR: [
-					{ authorId: userId, replyId: tweetId, isReply: true },
-					{
-						id: tweetId,
-						tweet: { authorId: userId, isReply: true },
-					},
-				],
-			},
+			where: { authorId: userId, replyId: tweetId, isReply: true },
 		});
 		const retweet = await this.prisma.tweet.findFirst({
-			where: {
-				OR: [
-					{ authorId: userId, tweetId: tweetId, isRetweet: true },
-					{
-						id: tweetId,
-						tweet: { authorId: userId },
-					},
-				],
-			},
+			where: { authorId: userId, tweetId: tweetId, isRetweet: true },
 		});
 		return { like: !!like, reply: !!reply, retweet: !!retweet };
 	}

@@ -15,12 +15,11 @@ import styles from './Tweet.module.scss'
 export default function Tweet({ id }) {
 	const { data: tweet, isLoading } = useGetTweetQuery(id)
 	const { data: relations, isLoading: isRelationLoading } =
-		useTweetRelationsQuery(id)
+		useTweetRelationsQuery(tweet?.isRetweet ? tweet?.tweetId : tweet?.id, {
+			skip: !tweet,
+		})
 
-	// Retweet endpoint returns empty object {} when retweet is removed
-	// Second check is for it
-	// TODO: find a better way to check this
-	if (isLoading || isRelationLoading || !tweet.id) {
+	if (isLoading || isRelationLoading || !tweet.id || !relations) {
 		return null
 	}
 
