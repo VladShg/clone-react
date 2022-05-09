@@ -13,10 +13,17 @@
 .input {
 	display: block;
 	width: 100%;
+	max-width: 100%;
 	overflow: hidden;
 	line-height: 20px;
 	word-break: break-word;
 	margin-bottom: 10px;
+
+	font-family: Manrope, serif;
+	font-size: 16px;
+	border: none;
+	outline: none;
+	resize: none;
 
 	outline: none;
 	flex-grow: 1;
@@ -26,7 +33,7 @@
 	}
 
 	&:empty::before {
-		content: "What's happening?";
+		font-size: 20px;
 		color: var(--grey);
 	}
 }
@@ -36,4 +43,8 @@
 	flex-direction: row-reverse;
 	align-items: center;
 	gap: 10px;
+}
+
+.Editor {
+	max-height: 100px;
 }

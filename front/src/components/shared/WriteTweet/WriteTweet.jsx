@@ -6,12 +6,13 @@ import Avatar from '../Avatar/Avatar'
 import Button from '../Button/Button'
 import WordCounter from '../WordCounter/WordCounter'
 import styles from './WriteTweet.module.scss'
+import TextareaAutosize from 'react-textarea-autosize'
 
 export default function WriteTweet() {
 	const { user } = useSelector(authSelector)
 	const [createTweet, { isLoading }] = useCreateMutation()
 	const [input, setInput] = useState('')
-	const maxLength = 140
+	const maxLength = 280
 
 	let isDisabled = !input || maxLength < input.length || isLoading
 
@@ -19,29 +20,32 @@ export default function WriteTweet() {
 		return null
 	}
 
-	const submitTweet = async (e) => {
-		e.preventDefault()
-		await createTweet(input)
-	}
-
 	return (
-		<form onSubmit={submitTweet} className={styles.container}>
+		<div className={styles.container}>
 			<Avatar src={user.avatar} />
 			<div className={styles.inputRow}>
-				<span
+				<TextareaAutosize
+					multiple
+					type="text"
 					className={styles.input}
-					role="textbox"
-					contentEditable
-					onInput={(e) => setInput(e.target.textContent)}
+					placeholder="What's happening?"
+					onChange={(e) => setInput(e.target.value)}
 					value={input}
-				></span>
+				/>
 				<div className={styles.mediaRow}>
-					<Button type="submit" disabled={isDisabled}>
+					<Button
+						onClick={async (e) => {
+							e.preventDefault()
+							await createTweet(input)
+							setInput('')
+						}}
+						disabled={isDisabled}
+					>
 						Tweet
 					</Button>
 					{input.length > 0 && <WordCounter text={input} />}
 				</div>
 			</div>
-		</form>
+		</div>
 	)
 }

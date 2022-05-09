@@ -10,9 +10,9 @@ Button.propTypes = {
 	disabled: PropTypes.bool.isRequired,
 }
 
-export default function Button({ children, disabled = false }) {
+export default function Button({ children, disabled = false, ...props }) {
 	return (
-		<button className={styles.button} disabled={disabled}>
+		<button className={styles.button} disabled={disabled} {...props}>
 			{children}
 		</button>
 	)

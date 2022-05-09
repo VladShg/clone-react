@@ -2,8 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './WordCounter.module.scss'
 
-export default function WordCounter({ text, size = 30 }) {
-	const maxLength = 140
+export default function WordCounter({ text, size = 30, maxLength=140 }) {
 	const warningTreshold = 20
 	let percentage = Math.round((text.length * 100) / maxLength)
 	if (percentage > 100) {
