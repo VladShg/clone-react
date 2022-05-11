@@ -36,11 +36,10 @@ export default function Router() {
 			<Routes>
 				<Route path="/" element={authLayout}>
 					<Route path="home" element={<Feed />} />
-					<Route path="profile" element={<Profile />}>
-						<Route path=":username" element={<ProfileTweets />} />
-						<Route path=":username/replies" element={<ProfileReplies />} />
-						<Route path=":username/likes" element={<ProfileLikes />} />
-						<Route path=":username/*" element={<ProfileTweets />} />
+					<Route path="profile/:username" element={<Profile />}>
+						<Route path="replies" element={<ProfileReplies />} />
+						<Route path="likes" element={<ProfileLikes />} />
+						<Route path="" element={<ProfileTweets />} />
 					</Route>
 					<Route path="status/:username/:tweetId" element={<Status />} />
 				</Route>
