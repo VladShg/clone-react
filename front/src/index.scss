@@ -12,15 +12,13 @@ header.header {
 	height: 10vh;
 }
 
-body {
-	padding-left: calc(100vw - 100%)
-}
-
 #root,
 body,
 html {
+	max-width: 99vw;
 	height: 100%;
 }
+
 
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
