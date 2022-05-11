@@ -69,6 +69,15 @@
 	grid-template-columns: repeat(4, 1fr);
 }
 
+.UserLink {
+	z-index: 3;
+	text-decoration: none;
+	color: var(--main);
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
 @mixin Social($color-hover, $bg-hover) {
 	display: flex;
 	justify-content: flex-start;
