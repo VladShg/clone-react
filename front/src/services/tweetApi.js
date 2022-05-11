@@ -33,7 +33,7 @@ export const tweetApi = createApi({
 			providesTags: (result) => {
 				let tags = [{ type: 'Tweet', id: result.id }]
 				if (result.isRetweet) {
-					tags = tags.concat([{ type: 'List', id: result.tweet.id }])
+					tags.push({ type: 'Tweet', id: result.tweet.id })
 				}
 				return tags
 			},
@@ -41,7 +41,8 @@ export const tweetApi = createApi({
 		getReplies: builder.query({
 			query: (tweetId) => {
 				return {
-					url: `/replies` + new URLSearchParams({ tweetId }),
+					params: new URLSearchParams({ tweetId }),
+					url: `/replies`,
 					method: 'GET',
 				}
 			},
@@ -53,7 +54,8 @@ export const tweetApi = createApi({
 		userTweets: builder.query({
 			query: (username) => {
 				return {
-					url: `/tweets` + new URLSearchParams({ username }),
+					params: new URLSearchParams({ username }),
+					url: `/tweets`,
 					method: 'GET',
 				}
 			},
@@ -63,7 +65,8 @@ export const tweetApi = createApi({
 		userLikes: builder.query({
 			query: (username) => {
 				return {
-					url: `/likes` + new URLSearchParams({ username }),
+					params: new URLSearchParams({ username }),
+					url: `/likes`,
 					method: 'GET',
 				}
 			},
@@ -73,7 +76,8 @@ export const tweetApi = createApi({
 		userReplies: builder.query({
 			query: (username) => {
 				return {
-					url: `/replies` + new URLSearchParams({ username }),
+					params: new URLSearchParams({ username }),
+					url: `/replies`,
 					method: 'GET',
 				}
 			},

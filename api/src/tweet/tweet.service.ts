@@ -118,19 +118,17 @@ export class TweetService {
 		return await this.prisma.tweet.delete({ where: where });
 	}
 
-	async like(
-		author: Prisma.UserWhereUniqueInput,
-		tweet: Prisma.TweetWhereUniqueInput,
-	): Promise<Like | null> {
+	async like(username: string, tweetId: string): Promise<Like | null> {
+		const author = await this.prisma.user.findUnique({ where: { username } });
 		const like = await this.prisma.like.findFirst({
-			where: { author: author, tweet: tweet },
+			where: { author: { id: author.id }, tweetId: tweetId },
 		});
 		if (like) {
 			await this.prisma.like.delete({ where: { id: like.id } });
 			return null;
 		} else {
 			return await this.prisma.like.create({
-				data: { authorId: author.id, tweetId: tweet.id },
+				data: { authorId: author.id, tweetId: tweetId },
 			});
 		}
 	}

@@ -79,13 +79,6 @@ export class TweetController {
 		return await this.tweetService.getRelations(tweetId, request.user.id);
 	}
 
-	@Get('/:tweetId/replies')
-	@UseGuards(AuthGuard('jwt'))
-	async getReplies(@Param('tweetId') tweetId: string): Promise<TweetEntity[]> {
-		const tweets = await this.tweetService.getReplies(tweetId);
-		return tweets.map((tweet) => new TweetEntity(tweet));
-	}
-
 	@Get('/:id')
 	@UseGuards(AuthGuard('jwt'))
 	async getTweet(@Param('id') id: string): Promise<TweetEntity> {
@@ -122,8 +115,7 @@ export class TweetController {
 		@Body() body: LikeTweetDto,
 		@Req() request: RequestWithUser,
 	): Promise<LikeEntity> {
-		const userId: string = request.user.id;
-		const like = await this.tweetService.like({ id: userId }, body);
+		const like = await this.tweetService.like(request.user.username, body.id);
 		if (!like) {
 			throw new HttpException({}, HttpStatus.NO_CONTENT);
 		} else {

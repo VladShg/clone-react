@@ -12,8 +12,6 @@ export default function ProfileTweets() {
 	const { data: tweets, isLoading } = useUserTweetsQuery(username)
 	const { user } = useSelector(authSelector)
 
-	console.log(twets)
-
 	if (isLoading || !user) {
 		return (
 			<div className={styles.container}>
