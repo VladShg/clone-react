@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useGetRepliesQuery } from '../../../services/tweetApi'
 import TitleTweet from '../../shared/Tweet/TitleTweet'
 import WriteTweet from '../../shared/WriteTweet/WriteTweet'
+import NavBar from '../../shared/NavBar/NavBar'
 import Replies from './Replies'
 import styles from './Status.module.scss'
 
@@ -12,16 +13,7 @@ export default function Status() {
 
 	return (
 		<div className={styles.Container}>
-			<div className={styles.NavBar}>
-				<div className={styles.Wrapper}>
-					<div className={styles.Background} />
-
-					<div className={styles.Content}>
-						<i className="fa-solid fa-arrow-left"></i>
-						Tweet
-					</div>
-				</div>
-			</div>
+			<NavBar title="Tweet" navigateBack />
 			<TitleTweet id={tweetId} key={tweetId} />
 			<WriteTweet replyId={tweetId} placeholder="Write your reply" />
 			<Replies replies={replies} isLoading={isLoading} />

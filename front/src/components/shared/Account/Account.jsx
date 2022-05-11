@@ -49,7 +49,7 @@ export default function Account() {
 						<Username username={username} />
 					</Descryption>
 				</Container>
-				<Link className={styles.Item} to="/profile">
+				<Link className={styles.Item} to={`/profile/${user.username}`}>
 					Edit profile
 				</Link>
 				<button className={styles.Item} onClick={() => dispatch(logout())}>

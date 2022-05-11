@@ -5,9 +5,12 @@ import styles from './Profile.module.scss'
 import Spinner from '../../shared/Spinner/Spinner'
 import Avatar from '../../shared/Avatar/Avatar'
 import classNames from 'classnames'
+import { useSelector } from 'react-redux'
+import { authSelector } from '../../../store/auth/authSlice'
 
 export default function Profile() {
-	const username = useParams().username
+	const { user } = useSelector(authSelector)
+	const username = useParams().username || user?.username
 	const { data: profile, isLoading } = useGetUserQuery(username)
 
 	if (isLoading || !profile) {

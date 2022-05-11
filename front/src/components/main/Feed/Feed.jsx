@@ -1,12 +1,12 @@
 import React from 'react'
 import styles from './Feed.module.scss'
-import Header from '../../shared/Header/Header'
 import WriteTweet from '../../shared/WriteTweet/WriteTweet'
 import { useGetFeedQuery } from '../../../services/tweetApi'
 import Tweet from '../../shared/Tweet/Tweet'
 import { useSelector } from 'react-redux'
 import { authSelector } from '../../../store/auth/authSlice'
 import Spinner from '../../shared/Spinner/Spinner'
+import NavBar from '../../shared/NavBar/NavBar'
 
 export default function Feed() {
 	const { data: tweets, isLoading } = useGetFeedQuery()
@@ -24,10 +24,7 @@ export default function Feed() {
 
 	return (
 		<div className={styles.container}>
-			<Header>
-				<span>Home</span>
-				<i className="fa-solid fa-wand-magic-sparkles" />
-			</Header>
+			<NavBar title="Home" />
 			<WriteTweet />
 			{!isLoading &&
 				user &&
