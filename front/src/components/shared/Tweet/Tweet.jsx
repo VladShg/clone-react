@@ -55,8 +55,7 @@ function ReplyBadge({ tweet }) {
 	const username = tweet.author.username
 	return (
 		<div className={styles.RetweetBadge}>
-			<i className="fa-solid fa-retweet"></i>
-			Replying to{' '}
+			Replying to
 			<Link className={styles.UserLink} to={`/profile/${username}`}>
 				@{username}
 			</Link>
