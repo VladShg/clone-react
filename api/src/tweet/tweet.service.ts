@@ -8,27 +8,31 @@ import { TweetRelationDto } from './dto/relation.dto';
 export class TweetService {
 	constructor(private prisma: PrismaService) {}
 
+	tweetIncludes(): Prisma.TweetInclude {
+		return {
+			author: true,
+			replyTo: {
+				include: {
+					author: true,
+					_count: { select: { likes: true, replies: true, retweets: true } },
+				},
+			},
+			tweet: {
+				include: {
+					author: true,
+					_count: { select: { likes: true, replies: true, retweets: true } },
+				},
+			},
+			_count: { select: { likes: true, replies: true, retweets: true } },
+		};
+	}
+
 	async feed(): Promise<Tweet[]> {
 		const tweets = await this.prisma.tweet.findMany({
 			take: 20,
 			where: { isReply: false },
 			orderBy: { createdAt: 'desc' },
-			include: {
-				author: true,
-				replyTo: {
-					include: {
-						author: true,
-						_count: { select: { likes: true, replies: true, retweets: true } },
-					},
-				},
-				tweet: {
-					include: {
-						author: true,
-						_count: { select: { likes: true, replies: true, retweets: true } },
-					},
-				},
-				_count: { select: { likes: true, replies: true, retweets: true } },
-			},
+			include: this.tweetIncludes(),
 		});
 		return tweets;
 	}
@@ -37,34 +41,7 @@ export class TweetService {
 		const tweets = await this.prisma.tweet.findMany({
 			orderBy: { createdAt: 'desc' },
 			where: { isReply: true, ...where },
-			include: {
-				author: true,
-				replyTo: {
-					include: {
-						author: true,
-						_count: { select: { likes: true, replies: true, retweets: true } },
-					},
-				},
-				tweet: {
-					include: {
-						author: true,
-						_count: { select: { likes: true, replies: true, retweets: true } },
-					},
-				},
-				_count: { select: { likes: true, replies: true, retweets: true } },
-			},
-		});
-		return tweets;
-	}
-
-	async getReplies(tweetId: string): Promise<Tweet[]> {
-		const tweets = await this.prisma.tweet.findMany({
-			orderBy: { createdAt: 'desc' },
-			where: { isReply: true, replyId: tweetId },
-			include: {
-				author: true,
-				_count: { select: { likes: true, replies: true, retweets: true } },
-			},
+			include: this.tweetIncludes(),
 		});
 		return tweets;
 	}
@@ -72,22 +49,7 @@ export class TweetService {
 	async get(where: Prisma.TweetWhereUniqueInput): Promise<Tweet> {
 		return await this.prisma.tweet.findUnique({
 			where: where,
-			include: {
-				author: true,
-				replyTo: {
-					include: {
-						author: true,
-						_count: { select: { likes: true, replies: true, retweets: true } },
-					},
-				},
-				tweet: {
-					include: {
-						author: true,
-						_count: { select: { likes: true, replies: true, retweets: true } },
-					},
-				},
-				_count: { select: { likes: true, replies: true, retweets: true } },
-			},
+			include: this.tweetIncludes(),
 		});
 	}
 
@@ -111,22 +73,7 @@ export class TweetService {
 		const tweets = await this.prisma.tweet.findMany({
 			where: { author: { username }, isReply: false },
 			orderBy: { createdAt: 'desc' },
-			include: {
-				author: true,
-				replyTo: {
-					include: {
-						author: true,
-						_count: { select: { likes: true, replies: true, retweets: true } },
-					},
-				},
-				tweet: {
-					include: {
-						author: true,
-						_count: { select: { likes: true, replies: true, retweets: true } },
-					},
-				},
-				_count: { select: { likes: true, replies: true, retweets: true } },
-			},
+			include: this.tweetIncludes(),
 		});
 		return tweets;
 	}
@@ -153,11 +100,7 @@ export class TweetService {
 				author: { connect: { id: authorId } },
 				replyTo: { connect: { id: data.replyId } },
 			},
-			include: {
-				author: true,
-				tweet: true,
-				_count: { select: { likes: true, replies: true, retweets: true } },
-			},
+			include: this.tweetIncludes(),
 		});
 	}
 
@@ -167,11 +110,7 @@ export class TweetService {
 				message: data.message,
 				author: { connect: { id: authorId } },
 			},
-			include: {
-				author: true,
-				tweet: true,
-				_count: { select: { likes: true, replies: true, retweets: true } },
-			},
+			include: this.tweetIncludes(),
 		});
 	}
 
@@ -196,10 +135,7 @@ export class TweetService {
 		}
 	}
 
-	async retweet(
-		authorId: string,
-		tweetId: string,
-	): Promise<Tweet & { tweet: Tweet }> {
+	async retweet(authorId: string, tweetId: string): Promise<Tweet> {
 		const retweet = await this.prisma.tweet.findFirst({
 			where: { authorId: authorId, isRetweet: true, tweetId: tweetId },
 		});
@@ -209,17 +145,7 @@ export class TweetService {
 		} else {
 			const retweet = await this.prisma.tweet.create({
 				data: { authorId: authorId, tweetId: tweetId, isRetweet: true },
-				include: {
-					author: true,
-					tweet: {
-						include: {
-							author: true,
-							_count: {
-								select: { likes: true, replies: true, retweets: true },
-							},
-						},
-					},
-				},
+				include: this.tweetIncludes(),
 			});
 			return retweet;
 		}
