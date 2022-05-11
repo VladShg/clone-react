@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Like, Prisma, Tweet } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateTweetDto } from './dto/create.dto';
 import { TweetRelationDto } from './dto/relation.dto';
 
 @Injectable()
@@ -19,6 +20,18 @@ export class TweetService {
 						_count: { select: { likes: true, replies: true, retweets: true } },
 					},
 				},
+				_count: { select: { likes: true, replies: true, retweets: true } },
+			},
+		});
+		return tweets;
+	}
+
+	async getReplies(tweetId: string): Promise<Tweet[]> {
+		const tweets = await this.prisma.tweet.findMany({
+			orderBy: { createdAt: 'desc' },
+			where: { isReply: true, replyId: tweetId },
+			include: {
+				author: true,
 				_count: { select: { likes: true, replies: true, retweets: true } },
 			},
 		});
@@ -59,7 +72,7 @@ export class TweetService {
 
 	async listTweets(username: string): Promise<Tweet[]> {
 		const tweets = await this.prisma.tweet.findMany({
-			where: { author: { username } },
+			where: { author: { username }, isReply: false },
 			orderBy: { createdAt: 'desc' },
 			include: {
 				author: true,
@@ -89,9 +102,28 @@ export class TweetService {
 		});
 	}
 
-	async create(data: Prisma.TweetCreateInput): Promise<Tweet> {
+	async createReply(data: CreateTweetDto, authorId: string): Promise<Tweet> {
 		return await this.prisma.tweet.create({
-			data,
+			data: {
+				message: data.message,
+				isReply: true,
+				author: { connect: { id: authorId } },
+				replyTo: { connect: { id: data.replyId } },
+			},
+			include: {
+				author: true,
+				tweet: true,
+				_count: { select: { likes: true, replies: true, retweets: true } },
+			},
+		});
+	}
+
+	async create(data: CreateTweetDto, authorId: string): Promise<Tweet> {
+		return await this.prisma.tweet.create({
+			data: {
+				message: data.message,
+				author: { connect: { id: authorId } },
+			},
 			include: {
 				author: true,
 				tweet: true,

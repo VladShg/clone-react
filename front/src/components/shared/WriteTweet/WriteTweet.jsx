@@ -8,7 +8,10 @@ import WordCounter from '../WordCounter/WordCounter'
 import styles from './WriteTweet.module.scss'
 import TextareaAutosize from 'react-textarea-autosize'
 
-export default function WriteTweet() {
+export default function WriteTweet({
+	placeholder = "What's happening",
+	replyId = null,
+}) {
 	const { user } = useSelector(authSelector)
 	const [createTweet, { isLoading }] = useCreateMutation()
 	const [input, setInput] = useState('')
@@ -28,7 +31,7 @@ export default function WriteTweet() {
 					multiple
 					type="text"
 					className={styles.input}
-					placeholder="What's happening?"
+					placeholder={placeholder}
 					onChange={(e) => setInput(e.target.value)}
 					value={input}
 				/>
@@ -36,7 +39,7 @@ export default function WriteTweet() {
 					<Button
 						onClick={async (e) => {
 							e.preventDefault()
-							await createTweet(input)
+							await createTweet({ message: input, replyId })
 							setInput('')
 						}}
 						disabled={isDisabled}
