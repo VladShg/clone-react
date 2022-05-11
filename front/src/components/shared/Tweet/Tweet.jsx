@@ -32,25 +32,32 @@ export default function Tweet({ id }) {
 	}
 
 	let tweet = data
-	let isRetweet = data.isRetweet
-	if (isRetweet) {
+	if (data.isRetweet) {
 		tweet = data.tweet
 	}
 
+	console.log(tweet)
+
 	return (
 		<div className={styles.Container}>
-			{isRetweet && <RetweetBadge author={tweet.author} />}
+			{data.isRetweet && <RetweetBadge author={tweet.author} />}
+			{data.isReply && <ReplyBadge tweet={tweet.replyTo} />}
 			<Link
 				className={styles.Link}
 				to={`/status/${tweet.author.username}/${tweet.id}`}
 			/>
 			<div className={styles.Tweet}>
-				<Body
-					tweet={tweet}
-					relations={relations}
-					badge={<RetweetBadge author={tweet.author} />}
-				/>
+				<Body tweet={tweet} relations={relations} />
 			</div>
+		</div>
+	)
+}
+
+function ReplyBadge({ tweet }) {
+	return (
+		<div className={styles.RetweetBadge}>
+			<i className="fa-solid fa-retweet"></i>
+			Replying to @{tweet.author.username}
 		</div>
 	)
 }

@@ -11,6 +11,7 @@ import {
 	UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Tweet } from '@prisma/client';
 import { LikeEntity } from 'src/entity/like.entity';
 import { TweetEntity } from 'src/entity/tweet.entity';
 import { RequestWithUser } from 'src/types/RequestWithUser';
@@ -55,6 +56,13 @@ export class TweetController {
 		return await this.tweetService.getRelations(tweetId, request.user.id);
 	}
 
+	@Get('/:tweetId/replies')
+	@UseGuards(AuthGuard('jwt'))
+	async getReplies(@Param('tweetId') tweetId: string): Promise<TweetEntity[]> {
+		const tweets = await this.tweetService.getReplies(tweetId);
+		return tweets.map((tweet) => new TweetEntity(tweet));
+	}
+
 	@Get('/:id')
 	@UseGuards(AuthGuard('jwt'))
 	async getTweet(@Param('id') id: string): Promise<TweetEntity> {
@@ -76,10 +84,12 @@ export class TweetController {
 		@Req() req: RequestWithUser,
 	): Promise<TweetEntity> {
 		const userId: string = req.user.id;
-		const tweet = await this.tweetService.create({
-			...body,
-			author: { connect: { id: userId } },
-		});
+		let tweet: Tweet;
+		if (body.replyId) {
+			tweet = await this.tweetService.createReply(body, userId);
+		} else {
+			tweet = await this.tweetService.create(body, userId);
+		}
 		return new TweetEntity(tweet);
 	}
 
