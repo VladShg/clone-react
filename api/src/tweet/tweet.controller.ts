@@ -7,6 +7,7 @@ import {
 	HttpStatus,
 	Param,
 	Post,
+	Query,
 	Req,
 	UseGuards,
 } from '@nestjs/common';
@@ -33,17 +34,39 @@ export class TweetController {
 		return tweets.map((tweet) => new TweetEntity(tweet));
 	}
 
-	@Get('/:username/tweets')
+	@Get('/tweets')
 	@UseGuards(AuthGuard('jwt'))
-	async getTweets(@Param('username') username: string): Promise<TweetEntity[]> {
-		const tweets = await this.tweetService.listTweets(username);
+	async getTweets(
+		@Query('username') username: string | null,
+	): Promise<TweetEntity[]> {
+		let tweets: Tweet[];
+		if (username) {
+			tweets = await this.tweetService.listTweets(username);
+		}
 		return tweets.map((tweet) => new TweetEntity(tweet));
 	}
 
-	@Get('/:username/likes')
+	@Get('/likes')
 	@UseGuards(AuthGuard('jwt'))
-	async getLikes(@Param('username') username: string): Promise<TweetEntity[]> {
+	async getLikes(
+		@Query('username') username: string | null,
+	): Promise<TweetEntity[]> {
 		const tweets = await this.tweetService.listLikes(username);
+		return tweets.map((tweet) => new TweetEntity(tweet));
+	}
+
+	@Get('/replies')
+	@UseGuards(AuthGuard('jwt'))
+	async getReplies(
+		@Query('username') username: string | null,
+		@Query('tweetId') tweetId: string | null,
+	): Promise<TweetEntity[]> {
+		let tweets: Tweet[];
+		if (username) {
+			tweets = await this.tweetService.getReplies({ author: { username } });
+		} else {
+			tweets = await this.tweetService.getReplies({ replyId: tweetId });
+		}
 		return tweets.map((tweet) => new TweetEntity(tweet));
 	}
 
@@ -54,13 +77,6 @@ export class TweetController {
 		@Req() request: RequestWithUser,
 	): Promise<TweetRelationDto> {
 		return await this.tweetService.getRelations(tweetId, request.user.id);
-	}
-
-	@Get('/:tweetId/replies')
-	@UseGuards(AuthGuard('jwt'))
-	async getReplies(@Param('tweetId') tweetId: string): Promise<TweetEntity[]> {
-		const tweets = await this.tweetService.getReplies(tweetId);
-		return tweets.map((tweet) => new TweetEntity(tweet));
 	}
 
 	@Get('/:id')

@@ -33,10 +33,10 @@ export class TweetService {
 		return tweets;
 	}
 
-	async getReplies(tweetId: string): Promise<Tweet[]> {
+	async getReplies(where: Prisma.TweetWhereInput): Promise<Tweet[]> {
 		const tweets = await this.prisma.tweet.findMany({
 			orderBy: { createdAt: 'desc' },
-			where: { isReply: true, replyId: tweetId },
+			where: { isReply: true, ...where },
 			include: {
 				author: true,
 				replyTo: {

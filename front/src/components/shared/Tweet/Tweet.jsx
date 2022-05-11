@@ -36,8 +36,6 @@ export default function Tweet({ id }) {
 		tweet = data.tweet
 	}
 
-	console.log(tweet)
-
 	return (
 		<div className={styles.Container}>
 			{data.isRetweet && <RetweetBadge author={tweet.author} />}
