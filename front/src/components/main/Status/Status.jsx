@@ -3,11 +3,12 @@ import { useParams } from 'react-router-dom'
 import { useGetRepliesQuery } from '../../../services/tweetApi'
 import TitleTweet from '../../shared/Tweet/TitleTweet'
 import WriteTweet from '../../shared/WriteTweet/WriteTweet'
+import Replies from './Replies'
 import styles from './Status.module.scss'
 
 export default function Status() {
 	const { tweetId } = useParams()
-	const { data: replies, isLoading } = useGetRepliesQuery(tweetId);
+	const { data: replies, isLoading } = useGetRepliesQuery(tweetId)
 
 	return (
 		<div className={styles.Container}>
@@ -23,6 +24,7 @@ export default function Status() {
 			</div>
 			<TitleTweet id={tweetId} key={tweetId} />
 			<WriteTweet replyId={tweetId} placeholder="Write your reply" />
+			<Replies replies={replies} isLoading={isLoading} />
 		</div>
 	)
 }

@@ -11,9 +11,40 @@ export class TweetService {
 	async feed(): Promise<Tweet[]> {
 		const tweets = await this.prisma.tweet.findMany({
 			take: 20,
+			where: { isReply: false },
 			orderBy: { createdAt: 'desc' },
 			include: {
 				author: true,
+				replyTo: {
+					include: {
+						author: true,
+						_count: { select: { likes: true, replies: true, retweets: true } },
+					},
+				},
+				tweet: {
+					include: {
+						author: true,
+						_count: { select: { likes: true, replies: true, retweets: true } },
+					},
+				},
+				_count: { select: { likes: true, replies: true, retweets: true } },
+			},
+		});
+		return tweets;
+	}
+
+	async getReplies(where: Prisma.TweetWhereInput): Promise<Tweet[]> {
+		const tweets = await this.prisma.tweet.findMany({
+			orderBy: { createdAt: 'desc' },
+			where: { isReply: true, ...where },
+			include: {
+				author: true,
+				replyTo: {
+					include: {
+						author: true,
+						_count: { select: { likes: true, replies: true, retweets: true } },
+					},
+				},
 				tweet: {
 					include: {
 						author: true,
@@ -43,6 +74,12 @@ export class TweetService {
 			where: where,
 			include: {
 				author: true,
+				replyTo: {
+					include: {
+						author: true,
+						_count: { select: { likes: true, replies: true, retweets: true } },
+					},
+				},
 				tweet: {
 					include: {
 						author: true,
@@ -76,6 +113,12 @@ export class TweetService {
 			orderBy: { createdAt: 'desc' },
 			include: {
 				author: true,
+				replyTo: {
+					include: {
+						author: true,
+						_count: { select: { likes: true, replies: true, retweets: true } },
+					},
+				},
 				tweet: {
 					include: {
 						author: true,

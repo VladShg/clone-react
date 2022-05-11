@@ -40,15 +40,20 @@ export const tweetApi = createApi({
 		}),
 		getReplies: builder.query({
 			query: (tweetId) => {
-				return { url: `/${tweetId}/replies`, method: 'GET' }
+				return {
+					url: `/replies` + new URLSearchParams({ tweetId }),
+					method: 'GET',
+				}
 			},
 			transformResponse: (res) => res.map((tweet) => tweet.id),
-			providesTags: (res, error, arg) => [{ type: 'Reply', id: arg }],
+			providesTags: (res, error, arg) => {
+				return [{ type: 'Reply', id: arg }]
+			},
 		}),
 		userTweets: builder.query({
 			query: (username) => {
 				return {
-					url: `/${username}/tweets`,
+					url: `/tweets` + new URLSearchParams({ username }),
 					method: 'GET',
 				}
 			},
@@ -58,12 +63,24 @@ export const tweetApi = createApi({
 		userLikes: builder.query({
 			query: (username) => {
 				return {
-					url: `/${username}/likes`,
+					url: `/likes` + new URLSearchParams({ username }),
 					method: 'GET',
 				}
 			},
 			transformResponse: (data) => data.map((item) => item.tweet.id),
-			providesTags: [{ type: 'Tweet', id: 'List' }],
+			providesTags: [{ type: 'Like', id: 'List' }],
+		}),
+		userReplies: builder.query({
+			query: (username) => {
+				return {
+					url: `/replies` + new URLSearchParams({ username }),
+					method: 'GET',
+				}
+			},
+			transformResponse: (data) => {
+				return data.map((item) => item.id)
+			},
+			providesTags: [{ type: 'Reply', id: 'List' }],
 		}),
 		delete: builder.mutation({
 			query: (id) => {
@@ -73,7 +90,15 @@ export const tweetApi = createApi({
 					body: { id },
 				}
 			},
-			invalidatesTags: [{ type: 'Tweet', id: 'List' }],
+			invalidatesTags: (res) => {
+				let tags = [{ type: 'Tweet', id: 'List' }]
+				if (res.isReply) {
+					tags.push({ type: 'Reply', id: 'List' })
+					tags.push({ type: 'Reply', id: res.replyId })
+					tags.push({ type: 'Tweet', id: res.replyId })
+				}
+				return tags
+			},
 		}),
 		create: builder.mutation({
 			query: (body) => {
@@ -102,7 +127,10 @@ export const tweetApi = createApi({
 					body: { id },
 				}
 			},
-			invalidatesTags: (result, error, arg) => [{ type: 'Tweet', id: arg }],
+			invalidatesTags: (result, error, arg) => [
+				{ type: 'Tweet', id: arg },
+				{ type: 'Like', id: 'List' },
+			],
 		}),
 		tweetRelations: builder.query({
 			query: (id) => {
@@ -137,6 +165,7 @@ export const tweetApi = createApi({
 
 export const {
 	useTweetRelationsQuery,
+	useUserRepliesQuery,
 	useUserLikesQuery,
 	useUserTweetsQuery,
 	useGetFeedQuery,

@@ -16,6 +16,7 @@ import Profile from '../components/main/Profile/Profile'
 import ProfileTweets from '../components/main/Profile/ProfileTweets'
 import ProfileLikes from '../components/main/Profile/ProfileLikes'
 import Status from '../components/main/Status/Status'
+import ProfileReplies from '../components/main/Profile/ProfileReplies'
 
 export default function Router() {
 	const authLayout = (
@@ -37,7 +38,7 @@ export default function Router() {
 					<Route path="home" element={<Feed />} />
 					<Route path="profile" element={<Profile />}>
 						<Route path=":username" element={<ProfileTweets />} />
-						<Route path=":username/replies" element={<ProfileTweets />} />
+						<Route path=":username/replies" element={<ProfileReplies />} />
 						<Route path=":username/likes" element={<ProfileLikes />} />
 						<Route path=":username/*" element={<ProfileTweets />} />
 					</Route>
