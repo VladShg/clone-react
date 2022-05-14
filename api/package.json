@@ -14,7 +14,7 @@
 		"start:debug": "nest start --debug --watch",
 		"start:prod": "node dist/main",
 		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-		"test": "jest",
+		"test": "dotenv -e .env.test npx prisma migrate deploy && jest",
 		"test:watch": "jest --watch",
 		"test:cov": "jest --coverage",
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -41,6 +41,7 @@
 		"rxjs": "^7.2.0"
 	},
 	"devDependencies": {
+		"@faker-js/faker": "^6.3.1",
 		"@nestjs/cli": "^8.0.0",
 		"@nestjs/schematics": "^8.0.0",
 		"@nestjs/testing": "^8.0.0",
@@ -56,6 +57,7 @@
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^4.0.0",
 		"jest": "^27.2.5",
+		"jest-mock-extended": "^2.0.6",
 		"prettier": "^2.3.2",
 		"prisma": "^3.12.0",
 		"source-map-support": "^0.5.20",
