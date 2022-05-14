@@ -13,9 +13,9 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Tweet } from '@prisma/client';
-import { LikeEntity } from 'src/entity/like.entity';
-import { TweetEntity } from 'src/entity/tweet.entity';
-import { RequestWithUser } from 'src/types/RequestWithUser';
+import { LikeEntity } from '../entity/like.entity';
+import { TweetEntity } from '../entity/tweet.entity';
+import { RequestWithUser } from '../types/RequestWithUser';
 import { CreateTweetDto } from './dto/create.dto';
 import { DeleteTweetDto } from './dto/delete.dto';
 import { LikeTweetDto } from './dto/like.dto';

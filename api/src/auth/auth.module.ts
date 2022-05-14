@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { AuthController } from './controller/auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.straregy';
 import { GoogleController } from './controller/google.controller';
 import { GitHubController } from './controller/github.controller';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
 	controllers: [AuthController, GoogleController, GitHubController],

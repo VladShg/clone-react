@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
-import { hashPassword } from 'src/utils/bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from '../entity/user.entity';
 import { UserService } from './user.service';
+import { hashPassword } from '../utils/bcrypt';
 
 @Controller('user')
 export class UserController {

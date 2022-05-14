@@ -6,13 +6,13 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { hashPassword, validatePassword } from 'src/utils/bcrypt';
 import { google } from 'googleapis';
 import { Octokit } from '@octokit/core';
 import { createOAuthUserAuth } from '@octokit/auth-oauth-user';
 import { GitHubProfileDto } from './dto/github-profile.dto';
 import { GitHubUser } from './interfaces/github-user.interface';
+import { hashPassword, validatePassword } from '../utils/bcrypt';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuthService {

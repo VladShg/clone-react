@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
-import { UserEntity } from 'src/entity/user.entity';
-import { RequestWithUser } from 'src/types/RequestWithUser';
+import { UserEntity } from '../../entity/user.entity';
+import { RequestWithUser } from '../../types/RequestWithUser';
 import { AuthService } from '../auth.service';
 import { IsAvailableDto } from '../dto/is-available.dto';
 import { LoginByCredentialsDto } from '../dto/login-credentials.dto';
