@@ -20,6 +20,7 @@ import { CreateTweetDto } from './dto/create.dto';
 import { DeleteTweetDto } from './dto/delete.dto';
 import { LikeTweetDto } from './dto/like.dto';
 import { TweetRelationDto } from './dto/relation.dto';
+import { ReplyDto } from './dto/reply.dto';
 import { RetweetDto } from './dto/retweet.dto';
 import { TweetService } from './tweet.service';
 
@@ -82,7 +83,7 @@ export class TweetController {
 	@Get('/:id')
 	@UseGuards(AuthGuard('jwt'))
 	async getTweet(@Param('id') id: string): Promise<TweetEntity> {
-		const tweet = await this.tweetService.get({ id: id });
+		const tweet = await this.tweetService.get(id);
 		return new TweetEntity(tweet);
 	}
 
@@ -99,13 +100,17 @@ export class TweetController {
 		@Body() body: CreateTweetDto,
 		@Req() req: RequestWithUser,
 	): Promise<TweetEntity> {
-		const userId: string = req.user.id;
-		let tweet: Tweet;
-		if (body.replyId) {
-			tweet = await this.tweetService.createReply(body, userId);
-		} else {
-			tweet = await this.tweetService.create(body, userId);
-		}
+		const tweet = await this.tweetService.create(body, req.user.id);
+		return new TweetEntity(tweet);
+	}
+
+	@Post('/reply')
+	@UseGuards(AuthGuard('jwt'))
+	async reply(
+		@Body() body: ReplyDto,
+		@Req() req: RequestWithUser,
+	): Promise<TweetEntity> {
+		const tweet = await this.tweetService.reply(body, req.user.id);
 		return new TweetEntity(tweet);
 	}
 
@@ -113,9 +118,9 @@ export class TweetController {
 	@UseGuards(AuthGuard('jwt'))
 	async likeTweet(
 		@Body() body: LikeTweetDto,
-		@Req() request: RequestWithUser,
+		@Req() req: RequestWithUser,
 	): Promise<LikeEntity> {
-		const like = await this.tweetService.like(request.user.username, body.id);
+		const like = await this.tweetService.like(req.user.id, body.id);
 		if (!like) {
 			throw new HttpException({}, HttpStatus.NO_CONTENT);
 		} else {

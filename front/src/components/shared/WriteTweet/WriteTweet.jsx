@@ -10,10 +10,11 @@ import TextareaAutosize from 'react-textarea-autosize'
 
 export default function WriteTweet({
 	placeholder = "What's happening",
+	useWrite = useCreateMutation,
 	replyId = null,
 }) {
 	const { user } = useSelector(authSelector)
-	const [createTweet, { isLoading }] = useCreateMutation()
+	const [createTweet, { isLoading }] = useWrite()
 	const [input, setInput] = useState('')
 	const maxLength = 280
 

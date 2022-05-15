@@ -112,15 +112,21 @@ export const tweetApi = createApi({
 					body: body,
 				}
 			},
-			invalidatesTags: (res, error, arg) => {
-				if (arg.replyId) {
-					return [
-						{ type: 'Reply', id: arg.replyId },
-						{ type: 'Tweet', id: arg.replyId },
-					]
-				} else {
-					return [{ type: 'Tweet', id: 'List' }]
+			invalidatesTags: [{ type: 'Tweet', id: 'List' }],
+		}),
+		reply: builder.mutation({
+			query: (body) => {
+				return {
+					url: '/reply',
+					method: 'POST',
+					body: body,
 				}
+			},
+			invalidatesTags: (res, error, arg) => {
+				return [
+					{ type: 'Reply', id: arg.replyId },
+					{ type: 'Tweet', id: arg.replyId },
+				]
 			},
 		}),
 		like: builder.mutation({
@@ -176,6 +182,7 @@ export const {
 	useLikeMutation,
 	useRetweetMutation,
 	useCreateMutation,
+	useReplyMutation,
 	useGetTweetQuery,
 	useDeleteMutation,
 	useGetRepliesQuery,

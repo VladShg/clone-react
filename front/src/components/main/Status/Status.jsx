@@ -1,6 +1,9 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { useGetRepliesQuery } from '../../../services/tweetApi'
+import {
+	useGetRepliesQuery,
+	useReplyMutation,
+} from '../../../services/tweetApi'
 import TitleTweet from '../../shared/Tweet/TitleTweet'
 import WriteTweet from '../../shared/WriteTweet/WriteTweet'
 import NavBar from '../../shared/NavBar/NavBar'
@@ -15,7 +18,11 @@ export default function Status() {
 		<div className={styles.Container}>
 			<NavBar title="Tweet" navigateBack />
 			<TitleTweet id={tweetId} key={tweetId} />
-			<WriteTweet replyId={tweetId} placeholder="Write your reply" />
+			<WriteTweet
+				replyId={tweetId}
+				useWrite={useReplyMutation}
+				placeholder="Write your reply"
+			/>
 			<Replies replies={replies} isLoading={isLoading} />
 		</div>
 	)

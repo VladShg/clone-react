@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TweetWithRelation } from '../types/TweetWithRelation';
 import { CreateTweetDto } from './dto/create.dto';
 import { TweetRelationDto } from './dto/relation.dto';
+import { ReplyDto } from './dto/reply.dto';
 
 @Injectable()
 export class TweetService {
@@ -47,9 +48,9 @@ export class TweetService {
 		return tweets;
 	}
 
-	async get(where: Prisma.TweetWhereUniqueInput): Promise<TweetWithRelation> {
+	async get(id: string): Promise<TweetWithRelation> {
 		return await this.prisma.tweet.findUnique({
-			where: where,
+			where: { id },
 			include: this.tweetIncludes,
 		});
 	}
@@ -93,10 +94,7 @@ export class TweetService {
 		});
 	}
 
-	async createReply(
-		data: CreateTweetDto,
-		authorId: string,
-	): Promise<TweetWithRelation> {
+	async reply(data: ReplyDto, authorId: string): Promise<TweetWithRelation> {
 		return await this.prisma.tweet.create({
 			data: {
 				message: data.message,
@@ -114,7 +112,7 @@ export class TweetService {
 	): Promise<TweetWithRelation> {
 		return await this.prisma.tweet.create({
 			data: {
-				message: data.message,
+				...data,
 				author: { connect: { id: authorId } },
 			},
 			include: this.tweetIncludes,
@@ -130,17 +128,16 @@ export class TweetService {
 		});
 	}
 
-	async like(username: string, tweetId: string): Promise<Like | null> {
-		const author = await this.prisma.user.findUnique({ where: { username } });
+	async like(authorId: string, tweetId: string): Promise<Like | null> {
 		const like = await this.prisma.like.findFirst({
-			where: { author: { id: author.id }, tweetId: tweetId },
+			where: { author: { id: authorId }, tweetId: tweetId },
 		});
 		if (like) {
 			await this.prisma.like.delete({ where: { id: like.id } });
 			return null;
 		} else {
 			return await this.prisma.like.create({
-				data: { authorId: author.id, tweetId: tweetId },
+				data: { authorId: authorId, tweetId: tweetId },
 			});
 		}
 	}
