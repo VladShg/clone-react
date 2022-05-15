@@ -21,6 +21,10 @@ describe('TweetService', () => {
 
 		service = module.get<TweetService>(TweetService);
 		prisma = module.get<PrismaService>(PrismaService);
+
+		await prisma.user.deleteMany();
+		await prisma.tweet.deleteMany();
+		await prisma.like.deleteMany();
 	});
 
 	// Create 5 users
@@ -70,7 +74,7 @@ describe('TweetService', () => {
 		const replies: Tweet[] = [];
 		for (let i = 0; i < 5; i++) {
 			replies.push(
-				await service.createReply(
+				await service.reply(
 					{ message: faker.random.words(5), replyId: tweet.id },
 					users[i].id,
 				),
@@ -84,32 +88,32 @@ describe('TweetService', () => {
 
 	it('should add and remove likes', async () => {
 		const user = users[0];
-		await service.like(user.username, tweet.id);
-		expect((await service.get({ id: tweet.id }))._count.likes).toBe(1);
-		await service.like(user.username, tweet.id);
-		expect((await service.get({ id: tweet.id }))._count.likes).toBe(0);
+		await service.like(user.id, tweet.id);
+		expect((await service.get(tweet.id))._count.likes).toBe(1);
+		await service.like(user.id, tweet.id);
+		expect((await service.get(tweet.id))._count.likes).toBe(0);
 	});
 
 	it('should make and cancel retweets', async () => {
 		const user = users[0];
 		await service.retweet(user.id, tweet.id);
-		expect((await service.get({ id: tweet.id }))._count.retweets).toBe(1);
+		expect((await service.get(tweet.id))._count.retweets).toBe(1);
 		await service.retweet(user.id, tweet.id);
-		expect((await service.get({ id: tweet.id }))._count.retweets).toBe(0);
+		expect((await service.get(tweet.id))._count.retweets).toBe(0);
 	});
 
 	it('should count tweet relations', async () => {
 		for (let i = 0; i < 5; i++) {
 			const user = users[i];
-			await service.like(user.username, tweet.id);
+			await service.like(user.id, tweet.id);
 			await service.retweet(user.id, tweet.id);
-			await service.createReply(
+			await service.reply(
 				{ message: `reply ${i}`, replyId: tweet.id },
 				user.id,
 			);
 		}
 
-		const count = (await service.get({ id: tweet.id }))._count;
+		const count = (await service.get(tweet.id))._count;
 		expect(count.likes).toBe(5);
 		expect(count.replies).toBe(5);
 		expect(count.retweets).toBe(5);
@@ -118,9 +122,9 @@ describe('TweetService', () => {
 	it('should count user and tweet relations', async () => {
 		for (let i = 0; i < 5; i++) {
 			const user = users[i];
-			await service.like(user.username, tweet.id);
+			await service.like(user.id, tweet.id);
 			await service.retweet(user.id, tweet.id);
-			await service.createReply(
+			await service.reply(
 				{ message: `reply ${i}`, replyId: tweet.id },
 				user.id,
 			);
