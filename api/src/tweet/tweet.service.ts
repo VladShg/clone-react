@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Like, Prisma, Tweet } from '@prisma/client';
+import { Like, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { TweetWithRelation } from '../types/TweetWithRelation';
 import { CreateTweetDto } from './dto/create.dto';
 import { TweetRelationDto } from './dto/relation.dto';
 
@@ -8,48 +9,48 @@ import { TweetRelationDto } from './dto/relation.dto';
 export class TweetService {
 	constructor(private prisma: PrismaService) {}
 
-	tweetIncludes(): Prisma.TweetInclude {
-		return {
-			author: true,
-			replyTo: {
-				include: {
-					author: true,
-					_count: { select: { likes: true, replies: true, retweets: true } },
-				},
+	tweetIncludes = {
+		author: true,
+		replyTo: {
+			include: {
+				author: true,
+				_count: { select: { likes: true, replies: true, retweets: true } },
 			},
-			tweet: {
-				include: {
-					author: true,
-					_count: { select: { likes: true, replies: true, retweets: true } },
-				},
+		},
+		tweet: {
+			include: {
+				author: true,
+				_count: { select: { likes: true, replies: true, retweets: true } },
 			},
-			_count: { select: { likes: true, replies: true, retweets: true } },
-		};
-	}
+		},
+		_count: { select: { likes: true, replies: true, retweets: true } },
+	};
 
-	async feed(): Promise<Tweet[]> {
+	async feed(): Promise<TweetWithRelation[]> {
 		const tweets = await this.prisma.tweet.findMany({
 			take: 20,
 			where: { isReply: false },
 			orderBy: { createdAt: 'desc' },
-			include: this.tweetIncludes(),
+			include: this.tweetIncludes,
 		});
 		return tweets;
 	}
 
-	async getReplies(where: Prisma.TweetWhereInput): Promise<Tweet[]> {
+	async getReplies(
+		where: Prisma.TweetWhereInput,
+	): Promise<TweetWithRelation[]> {
 		const tweets = await this.prisma.tweet.findMany({
 			orderBy: { createdAt: 'desc' },
 			where: { isReply: true, ...where },
-			include: this.tweetIncludes(),
+			include: this.tweetIncludes,
 		});
 		return tweets;
 	}
 
-	async get(where: Prisma.TweetWhereUniqueInput): Promise<Tweet> {
+	async get(where: Prisma.TweetWhereUniqueInput): Promise<TweetWithRelation> {
 		return await this.prisma.tweet.findUnique({
 			where: where,
-			include: this.tweetIncludes(),
+			include: this.tweetIncludes,
 		});
 	}
 
@@ -69,11 +70,11 @@ export class TweetService {
 		return { like: !!like, reply: !!reply, retweet: !!retweet };
 	}
 
-	async listTweets(username: string): Promise<Tweet[]> {
+	async listTweets(username: string): Promise<TweetWithRelation[]> {
 		const tweets = await this.prisma.tweet.findMany({
 			where: { author: { username }, isReply: false },
 			orderBy: { createdAt: 'desc' },
-			include: this.tweetIncludes(),
+			include: this.tweetIncludes,
 		});
 		return tweets;
 	}
@@ -92,7 +93,10 @@ export class TweetService {
 		});
 	}
 
-	async createReply(data: CreateTweetDto, authorId: string): Promise<Tweet> {
+	async createReply(
+		data: CreateTweetDto,
+		authorId: string,
+	): Promise<TweetWithRelation> {
 		return await this.prisma.tweet.create({
 			data: {
 				message: data.message,
@@ -100,22 +104,30 @@ export class TweetService {
 				author: { connect: { id: authorId } },
 				replyTo: { connect: { id: data.replyId } },
 			},
-			include: this.tweetIncludes(),
+			include: this.tweetIncludes,
 		});
 	}
 
-	async create(data: CreateTweetDto, authorId: string): Promise<Tweet> {
+	async create(
+		data: CreateTweetDto,
+		authorId: string,
+	): Promise<TweetWithRelation> {
 		return await this.prisma.tweet.create({
 			data: {
 				message: data.message,
 				author: { connect: { id: authorId } },
 			},
-			include: this.tweetIncludes(),
+			include: this.tweetIncludes,
 		});
 	}
 
-	async delete(where: Prisma.TweetWhereUniqueInput): Promise<Tweet> {
-		return await this.prisma.tweet.delete({ where: where });
+	async delete(
+		where: Prisma.TweetWhereUniqueInput,
+	): Promise<TweetWithRelation> {
+		return await this.prisma.tweet.delete({
+			where: where,
+			include: this.tweetIncludes,
+		});
 	}
 
 	async like(username: string, tweetId: string): Promise<Like | null> {
@@ -133,7 +145,7 @@ export class TweetService {
 		}
 	}
 
-	async retweet(authorId: string, tweetId: string): Promise<Tweet> {
+	async retweet(authorId: string, tweetId: string): Promise<TweetWithRelation> {
 		const retweet = await this.prisma.tweet.findFirst({
 			where: { authorId: authorId, isRetweet: true, tweetId: tweetId },
 		});
@@ -143,7 +155,7 @@ export class TweetService {
 		} else {
 			const retweet = await this.prisma.tweet.create({
 				data: { authorId: authorId, tweetId: tweetId, isRetweet: true },
-				include: this.tweetIncludes(),
+				include: this.tweetIncludes,
 			});
 			return retweet;
 		}
