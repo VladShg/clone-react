@@ -134,4 +134,67 @@ describe('TweetController', () => {
 			.expect(HttpStatus.OK);
 		expect(create.body.message).toEqual(get.body.message);
 	});
+
+	it('GET /replies - tweet', async () => {
+		const REPLIES_COUNT = 10;
+		const withReplies = await service.create(
+			{ message: faker.random.words(5) },
+			user.id,
+		);
+		for (let i = 0; i < REPLIES_COUNT; i++) {
+			await service.reply(
+				{ message: faker.random.words(5), replyId: withReplies.id },
+				user.id,
+			);
+		}
+		const withoutReplies = await service.create(
+			{ message: faker.random.words(5) },
+			user.id,
+		);
+		const withRepliesRequest = await request(app.getHttpServer())
+			.get(`/tweet/replies`)
+			.query({ tweetId: withReplies.id });
+		const withoutRepliesRequest = await request(app.getHttpServer())
+			.get(`/tweet/replies`)
+			.query({ tweetId: withoutReplies.id });
+		expect(withRepliesRequest.status).toBe(200);
+		expect(withoutRepliesRequest.status).toBe(200);
+		expect(withRepliesRequest.body.length).toBe(REPLIES_COUNT);
+		expect(withoutRepliesRequest.body.length).toBe(0);
+	});
+
+	it('GET /replies - username', async () => {
+		const REPLIES_COUNT = 10;
+		const withoutReplies = await prisma.user.create({
+			data: {
+				...userData,
+				email: faker.internet.email(),
+				username: faker.random.alpha(10),
+				id: faker.datatype.uuid(),
+			},
+		});
+		let tweet = await service.create(
+			{ message: faker.random.words(5) },
+			withoutReplies.id,
+		);
+		for (let i = 0; i < 10; i++) {
+			await service.reply(
+				{
+					message: faker.random.words(REPLIES_COUNT),
+					replyId: tweet.id,
+				},
+				user.id,
+			);
+		}
+		const withRepliesRequest = await request(app.getHttpServer())
+			.get(`/tweet/replies`)
+			.query({ username: user.username });
+		const withoutRepliesRequest = await request(app.getHttpServer())
+			.get(`/tweet/replies`)
+			.query({ username: withoutReplies.username });
+		expect(withRepliesRequest.status).toBe(200);
+		expect(withoutRepliesRequest.status).toBe(200);
+		expect(withRepliesRequest.body.length).toBe(REPLIES_COUNT);
+		expect(withoutRepliesRequest.body.length).toBe(0);
+	});
 });
