@@ -161,7 +161,7 @@ describe('TweetController', () => {
 		expect(response.body.length).toBe(REPLIES_COUNT);
 	});
 
-	it('GET /replies - username', async () => {
+	it('GET /replies - user', async () => {
 		let response: request.Response;
 		const REPLIES_COUNT = 10;
 		const tweet = await service.create(
@@ -186,5 +186,51 @@ describe('TweetController', () => {
 			.query({ username: user.username });
 		expect(response.status).toBe(HttpStatus.OK);
 		expect(response.body.length).toBe(REPLIES_COUNT);
+	});
+
+	it('GET /tweeets - user', async () => {
+		let response: request.Response;
+		const TWEET_COUNT = 10;
+
+		response = await request(app.getHttpServer())
+			.get(`/tweet/tweets`)
+			.query({ username: user.username });
+		expect(response.status).toBe(HttpStatus.OK);
+		expect(response.body.length).toBe(0);
+
+		for (let i = 0; i < TWEET_COUNT; i++) {
+			await service.create({ message: faker.random.word() }, user.id);
+		}
+
+		response = await request(app.getHttpServer())
+			.get(`/tweet/tweets`)
+			.query({ username: user.username });
+		expect(response.status).toBe(HttpStatus.OK);
+		expect(response.body.length).toBe(TWEET_COUNT);
+	});
+
+	it('GET /likes - user', async () => {
+		let response: request.Response;
+		const LIKES_COUNT = 10;
+
+		response = await request(app.getHttpServer())
+			.get(`/tweet/likes`)
+			.query({ username: user.username });
+		expect(response.status).toBe(HttpStatus.OK);
+		expect(response.body.length).toBe(0);
+
+		for (let i = 0; i < LIKES_COUNT; i++) {
+			const tweet = await service.create(
+				{ message: faker.random.word() },
+				user.id,
+			);
+			await service.like(user.id, tweet.id);
+		}
+
+		response = await request(app.getHttpServer())
+			.get(`/tweet/likes`)
+			.query({ username: user.username });
+		expect(response.status).toBe(HttpStatus.OK);
+		expect(response.body.length).toBe(LIKES_COUNT);
 	});
 });
