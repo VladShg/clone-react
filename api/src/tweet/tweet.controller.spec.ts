@@ -6,16 +6,25 @@ import { TweetController } from './tweet.controller';
 import { TweetService } from './tweet.service';
 import { faker } from '@faker-js/faker';
 import { Tweet, User } from '@prisma/client';
-import { ExecutionContext, HttpStatus, INestApplication } from '@nestjs/common';
+import {
+	ExecutionContext,
+	HttpCode,
+	HttpStatus,
+	INestApplication,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateTweetDto } from './dto/create.dto';
 import { DeleteTweetDto } from './dto/delete.dto';
+import { ReplyDto } from './dto/reply.dto';
+import { LikeTweetDto } from './dto/like.dto';
+import { RetweetDto } from './dto/retweet.dto';
 
 describe('TweetController', () => {
 	let controller: TweetController;
 	let service: TweetService;
 	let prisma: PrismaService;
 	let user: User;
+	let tweet: Tweet;
 	let app: INestApplication;
 	const userData: User = {
 		id: faker.datatype.uuid(),
@@ -65,6 +74,7 @@ describe('TweetController', () => {
 
 	beforeEach(async () => {
 		user = await prisma.user.create({ data: userData });
+		tweet = await service.create({ message: faker.random.word() }, user.id);
 	});
 
 	afterEach(async () => {
@@ -82,10 +92,6 @@ describe('TweetController', () => {
 	});
 
 	it('GET /:id', async () => {
-		const tweet = await service.create(
-			{ message: faker.random.words(5) },
-			user.id,
-		);
 		return request(app.getHttpServer())
 			.get(`/tweet/${tweet.id}`)
 			.expect(200)
@@ -93,11 +99,6 @@ describe('TweetController', () => {
 	});
 
 	it('DELETE /', async () => {
-		const tweet = await service.create(
-			{ message: faker.random.words(5) },
-			user.id,
-		);
-
 		const payload: DeleteTweetDto = {
 			id: tweet.id,
 		};
@@ -123,25 +124,18 @@ describe('TweetController', () => {
 	});
 
 	it('GET /feed', async () => {
-		const tweets = [];
-		for (let i = 0; i < 10; i++) {
-			tweets.unshift(
-				await service.create({ message: faker.random.words(5) }, user.id),
-			);
+		const FEED_COUNT = 10;
+		for (let i = 0; i < FEED_COUNT; i++) {
+			await service.create({ message: faker.random.word() }, user.id);
 		}
-		return request(app.getHttpServer())
-			.get(`/tweet/feed`)
-			.expect(200)
-			.expect(JSON.stringify(tweets));
+		const response = await request(app.getHttpServer()).get(`/tweet/feed`);
+		expect(response.status).toBe(HttpStatus.OK);
+		expect(response.body.length).toBe(FEED_COUNT + 1);
 	});
 
 	it('GET /replies - tweet', async () => {
 		let response: request.Response;
 		const REPLIES_COUNT = 10;
-		const tweet = await service.create(
-			{ message: faker.random.word() },
-			user.id,
-		);
 		response = await request(app.getHttpServer())
 			.get(`/tweet/replies`)
 			.query({ tweetId: tweet.id });
@@ -164,11 +158,6 @@ describe('TweetController', () => {
 	it('GET /replies - user', async () => {
 		let response: request.Response;
 		const REPLIES_COUNT = 10;
-		const tweet = await service.create(
-			{ message: faker.random.word() },
-			user.id,
-		);
-
 		response = await request(app.getHttpServer())
 			.get(`/tweet/replies`)
 			.query({ username: user.username });
@@ -196,7 +185,7 @@ describe('TweetController', () => {
 			.get(`/tweet/tweets`)
 			.query({ username: user.username });
 		expect(response.status).toBe(HttpStatus.OK);
-		expect(response.body.length).toBe(0);
+		expect(response.body.length).toBe(1);
 
 		for (let i = 0; i < TWEET_COUNT; i++) {
 			await service.create({ message: faker.random.word() }, user.id);
@@ -206,7 +195,7 @@ describe('TweetController', () => {
 			.get(`/tweet/tweets`)
 			.query({ username: user.username });
 		expect(response.status).toBe(HttpStatus.OK);
-		expect(response.body.length).toBe(TWEET_COUNT);
+		expect(response.body.length).toBe(TWEET_COUNT + 1);
 	});
 
 	it('GET /likes - user', async () => {
@@ -234,5 +223,74 @@ describe('TweetController', () => {
 		expect(response.body.length).toBe(LIKES_COUNT);
 	});
 
+	it('POST /reply', async () => {
+		const payload: ReplyDto = {
+			message: faker.random.word(),
+			replyId: tweet.id,
+		};
+		const response = await request(app.getHttpServer())
+			.post('/tweet/reply')
+			.send(payload);
+		expect(response.status).toBe(HttpStatus.CREATED);
+		expect(response.body.message).toBe(payload.message);
+		expect((await service.get(tweet.id))._count.replies).toBe(1);
+	});
 
+	it('POST /like', async () => {
+		const payload: LikeTweetDto = { id: tweet.id };
+		let response = await request(app.getHttpServer())
+			.post('/tweet/like')
+			.send(payload);
+		expect(response.status).toBe(HttpStatus.CREATED);
+		expect(response.body.tweetId).toBe(tweet.id);
+		expect((await service.get(tweet.id))._count.likes).toBe(1);
+		response = await request(app.getHttpServer())
+			.post('/tweet/like')
+			.send(payload);
+		expect(response.status).toBe(HttpStatus.NO_CONTENT);
+		expect((await service.get(tweet.id))._count.likes).toBe(0);
+	});
+
+	it('POST /retweet', async () => {
+		const payload: RetweetDto = { id: tweet.id };
+		let response = await request(app.getHttpServer())
+			.post('/tweet/retweet')
+			.send(payload);
+		expect(response.status).toBe(HttpStatus.CREATED);
+		expect(response.body.tweetId).toBe(tweet.id);
+		expect((await service.get(tweet.id))._count.retweets).toBe(1);
+		response = await request(app.getHttpServer())
+			.post('/tweet/retweet')
+			.send(payload);
+		expect(response.status).toBe(HttpStatus.NO_CONTENT);
+		expect((await service.get(tweet.id))._count.retweets).toBe(0);
+	});
+
+	it('GET /:tweetId/relations', async () => {
+		let response: request.Response;
+
+		response = await request(app.getHttpServer()).get(
+			`/tweet/${tweet.id}/relations`,
+		);
+		expect(response.body).toMatchObject({
+			like: false,
+			retweet: false,
+			reply: false,
+		});
+
+		await service.like(user.id, tweet.id);
+		await service.retweet(user.id, tweet.id);
+		await service.reply(
+			{ message: faker.random.word(), replyId: tweet.id },
+			user.id,
+		);
+		response = await request(app.getHttpServer()).get(
+			`/tweet/${tweet.id}/relations`,
+		);
+		expect(response.body).toMatchObject({
+			like: true,
+			retweet: true,
+			reply: true,
+		});
+	});
 });
