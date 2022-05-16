@@ -136,65 +136,55 @@ describe('TweetController', () => {
 	});
 
 	it('GET /replies - tweet', async () => {
+		let response: request.Response;
 		const REPLIES_COUNT = 10;
-		const withReplies = await service.create(
-			{ message: faker.random.words(5) },
+		const tweet = await service.create(
+			{ message: faker.random.word() },
 			user.id,
 		);
+		response = await request(app.getHttpServer())
+			.get(`/tweet/replies`)
+			.query({ tweetId: tweet.id });
+		expect(response.status).toBe(HttpStatus.OK);
+		expect(response.body.length).toBe(0);
+
 		for (let i = 0; i < REPLIES_COUNT; i++) {
 			await service.reply(
-				{ message: faker.random.words(5), replyId: withReplies.id },
+				{ message: faker.random.word(), replyId: tweet.id },
 				user.id,
 			);
 		}
-		const withoutReplies = await service.create(
-			{ message: faker.random.words(5) },
-			user.id,
-		);
-		const withRepliesRequest = await request(app.getHttpServer())
+		response = await request(app.getHttpServer())
 			.get(`/tweet/replies`)
-			.query({ tweetId: withReplies.id });
-		const withoutRepliesRequest = await request(app.getHttpServer())
-			.get(`/tweet/replies`)
-			.query({ tweetId: withoutReplies.id });
-		expect(withRepliesRequest.status).toBe(200);
-		expect(withoutRepliesRequest.status).toBe(200);
-		expect(withRepliesRequest.body.length).toBe(REPLIES_COUNT);
-		expect(withoutRepliesRequest.body.length).toBe(0);
+			.query({ tweetId: tweet.id });
+		expect(response.status).toBe(HttpStatus.OK);
+		expect(response.body.length).toBe(REPLIES_COUNT);
 	});
 
 	it('GET /replies - username', async () => {
+		let response: request.Response;
 		const REPLIES_COUNT = 10;
-		const withoutReplies = await prisma.user.create({
-			data: {
-				...userData,
-				email: faker.internet.email(),
-				username: faker.random.alpha(10),
-				id: faker.datatype.uuid(),
-			},
-		});
-		let tweet = await service.create(
-			{ message: faker.random.words(5) },
-			withoutReplies.id,
+		const tweet = await service.create(
+			{ message: faker.random.word() },
+			user.id,
 		);
-		for (let i = 0; i < 10; i++) {
+
+		response = await request(app.getHttpServer())
+			.get(`/tweet/replies`)
+			.query({ username: user.username });
+		expect(response.status).toBe(HttpStatus.OK);
+		expect(response.body.length).toBe(0);
+
+		for (let i = 0; i < REPLIES_COUNT; i++) {
 			await service.reply(
-				{
-					message: faker.random.words(REPLIES_COUNT),
-					replyId: tweet.id,
-				},
+				{ message: faker.random.word(), replyId: tweet.id },
 				user.id,
 			);
 		}
-		const withRepliesRequest = await request(app.getHttpServer())
+		response = await request(app.getHttpServer())
 			.get(`/tweet/replies`)
 			.query({ username: user.username });
-		const withoutRepliesRequest = await request(app.getHttpServer())
-			.get(`/tweet/replies`)
-			.query({ username: withoutReplies.username });
-		expect(withRepliesRequest.status).toBe(200);
-		expect(withoutRepliesRequest.status).toBe(200);
-		expect(withRepliesRequest.body.length).toBe(REPLIES_COUNT);
-		expect(withoutRepliesRequest.body.length).toBe(0);
+		expect(response.status).toBe(HttpStatus.OK);
+		expect(response.body.length).toBe(REPLIES_COUNT);
 	});
 });
