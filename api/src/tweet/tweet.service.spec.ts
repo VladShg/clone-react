@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Like, Tweet, User } from '@prisma/client';
+import { Tweet, User } from '@prisma/client';
 import { PrismaModule } from '../prisma/prisma.module';
 import { PrismaService } from '../prisma/prisma.service';
 import { TweetController } from './tweet.controller';
@@ -12,6 +12,14 @@ describe('TweetService', () => {
 	let tweet: Tweet;
 	let users: User[] = [];
 
+	async function resetDatabase() {
+		const user = prisma.user.deleteMany();
+		const tweet = prisma.tweet.deleteMany();
+		const like = prisma.like.deleteMany();
+
+		await prisma.$transaction([user, tweet, like]);
+	}
+
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			imports: [PrismaModule],
@@ -22,15 +30,15 @@ describe('TweetService', () => {
 		service = module.get<TweetService>(TweetService);
 		prisma = module.get<PrismaService>(PrismaService);
 
-		await prisma.user.deleteMany();
-		await prisma.tweet.deleteMany();
-		await prisma.like.deleteMany();
+		await resetDatabase();
 	});
 
 	// Create 5 users
 	// Create 1 tweet
 	// Like, Retweet, Reply with first 3 users
 	beforeEach(async () => {
+		users = [];
+		tweet = null;
 		for (let i = 0; i < 10; i++) {
 			users.push(
 				await prisma.user.create({
@@ -52,12 +60,7 @@ describe('TweetService', () => {
 	});
 
 	afterEach(async () => {
-		users = [];
-		tweet = null;
-
-		await prisma.user.deleteMany();
-		await prisma.tweet.deleteMany();
-		await prisma.like.deleteMany();
+		return resetDatabase();
 	});
 
 	it('should be defined', () => {
