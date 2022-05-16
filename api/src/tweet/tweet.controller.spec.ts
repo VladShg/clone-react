@@ -81,7 +81,7 @@ describe('TweetController', () => {
 		expect(prisma).toBeDefined();
 	});
 
-	it('GET /', async () => {
+	it('GET /:id', async () => {
 		const tweet = await service.create(
 			{ message: faker.random.words(5) },
 			user.id,
@@ -92,20 +92,7 @@ describe('TweetController', () => {
 			.expect(JSON.stringify(await service.get(tweet.id)));
 	});
 
-	it('GET /feed', async () => {
-		const tweets = [];
-		for (let i = 0; i < 10; i++) {
-			tweets.unshift(
-				await service.create({ message: faker.random.words(5) }, user.id),
-			);
-		}
-		return request(app.getHttpServer())
-			.get(`/tweet/feed`)
-			.expect(200)
-			.expect(JSON.stringify(tweets));
-	});
-
-	it('DELETE /tweet', async () => {
+	it('DELETE /', async () => {
 		const tweet = await service.create(
 			{ message: faker.random.words(5) },
 			user.id,
@@ -120,7 +107,7 @@ describe('TweetController', () => {
 			.expect(200);
 	});
 
-	it('CREATE /tweet', async () => {
+	it('POST /', async () => {
 		const payload: CreateTweetDto = {
 			message: faker.random.words(5),
 		};
@@ -133,6 +120,19 @@ describe('TweetController', () => {
 			.get(`/tweet/${tweet.id}`)
 			.expect(HttpStatus.OK);
 		expect(create.body.message).toEqual(get.body.message);
+	});
+
+	it('GET /feed', async () => {
+		const tweets = [];
+		for (let i = 0; i < 10; i++) {
+			tweets.unshift(
+				await service.create({ message: faker.random.words(5) }, user.id),
+			);
+		}
+		return request(app.getHttpServer())
+			.get(`/tweet/feed`)
+			.expect(200)
+			.expect(JSON.stringify(tweets));
 	});
 
 	it('GET /replies - tweet', async () => {
@@ -233,4 +233,6 @@ describe('TweetController', () => {
 		expect(response.status).toBe(HttpStatus.OK);
 		expect(response.body.length).toBe(LIKES_COUNT);
 	});
+
+
 });
