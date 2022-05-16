@@ -12,6 +12,12 @@ describe('TweetService', () => {
 	let tweet: Tweet;
 	let users: User[] = [];
 
+	async function resetDatabase() {
+		await prisma.user.deleteMany();
+		await prisma.tweet.deleteMany();
+		await prisma.like.deleteMany();
+	}
+
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			imports: [PrismaModule],
@@ -22,9 +28,7 @@ describe('TweetService', () => {
 		service = module.get<TweetService>(TweetService);
 		prisma = module.get<PrismaService>(PrismaService);
 
-		await prisma.user.deleteMany();
-		await prisma.tweet.deleteMany();
-		await prisma.like.deleteMany();
+		return resetDatabase();
 	});
 
 	// Create 5 users
@@ -55,9 +59,7 @@ describe('TweetService', () => {
 		users = [];
 		tweet = null;
 
-		await prisma.user.deleteMany();
-		await prisma.tweet.deleteMany();
-		await prisma.like.deleteMany();
+		return resetDatabase();
 	});
 
 	it('should be defined', () => {
