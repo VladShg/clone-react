@@ -1,10 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Tweet, User } from '@prisma/client';
-import { PrismaModule } from '../prisma/prisma.module';
 import { PrismaService } from '../prisma/prisma.service';
-import { TweetController } from './tweet.controller';
 import { TweetService } from './tweet.service';
 import { faker } from '@faker-js/faker';
+import { TweetModule } from './tweet.module';
 
 describe('TweetService', () => {
 	let service: TweetService;
@@ -22,9 +21,7 @@ describe('TweetService', () => {
 
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
-			imports: [PrismaModule],
-			controllers: [TweetController],
-			providers: [TweetService],
+			imports: [TweetModule],
 		}).compile();
 
 		service = module.get<TweetService>(TweetService);
@@ -33,9 +30,6 @@ describe('TweetService', () => {
 		await resetDatabase();
 	});
 
-	// Create 5 users
-	// Create 1 tweet
-	// Like, Retweet, Reply with first 3 users
 	beforeEach(async () => {
 		users = [];
 		tweet = null;

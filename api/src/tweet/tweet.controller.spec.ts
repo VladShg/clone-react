@@ -1,23 +1,18 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from '../prisma/prisma.module';
 import { PrismaService } from '../prisma/prisma.service';
 import { TweetController } from './tweet.controller';
 import { TweetService } from './tweet.service';
 import { faker } from '@faker-js/faker';
 import { Tweet, User } from '@prisma/client';
-import {
-	ExecutionContext,
-	HttpCode,
-	HttpStatus,
-	INestApplication,
-} from '@nestjs/common';
+import { ExecutionContext, HttpStatus, INestApplication } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateTweetDto } from './dto/create.dto';
 import { DeleteTweetDto } from './dto/delete.dto';
 import { ReplyDto } from './dto/reply.dto';
 import { LikeTweetDto } from './dto/like.dto';
 import { RetweetDto } from './dto/retweet.dto';
+import { TweetModule } from './tweet.module';
 
 describe('TweetController', () => {
 	let controller: TweetController;
@@ -49,9 +44,7 @@ describe('TweetController', () => {
 
 	beforeAll(async () => {
 		const module = await Test.createTestingModule({
-			imports: [PrismaModule],
-			controllers: [TweetController],
-			providers: [TweetService],
+			imports: [TweetModule],
 		})
 			.overrideGuard(AuthGuard('jwt'))
 			.useValue({
