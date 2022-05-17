@@ -37,7 +37,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
     - run: cd back
-    - run: npm install
-    - run: npm install -g dotenv-cli
+    - run: yarn install
+    - run: yarn install -g dotenv-cli
     - run: npx prisma generate
-    - run: npm run test
+    - run: yarn run test
