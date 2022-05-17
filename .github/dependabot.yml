@@ -8,7 +8,8 @@ updates:
       - "npm dependencies"
       - "backend"
   - package-ecosystem: "npm"
-    directory: "/front"    schedule:
+    directory: "/front"    
+    schedule:
       interval: "daily"
     labels:
       - "npm dependencies"
