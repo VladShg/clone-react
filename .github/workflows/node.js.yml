@@ -21,6 +21,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node }}
-    - run: yarn install --frozen-lockfile
-    - run: yarn global add dotenv-cli
-    - run: yarn run test
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile | yarn global add dotenv-cli
+    - name: Run tests
+      run: yarn run test
