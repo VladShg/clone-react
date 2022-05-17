@@ -1,11 +1,4 @@
-import {
-	Body,
-	Controller,
-	Post,
-	Res,
-	UsePipes,
-	ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { GoogleTokenDto } from '../dto/google-token.dto';
 import { TokenDto } from '../dto/token.dto';
