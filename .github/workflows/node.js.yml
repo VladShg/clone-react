@@ -18,7 +18,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node }}
-    - run: cd back
+    - run: cd api
     - run: yarn install --frozen-lockfile
     - run: yarn install -g dotenv-cli
     - run: npx prisma generate
