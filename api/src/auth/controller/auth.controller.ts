@@ -55,13 +55,14 @@ export class AuthController {
 		@Query('username') username?: string,
 	): Promise<IsAvailableDto> {
 		let user: User;
+		if (!email && !username) {
+			throw new BadRequestException('Params not provided');
+		}
 		try {
 			if (email) {
 				user = await this.authService.getUser({ email: email });
 			} else if (username) {
 				user = await this.authService.getUser({ username: username });
-			} else {
-				throw new BadRequestException('Params not provided');
 			}
 		} catch {
 			return { isAvailable: true };

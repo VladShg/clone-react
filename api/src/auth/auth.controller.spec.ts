@@ -139,6 +139,37 @@ describe('AuthController', () => {
 			.send(payload);
 		expect(response.ok).toBe(false);
 	});
+
+	it('GET /lookup', async () => {
+		let response: request.Response;
+
+		response = await request(app.getHttpServer())
+			.get('/auth/lookup')
+			.query({ email: user.email });
+		expect(response.status).toBe(200);
+		expect(response.body.isAvailable).toBe(false);
+
+		response = await request(app.getHttpServer())
+			.get('/auth/lookup')
+			.query({ email: '0' + user.email });
+		expect(response.status).toBe(200);
+		expect(response.body.isAvailable).toBe(true);
+
+		response = await request(app.getHttpServer())
+			.get('/auth/lookup')
+			.query({ username: user.username });
+		expect(response.status).toBe(200);
+		expect(response.body.isAvailable).toBe(false);
+
+		response = await request(app.getHttpServer())
+			.get('/auth/lookup')
+			.query({ username: '0' + user.username });
+		expect(response.status).toBe(200);
+		expect(response.body.isAvailable).toBe(true);
+
+		response = await request(app.getHttpServer()).get('/auth/lookup');
+		expect(response.status).toBe(400);
+	});
 });
 
 describe('AuthController - social', () => {
