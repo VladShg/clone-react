@@ -9,7 +9,8 @@ import { hashPassword } from '../utils/bcrypt';
 import { LoginByCredentialsDto } from './dto/login-credentials.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { AuthModule } from './auth.module';
-import { GitHubProfileDto } from './dto/github-profile.dto';
+import { GoogleTokenDto } from './dto/google-token.dto';
+import { GitHubCodeDto } from './dto/github-code.dto';
 
 const userData: User = {
 	id: faker.datatype.uuid(),
@@ -40,7 +41,7 @@ async function createUser(prisma: PrismaService, data: User): Promise<User> {
 	});
 }
 
-describe('AuthService', () => {
+describe('AuthController', () => {
 	let service: AuthService;
 	let app: INestApplication;
 	let prisma: PrismaService;
@@ -140,50 +141,32 @@ describe('AuthService', () => {
 	});
 });
 
-describe('AuthService - social', () => {
+describe('AuthController - social', () => {
 	let service: AuthService;
 	let app: INestApplication;
 	let prisma: PrismaService;
-	let user: User;
-	let token: string;
 
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			imports: [AuthModule],
-		})
-			.useMocker((token) => {
-				if (token === AuthService) {
-					return {
-						getGoogleUser: async () => {
-							return { googleId: user.googleId };
-						},
-						getGitHubUser: async () => {
-							return { id: user.gitHubId };
-						},
-						loginWithGitHub: async (): Promise<User> => {
-							return user;
-						},
-						connectWithGitHub: async (): Promise<GitHubProfileDto> => {
-							return {
-								githubId: user.gitHubId,
-								email: user.email,
-								name: user.name,
-								username: user.username,
-							};
-						},
-						loginGoogleUser: async (): Promise<User> => {
-							return user;
-						},
-					};
-				}
-			})
-			.compile();
+		}).compile();
 		app = module.createNestApplication();
 		await app.init();
 
 		service = module.get<AuthService>(AuthService);
 		prisma = module.get<PrismaService>(PrismaService);
 
+		const mock = {
+			getGoogleUser: async () => {
+				return { id: userData.googleId };
+			},
+			getGitHubUser: async () => {
+				return { id: userData.gitHubId };
+			},
+		};
+
+		jest.spyOn(service, 'getGitHubUser').mockImplementation(mock.getGitHubUser);
+		jest.spyOn(service, 'getGoogleUser').mockImplementation(mock.getGoogleUser);
 		await resetDatabase(prisma);
 	});
 
@@ -191,7 +174,87 @@ describe('AuthService - social', () => {
 		await createUser(prisma, userData);
 	});
 
+	afterEach(async () => {
+		await resetDatabase(prisma);
+	});
+
+	afterAll(async () => {
+		await app.close();
+	});
+
 	it('should be defined', () => {
 		expect(service).toBeDefined();
+	});
+
+	it('POST /google/login', async () => {
+		const payload: GoogleTokenDto = {
+			token: 'mock token',
+		};
+
+		let response = await request(app.getHttpServer())
+			.post('/auth/google/login')
+			.send(payload);
+		expect(response.statusCode).toBe(201);
+		expect(response.body.accessToken).toBeDefined();
+
+		response = await request(app.getHttpServer())
+			.get('/auth/account')
+			.auth(response.body.accessToken, { type: 'bearer' });
+		expect(response.statusCode).toBe(200);
+		expect(response.body.id).toBe(userData.id);
+	});
+
+	it('GET /google/connect', async () => {
+		const payload: GoogleTokenDto = {
+			token: 'mock token',
+		};
+
+		let response = await request(app.getHttpServer())
+			.post('/auth/google/connect')
+			.send(payload);
+		expect(response.statusCode).toBe(409);
+
+		await prisma.user.deleteMany();
+
+		response = await request(app.getHttpServer())
+			.post('/auth/google/connect')
+			.send(payload);
+		expect(response.statusCode).toBe(201);
+	});
+
+	it('POST /github/login', async () => {
+		const payload: GitHubCodeDto = {
+			code: 'mock code',
+		};
+
+		let response = await request(app.getHttpServer())
+			.post('/auth/github/login')
+			.send(payload);
+		expect(response.statusCode).toBe(201);
+		expect(response.body.accessToken).toBeDefined();
+
+		response = await request(app.getHttpServer())
+			.get('/auth/account')
+			.auth(response.body.accessToken, { type: 'bearer' });
+		expect(response.statusCode).toBe(200);
+		expect(response.body.id).toBe(userData.id);
+	});
+
+	it('GET /github/connect', async () => {
+		const payload: GitHubCodeDto = {
+			code: 'mock code',
+		};
+
+		let response = await request(app.getHttpServer())
+			.post('/auth/github/connect')
+			.send(payload);
+		expect(response.statusCode).toBe(409);
+
+		await prisma.user.deleteMany();
+
+		response = await request(app.getHttpServer())
+			.post('/auth/github/connect')
+			.send(payload);
+		expect(response.statusCode).toBe(201);
 	});
 });

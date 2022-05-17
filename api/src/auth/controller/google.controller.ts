@@ -9,14 +9,14 @@ export class GoogleController {
 	constructor(private authService: AuthService) {}
 
 	@Post('/login')
-	async signUpWithGoogle(@Body() data: GoogleTokenDto): Promise<TokenDto> {
+	async login(@Body() data: GoogleTokenDto): Promise<TokenDto> {
 		const user = await this.authService.loginGoogleUser(data.token);
 		const token = this.authService.generateToken(user);
 		return { accessToken: token };
 	}
 
 	@Post('/connect')
-	async connectWithGoogle(
+	async connect(
 		@Body() data: GoogleTokenDto,
 		@Res() response: Response,
 	): Promise<void> {
