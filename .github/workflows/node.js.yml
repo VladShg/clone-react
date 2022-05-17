@@ -20,6 +20,6 @@ jobs:
         node-version: ${{ matrix.node }}
     - run: cd api
     - run: yarn install --frozen-lockfile
-    - run: yarn install -g dotenv-cli
+    - run: yarn global add dotenv-cli
     - run: npx prisma generate
     - run: yarn run test
