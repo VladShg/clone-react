@@ -7,14 +7,17 @@ import Button from '../Button/Button'
 import WordCounter from '../WordCounter/WordCounter'
 import styles from './WriteTweet.module.scss'
 import TextareaAutosize from 'react-textarea-autosize'
+import classNames from 'classnames'
 
 export default function WriteTweet({
 	placeholder = "What's happening",
 	useWrite = useCreateMutation,
+	onCreate = () => {},
 	replyId = null,
+	className = '',
 }) {
 	const { user } = useSelector(authSelector)
-	const [createTweet, { isLoading }] = useWrite()
+	const [createTweet, { isLoading }] = useWrite('shared-create-tweet')
 	const [input, setInput] = useState('')
 	const maxLength = 280
 
@@ -24,8 +27,10 @@ export default function WriteTweet({
 		return null
 	}
 
+	const clsx = classNames(styles.container, { [className]: !!className })
+
 	return (
-		<div className={styles.container}>
+		<div className={clsx}>
 			<Avatar src={user.avatar} />
 			<div className={styles.inputRow}>
 				<TextareaAutosize
@@ -40,8 +45,9 @@ export default function WriteTweet({
 					<Button
 						onClick={async (e) => {
 							e.preventDefault()
-							await createTweet({ message: input, replyId })
+							let res = await createTweet({ message: input, replyId })
 							setInput('')
+							onCreate(res.data)
 						}}
 						disabled={isDisabled}
 					>

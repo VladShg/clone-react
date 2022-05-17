@@ -36,6 +36,9 @@ export default function Modal({ isOpen, setOpen, children, className }) {
 	}
 
 	const containerStyles = classNames(styles.container, className || '')
+		.split(' ')
+		.reverse()
+		.join(' ')
 	return (
 		<ModalContext.Provider value={value}>
 			<div ref={wrapper} className={styles.wrapper}>
