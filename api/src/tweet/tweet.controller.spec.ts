@@ -13,6 +13,7 @@ import { ReplyDto } from './dto/reply.dto';
 import { LikeTweetDto } from './dto/like.dto';
 import { RetweetDto } from './dto/retweet.dto';
 import { TweetModule } from './tweet.module';
+import { applyMiddleware } from '../utils/middleware';
 
 describe('TweetController', () => {
 	let controller: TweetController;
@@ -61,6 +62,7 @@ describe('TweetController', () => {
 		prisma = module.get<PrismaService>(PrismaService);
 
 		app = module.createNestApplication();
+		applyMiddleware(app);
 		await app.init();
 		await resetDatabase();
 	});
@@ -85,10 +87,11 @@ describe('TweetController', () => {
 	});
 
 	it('GET /:id', async () => {
-		return request(app.getHttpServer())
-			.get(`/tweet/${tweet.id}`)
-			.expect(200)
-			.expect(JSON.stringify(await service.get(tweet.id)));
+		const response = await request(app.getHttpServer()).get(
+			`/tweet/${tweet.id}`,
+		);
+		expect(response.status).toBe(200);
+		expect(response.body.message).toBe((await service.get(tweet.id)).message);
 	});
 
 	it('DELETE /', async () => {

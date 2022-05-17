@@ -11,6 +11,7 @@ import { SignUpDto } from './dto/signup.dto';
 import { AuthModule } from './auth.module';
 import { GoogleTokenDto } from './dto/google-token.dto';
 import { GitHubCodeDto } from './dto/github-code.dto';
+import { applyMiddleware } from '../utils/middleware';
 
 const userData: User = {
 	id: faker.datatype.uuid(),
@@ -53,6 +54,7 @@ describe('AuthController', () => {
 			imports: [AuthModule],
 		}).compile();
 		app = module.createNestApplication();
+		applyMiddleware(app);
 		await app.init();
 
 		service = module.get<AuthService>(AuthService);
@@ -182,6 +184,7 @@ describe('AuthController - social', () => {
 			imports: [AuthModule],
 		}).compile();
 		app = module.createNestApplication();
+		applyMiddleware(app);
 		await app.init();
 
 		service = module.get<AuthService>(AuthService);
