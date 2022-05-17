@@ -9,6 +9,7 @@ import { hashPassword } from '../utils/bcrypt';
 import { LoginByCredentialsDto } from './dto/login-credentials.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { AuthModule } from './auth.module';
+import { GitHubProfileDto } from './dto/github-profile.dto';
 
 const userData: User = {
 	id: faker.datatype.uuid(),
@@ -23,28 +24,51 @@ const userData: User = {
 	updatedAt: new Date(),
 };
 
+const mockService = (user: User) => ({
+	getGoogleUser: async (token: string) => {
+		return { googleId: user.googleId };
+	},
+	getGitHubUser: async (code: string) => {
+		return { id: user.gitHubId };
+	},
+	loginWithGitHub: async (code: string): Promise<User> => {
+		return user;
+	},
+	connectWithGitHub: async (code: string): Promise<GitHubProfileDto> => {
+		return {
+			githubId: user.gitHubId,
+			email: user.email,
+			name: user.name,
+			username: user.username,
+		};
+	},
+	loginGoogleUser: async (token: string): Promise<User> => {
+		return user;
+	},
+});
+
+async function resetDatabase(prisma: PrismaService) {
+	await prisma.$transaction([
+		prisma.user.deleteMany(),
+		prisma.like.deleteMany(),
+		prisma.tweet.deleteMany(),
+	]);
+}
+async function createUser(prisma: PrismaService, data: User): Promise<User> {
+	return await prisma.user.create({
+		data: {
+			...data,
+			password: await hashPassword(data.password),
+		},
+	});
+}
+
 describe('AuthService - social', () => {
 	let service: AuthService;
 	let app: INestApplication;
 	let prisma: PrismaService;
 	let user: User;
 	let token: string;
-
-	async function resetDatabase() {
-		await prisma.$transaction([
-			prisma.user.deleteMany(),
-			prisma.like.deleteMany(),
-			prisma.tweet.deleteMany(),
-		]);
-	}
-	async function createUser(data: User): Promise<User> {
-		return await prisma.user.create({
-			data: {
-				...data,
-				password: await hashPassword(data.password),
-			},
-		});
-	}
 
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -56,16 +80,16 @@ describe('AuthService - social', () => {
 		service = module.get<AuthService>(AuthService);
 		prisma = module.get<PrismaService>(PrismaService);
 
-		await resetDatabase();
+		await resetDatabase(prisma);
 	});
 
 	beforeEach(async () => {
-		user = await createUser(userData);
+		user = await createUser(prisma, userData);
 		token = service.generateToken(user);
 	});
 
 	afterEach(async () => {
-		await resetDatabase();
+		await resetDatabase(prisma);
 	});
 
 	afterAll(async () => {
@@ -137,4 +161,29 @@ describe('AuthService - social', () => {
 			.send(payload);
 		expect(response.ok).toBe(false);
 	});
+});
+
+describe('AuthService - social', () => {
+	let service: AuthService;
+	let app: INestApplication;
+	let prisma: PrismaService;
+	let user: User;
+	let token: string;
+
+	beforeAll(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			imports: [AuthModule],
+		}).compile();
+		app = module.createNestApplication();
+		await app.init();
+
+		service = module.get<AuthService>(AuthService);
+		prisma = module.get<PrismaService>(PrismaService);
+
+		await resetDatabase(prisma);
+	});
+
+	beforeEach(async () => {
+		await createUser(prisma, userData)
+	})
 });
