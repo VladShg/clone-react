@@ -22,7 +22,6 @@ jobs:
       with:
         node-version: ${{ matrix.node }}
         cache: 'npm'
-        cache-dependency-path: api/package-lock.json
     - name: Install dependencies
       run: yarn install --frozen-lockfile | yarn global add dotenv-cli
     - name: Run tests
