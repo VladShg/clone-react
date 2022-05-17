@@ -110,6 +110,19 @@ export class AuthService {
 	}
 
 	async signUp(data: Prisma.UserCreateInput): Promise<User> {
+		let duplicate = await this.prisma.user.findFirst({
+			where: { email: data.email },
+		});
+		if (duplicate) {
+			throw new BadRequestException('email is taken');
+		}
+		duplicate = await this.prisma.user.findFirst({
+			where: { username: data.username },
+		});
+		if (duplicate) {
+			throw new BadRequestException('username is taken');
+		}
+
 		let password: string | null;
 		if (data.password) {
 			password = await hashPassword(data.password);
