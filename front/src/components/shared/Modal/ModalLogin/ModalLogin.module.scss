@@ -17,6 +17,10 @@
 	border-radius: 20px;
 	z-index: 2;
 	background: var(--white);
+	> form {
+		width: 100%;
+		height: 100%;
+	}
 }
 
 .PasswordModal {

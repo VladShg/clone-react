@@ -1,46 +1,63 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import { useLazyLoginQuery } from '../../../../services/authApi'
 import { setToken } from '../../../../store/auth/authSlice'
 import Modal from '../Modal'
 import styles from './ModalLogin.module.scss'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import toast from 'react-hot-toast'
 
-export const PasswordWindow = function ({ login, setOpen }) {
-	const [warning, setWarning] = useState('')
-	const [password, setPassword] = useState('')
+const schema = yup
+	.object({
+		password: yup.string().required(),
+	})
+	.required()
+
+export const PasswordWindow = function ({ login, setLogin }) {
 	const [triggerLogin, { isLoading }] = useLazyLoginQuery()
 	const dispatch = useDispatch()
+	const {
+		register,
+		handleSubmit,
+		formState: { isValid },
+	} = useForm({
+		resolver: yupResolver(schema),
+		mode: 'onChange',
+	})
 
-	const submitLogin = async (e) => {
-		e.preventDefault()
-		const { data, isSuccess } = await triggerLogin({ login, password })
+	const onLogin = async (data) => {
+		const { response, isSuccess } = await triggerLogin({
+			login,
+			password: data.password,
+		})
 		if (isSuccess) {
-			dispatch(setToken(data.accessToken))
+			dispatch(setToken(response.accessToken))
 		} else {
-			setWarning('Wrong credentials')
+			toast.error('Wrong credentians', { position: 'bottom-center' })
 		}
 	}
 
 	return (
 		<div className={styles.PasswordContainer}>
-			<form onSubmit={submitLogin}>
+			<form onSubmit={handleSubmit(onLogin)}>
 				<div className={styles.PasswordModal}>
-					<Modal.Back onClick={() => setOpen(false)} />
+					<Modal.Back
+						onClick={() => setLogin((prev) => ({ ...prev, isOpen: false }))}
+					/>
 					<div className={styles.InputContainer}>
 						<Modal.SubTitle>Username or login</Modal.SubTitle>
 						<Modal.Input value={login} disabled />
 						<Modal.SubTitle>Password</Modal.SubTitle>
 						<Modal.Input
-							value={password}
-							placeholder="password"
 							type="password"
-							required
-							onChange={(e) => setPassword(e.target.value)}
+							placeholder="Password"
+							props={register('password')}
 						/>
-						<Modal.Warning>{warning}</Modal.Warning>
 					</div>
 					<div className={styles.SubmitContainer}>
-						<Modal.Button type="submit" disabled={isLoading}>
+						<Modal.Button type="submit" disabled={isLoading || !isValid}>
 							Submit
 						</Modal.Button>
 					</div>
