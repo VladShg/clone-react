@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { useLazyGoogleLoginQuery } from '../../../../services/authApi'
@@ -8,14 +9,39 @@ import GoogleAuth from '../../AuthService/GoogleAuth'
 import Modal from '../Modal'
 import styles from './ModalLogin.module.scss'
 import { PasswordWindow } from './PasswordWindow'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+const schema = yup
+	.object({
+		login: yup.string().required(),
+	})
+	.required()
 
 export default function ModalLogin({ isOpen, setOpen }) {
-	const [isPasswordOpen, setPasswordOpen] = useState(false)
-	const [login, setLogin] = useState('')
+	const [login, setLogin] = useState({ isOpen: false, value: '' })
 	const [triggerGooogleLogin] = useLazyGoogleLoginQuery()
 	const dispatch = useDispatch()
 
-	const onSignUp = async (googleResponse) => {
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { isValid },
+	} = useForm({
+		resolver: yupResolver(schema),
+		mode: 'onChange',
+	})
+
+	useEffect(() => {
+		if (!isOpen) {
+			reset()
+			setLogin({ isOpen: false, value: '' })
+		}
+		return () => {}
+	}, [isOpen])
+
+	const onLogin = async (googleResponse) => {
 		const token = googleResponse.accessToken
 		let { data, isSuccess } = await triggerGooogleLogin(token)
 		if (isSuccess) {
@@ -27,19 +53,18 @@ export default function ModalLogin({ isOpen, setOpen }) {
 		}
 	}
 
-	const openPasswordWindow = (e) => {
-		e.preventDefault()
-		setPasswordOpen(true)
+	const onSubmit = (data) => {
+		setLogin({ isOpen: true, value: data.login })
 	}
 
 	return (
 		<Modal isOpen={isOpen} setOpen={setOpen} className={styles.Modal}>
-			{isPasswordOpen && (
-				<PasswordWindow setOpen={setPasswordOpen} login={login} />
+			{login.isOpen && (
+				<PasswordWindow setLogin={setLogin} login={login.value} />
 			)}
 			<Modal.Logo />
 			<Modal.Close />
-			<GoogleAuth className={styles.Auth} onSignUp={onSignUp}>
+			<GoogleAuth className={styles.Auth} onSignUp={onLogin}>
 				Sign in with Google
 			</GoogleAuth>
 			<GitHubAuth className={styles.Auth} redirect="/auth/login/github">
@@ -47,14 +72,14 @@ export default function ModalLogin({ isOpen, setOpen }) {
 			</GitHubAuth>
 			<Modal.Description></Modal.Description>
 			<Modal.Separator>Or</Modal.Separator>
-			<form onSubmit={openPasswordWindow}>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<Modal.Input
 					placeholder="Username or login"
-					value={login}
-					required
-					onChange={(e) => setLogin(e.target.value)}
+					props={register('login')}
 				></Modal.Input>
-				<Modal.Button type="submit">Continue</Modal.Button>
+				<Modal.Button type="submit" disabled={!isValid}>
+					Continue
+				</Modal.Button>
 			</form>
 		</Modal>
 	)

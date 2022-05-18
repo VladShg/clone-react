@@ -122,9 +122,13 @@ Modal.DatePicker = function ModalDatePicker({ className, ...props }) {
 	)
 }
 
-Modal.Input = function ModalInput({ className, ...props }) {
+Modal.Input = function ModalInput({ className, props, ...other }) {
 	return (
-		<input className={classNames(className || '', styles.Input)} {...props} />
+		<input
+			className={classNames(className || '', styles.Input)}
+			{...props}
+			{...other}
+		/>
 	)
 }
 

@@ -8,18 +8,21 @@
 	},
 	"dependencies": {
 		"@faker-js/faker": "^6.3.1",
+		"@hookform/resolvers": "^2.8.10",
 		"@reduxjs/toolkit": "^1.8.1",
 		"classnames": "^2.3.1",
 		"js-cookie": "^3.0.1",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
 		"react-google-login": "^5.2.2",
+		"react-hook-form": "^7.31.1",
 		"react-hot-toast": "^2.2.0",
 		"react-redux": "^7.2.6",
 		"react-router-dom": "6",
 		"react-textarea-autosize": "^8.3.3",
 		"redux": "^4.2.0",
-		"spinners-react": "^1.0.7"
+		"spinners-react": "^1.0.7",
+		"yup": "^0.32.11"
 	},
 	"devDependencies": {
 		"@redux-devtools/core": "^3.12.0",
