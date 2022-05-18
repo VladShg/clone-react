@@ -14,6 +14,9 @@ import {
 } from '../../../../store/auth/registerSlice'
 import Modal from '../Modal'
 import styles from './ModalRegister.module.scss'
+import * as yup from 'yup'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 export default function ModalRegister({ isOpen, setOpen }) {
 	const { step } = useSelector(registerSelector)
@@ -35,61 +38,59 @@ export default function ModalRegister({ isOpen, setOpen }) {
 	)
 }
 
+const partOneSchema = yup.object({
+	name: yup.string().required('Name should not be empty'),
+	email: yup
+		.string()
+		.email('Wrong email')
+		.max(50)
+		.required('Email should not be empty'),
+	birth: yup
+		.date()
+		.required('Field is required')
+		.nullable()
+		.max(new Date(), 'Date should be less than or equal today')
+		.min(new Date(1900, 1, 1), 'Date is too old')
+		.transform(
+			(v) => (v instanceof Date && !isNaN(v) ? v : null),
+			'Enter a valid date'
+		),
+})
+
 function PartOne() {
-	const { name, email, birth } = useSelector(registerSelector).profile
 	const dispatch = useDispatch()
+	const {
+		register,
+		handleSubmit,
+		formState: { isValid, errors },
+	} = useForm({
+		resolver: yupResolver(partOneSchema),
+		mode: 'onChange',
+	})
 
-	let { data, isLoading, isFetching } = useValidateProfileQuery(
-		{ email: email },
-		{ skip: !email }
-	)
-
-	const isNotValidEmail = !isFetching && !isLoading && data && !data.isAvailable
-	const isNextDisabled = !birth || !email || !name || isNotValidEmail
+	const onSubmit = (data) => {
+		const { name, email, birth } = data
+		dispatch(nextStep())
+		dispatch(updateProfile({ name, email, birth }))
+	}
 
 	return (
-		<form
-			onSubmit={(e) => {
-				e.preventDefault()
-				dispatch(nextStep())
-			}}
-		>
+		<form onSubmit={handleSubmit(onSubmit)}>
 			<Modal.Logo />
 			<Modal.Close />
 			<Modal.Title>Create your account</Modal.Title>
-			<Modal.Input
-				required
-				maxLength="50"
-				value={name}
-				onChange={(e) => dispatch(updateProfile({ name: e.target.value }))}
-				placeholder="Name"
-				type="text"
-			/>
-
-			<Modal.Input
-				required
-				value={email}
-				maxLength="50"
-				onChange={(e) => dispatch(updateProfile({ email: e.target.value }))}
-				placeholder="Email"
-				type="email"
-			/>
-			<Modal.Warning>
-				{isNotValidEmail && 'Email has already been taken.'}
-			</Modal.Warning>
+			<Modal.Input props={register('name')} placeholder="Name" />
+			<Modal.Warning>{errors.name?.message}</Modal.Warning>
+			<Modal.Input props={register('email')} placeholder="Email" />
+			<Modal.Warning>{errors.email?.message}</Modal.Warning>
 			<Modal.SubTitle>Date of birth</Modal.SubTitle>
 			<Modal.Description>
 				This will not be shown publicly. Confirm your own age, even if this
 				account is for a business, a pet, or something else.
 			</Modal.Description>
-			<Modal.DatePicker
-				required
-				value={birth}
-				min="1900-01-01"
-				max={new Date().toISOString().slice(0, 10)}
-				onChange={(e) => dispatch(updateProfile({ birth: e.target.value }))}
-			/>
-			<Modal.Button disabled={isNextDisabled} type="submit">
+			<Modal.DatePicker props={register('birth')} />
+			<Modal.Warning>{errors.birth?.message}</Modal.Warning>
+			<Modal.Button disabled={!isValid} type="submit">
 				Next
 			</Modal.Button>
 		</form>

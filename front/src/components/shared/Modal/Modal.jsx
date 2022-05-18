@@ -112,12 +112,13 @@ Modal.Warning = function ModalWarning({ className, children, ...props }) {
 	)
 }
 
-Modal.DatePicker = function ModalDatePicker({ className, ...props }) {
+Modal.DatePicker = function ModalDatePicker({ className, props, ...other }) {
 	return (
 		<input
 			type="date"
 			className={classNames(className || '', styles.DatePicker)}
 			{...props}
+			{...other}
 		/>
 	)
 }
