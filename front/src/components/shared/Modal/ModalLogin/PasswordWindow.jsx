@@ -27,13 +27,13 @@ export const PasswordWindow = function ({ login, setLogin }) {
 		mode: 'onChange',
 	})
 
-	const onLogin = async (data) => {
-		const { response, isSuccess } = await triggerLogin({
+	const onLogin = async (input) => {
+		const { data, isError } = await triggerLogin({
 			login,
-			password: data.password,
+			password: input.password,
 		})
-		if (isSuccess) {
-			dispatch(setToken(response.accessToken))
+		if (!isError) {
+			dispatch(setToken(data.accessToken))
 		} else {
 			toast.error('Wrong credentians', { position: 'bottom-center' })
 		}
