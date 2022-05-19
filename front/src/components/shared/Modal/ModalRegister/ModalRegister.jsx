@@ -1,10 +1,7 @@
 import React from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-	useLazySignUpQuery,
-	useValidateProfileQuery,
-} from '../../../../services/authApi'
+import { useLazySignUpQuery } from '../../../../services/authApi'
 import { setToken } from '../../../../store/auth/authSlice'
 import {
 	nextStep,
@@ -12,6 +9,7 @@ import {
 	registerSelector,
 	updateProfile,
 } from '../../../../store/auth/registerSlice'
+import { validateEmail, validateUsername } from '../../../../utils/api'
 import Modal from '../Modal'
 import styles from './ModalRegister.module.scss'
 import * as yup from 'yup'
@@ -44,7 +42,10 @@ const partOneSchema = yup.object({
 		.string()
 		.email('Wrong email')
 		.max(50)
-		.required('Email should not be empty'),
+		.required('Email should not be empty')
+		.test('email-available', 'Email is taken', async (email) => {
+			return !!email && (await validateEmail(email))
+		}),
 	birth: yup
 		.date()
 		.required('Field is required')
@@ -59,6 +60,7 @@ const partOneSchema = yup.object({
 
 function PartOne() {
 	const dispatch = useDispatch()
+
 	const {
 		register,
 		handleSubmit,
@@ -69,9 +71,10 @@ function PartOne() {
 	})
 
 	const onSubmit = (data) => {
-		const { name, email, birth } = data
-		dispatch(nextStep())
+		let { name, email, birth } = data
+		birth = new Date(birth).toISOString()
 		dispatch(updateProfile({ name, email, birth }))
+		dispatch(nextStep())
 	}
 
 	return (
@@ -97,74 +100,84 @@ function PartOne() {
 	)
 }
 
+const partTwoSchema = yup
+	.object({
+		username: yup
+			.string()
+			.matches(
+				/^[\w]*$/,
+				'Only latin symbols, numbers or underscores are allowed'
+			)
+			.min(3, 'Username too short')
+			.max(20, 'Username too long')
+			.test('username-available', 'Username is taken', async (email) => {
+				return !!email && (await validateUsername(email))
+			})
+			.required('Username should not be empty'),
+	})
+	.required()
+
 function PartTwo() {
-	const { username } = useSelector(registerSelector).profile
-	const isValidUsername = /^[\w]{3,20}$/.test(username)
 	const dispatch = useDispatch()
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isValid },
+	} = useForm({
+		resolver: yupResolver(partTwoSchema),
+		mode: 'onChange',
+	})
 
-	let { data, isLoading, isFetching } = useValidateProfileQuery(
-		{ username: username },
-		{ skip: !isValidUsername }
-	)
-
-	const isAvailableUsername = data && data.isAvailable
-	const isNextDisabled = !username || !isAvailableUsername || !isValidUsername
-
-	let warning = ''
-	if (username && username.length < 3) {
-		warning = 'Username is too short'
-	} else if (username.length > 20) {
-		warning = 'Username is too long'
-	} else if (username && !isValidUsername) {
-		warning = 'Only latin symbols, numbers or underscores are allowed'
-	} else if (username && !isAvailableUsername) {
-		warning = 'Username is taken'
+	const onSubmit = (data) => {
+		dispatch(updateProfile({ username: data.username }))
+		dispatch(nextStep())
 	}
 
 	return (
-		<form
-			onSubmit={(e) => {
-				if (!isFetching && !isLoading) {
-					e.preventDefault()
-					dispatch(nextStep())
-				}
-			}}
-		>
+		<form onSubmit={handleSubmit(onSubmit)}>
 			<Modal.Back onClick={() => dispatch(previousStep())} />
 			<Modal.Logo />
 			<Modal.Title>Choose a username</Modal.Title>
 			<Modal.Input
 				type="text"
-				placeholder="username"
-				regex="^[\w]{3,20}$"
-				value={username}
-				onChange={(e) => dispatch(updateProfile({ username: e.target.value }))}
+				placeholder="Username"
+				props={register('username')}
 			/>
-			<Modal.Warning>{warning}</Modal.Warning>
-			<Modal.Button disabled={isNextDisabled}>Next</Modal.Button>
+			<Modal.Warning>{errors.username?.message}</Modal.Warning>
+			<Modal.Button disabled={!isValid}>Next</Modal.Button>
 		</form>
 	)
 }
 
+const partThreeResolver = yup
+	.object({
+		password: yup
+			.string()
+			.min(8, 'Password too short')
+			.max(40, 'Password too long')
+			.required('Password should not be empty'),
+		confirm: yup
+			.string()
+			.oneOf([yup.ref('password')], 'Passwords dont match')
+			.required('Confirm your password'),
+	})
+	.required()
+
 function PartThree() {
 	const state = useSelector(registerSelector)
-	const { password, passwordConfirm, googleId, gitHubId } = state.profile
+	const { googleId, gitHubId } = state.profile
 	const [triggerSignUp] = useLazySignUpQuery()
 	const dispatch = useDispatch()
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isValid },
+	} = useForm({
+		resolver: yupResolver(partThreeResolver),
+		mode: 'onChange',
+	})
 
-	let match = password && passwordConfirm && password === passwordConfirm
-	let warning = ''
-	if (password && passwordConfirm && !match) {
-		warning = "Passwords don't match"
-	}
-
-	const submitAuth = async (e) => {
-		e.preventDefault()
-		// eslint-disable-next-line no-unused-vars
-		let { passwordConfirm, ...profile } = Object.assign({}, state.profile)
-		if (!match) {
-			delete profile.password
-		}
+	const signUp = async (profile) => {
 		let { data, isSuccess } = await triggerSignUp(profile)
 		if (isSuccess) {
 			dispatch(setToken(data.accessToken))
@@ -175,37 +188,38 @@ function PartThree() {
 		}
 	}
 
+	const skipPassword = async () => {
+		await signUp(state.profile)
+	}
+
+	const onSubmit = async (input) => {
+		let profile = { ...state.profile, password: input.password }
+		await signUp(profile)
+	}
+
 	return (
-		<form onSubmit={submitAuth}>
+		<form onSubmit={handleSubmit(onSubmit)}>
 			<Modal.Back onClick={() => dispatch(previousStep())} />
 			<Modal.Logo />
 			<Modal.Title>Enter password</Modal.Title>
 			<Modal.Input
-				minLength={8}
-				maxLength={20}
 				placeholder="Password"
 				type="password"
-				onChange={(e) => {
-					dispatch(updateProfile({ password: e.target.value }))
-				}}
-				value={password}
+				props={register('password')}
 			/>
 			<Modal.Input
-				minLength={8}
-				maxLength={20}
 				placeholder="Confirm password"
 				type="password"
-				onChange={(e) => {
-					dispatch(updateProfile({ passwordConfirm: e.target.value }))
-				}}
-				value={passwordConfirm}
+				props={register('confirm')}
 			/>
-			<Modal.Warning>{warning}</Modal.Warning>
-			<Modal.Button type="submit" disabled={!match}>
+			<Modal.Warning>
+				{errors.password?.message || errors.confirm?.message}
+			</Modal.Warning>
+			<Modal.Button type="submit" disabled={!isValid}>
 				Submit
 			</Modal.Button>
 			{(googleId || gitHubId) && (
-				<Modal.Button type="submit">Skip</Modal.Button>
+				<Modal.Button onClick={skipPassword}>Skip</Modal.Button>
 			)}
 		</form>
 	)
