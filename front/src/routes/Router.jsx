@@ -36,6 +36,7 @@ export default function Router() {
 			<Routes>
 				<Route path="/" element={authLayout}>
 					<Route path="home" element={<Feed />} />
+					<Route path="" element={<Navigate to="/home" />} />
 					<Route path="profile/:username" element={<Profile />}>
 						<Route path="replies" element={<ProfileReplies />} />
 						<Route path="likes" element={<ProfileLikes />} />
