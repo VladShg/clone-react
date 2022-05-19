@@ -42,8 +42,9 @@ const registerSlice = createSlice({
 			state.profile.googleId = null
 			state.profile.gitHubId = null
 		},
-		nextStep(state) {
+		nextStep(state, action) {
 			state.step = Math.min(state.step + 1, REGISTER_STEPS)
+			state.profile = { ...state.profile, ...action.payload }
 		},
 		previousStep(state) {
 			state.step = Math.max(state.step - 1, 1)
