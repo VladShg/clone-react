@@ -51,7 +51,6 @@ export class AuthController {
 		@Body() data: SignUpDto,
 		@UploadedFile() avatar?: Express.Multer.File,
 	): Promise<TokenDto> {
-		avatar.filename;
 		const user = await this.authService.signUp(data);
 		const token = this.authService.generateToken(user);
 		return { accessToken: token };
