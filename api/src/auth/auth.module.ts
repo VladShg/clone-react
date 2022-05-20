@@ -6,6 +6,10 @@ import { JwtStrategy } from './jwt.straregy';
 import { GoogleController } from './controller/google.controller';
 import { GitHubController } from './controller/github.controller';
 import { PrismaModule } from '../prisma/prisma.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 @Module({
 	controllers: [AuthController, GoogleController, GitHubController],
@@ -15,6 +19,14 @@ import { PrismaModule } from '../prisma/prisma.module';
 		JwtModule.register({
 			secret: process.env.SECRET_KEY,
 			signOptions: { expiresIn: '24h' },
+		}),
+		MulterModule.register({
+			storage: diskStorage({
+				destination: './upload',
+				filename: (req, file, cb) => {
+					cb(null, `${uuidv4()}${extname(file.originalname)}`);
+				},
+			}),
 		}),
 	],
 	exports: [AuthService],

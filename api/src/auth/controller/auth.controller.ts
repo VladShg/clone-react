@@ -6,9 +6,12 @@ import {
 	Post,
 	Query,
 	Request,
+	UploadedFile,
 	UseGuards,
+	UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '@prisma/client';
 import { UserEntity } from '../../entity/user.entity';
 import { RequestWithUser } from '../../types/RequestWithUser';
@@ -43,7 +46,12 @@ export class AuthController {
 	}
 
 	@Post('/signup')
-	async signUp(@Body() data: SignUpDto): Promise<TokenDto> {
+	@UseInterceptors(FileInterceptor('avatar'))
+	async signUp(
+		@Body() data: SignUpDto,
+		@UploadedFile() avatar?: Express.Multer.File,
+	): Promise<TokenDto> {
+		avatar.filename;
 		const user = await this.authService.signUp(data);
 		const token = this.authService.generateToken(user);
 		return { accessToken: token };
