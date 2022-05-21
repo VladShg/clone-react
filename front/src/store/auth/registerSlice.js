@@ -11,12 +11,13 @@ const initialState = {
 		password: '',
 		passwordConfirm: '',
 		birth: '',
+		avatar: null,
 		googleId: null,
 		gitHubId: null,
 	},
 }
 
-const REGISTER_STEPS = 3
+const REGISTER_STEPS = 4
 
 const registerSlice = createSlice({
 	name: 'register',

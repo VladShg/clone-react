@@ -1,4 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit'
+import {
+	configureStore,
+	createSerializableStateInvariantMiddleware,
+} from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
 import { authApi } from '../services/authApi'
 import { tweetApi } from '../services/tweetApi'
@@ -19,6 +22,9 @@ export const rootStore = configureStore({
 			authApi.middleware,
 			userApi.middleware,
 			tweetApi.middleware,
+			createSerializableStateInvariantMiddleware({
+				ignoredPaths: ['authApi.mutations'],
+			}),
 		])
 	},
 })
