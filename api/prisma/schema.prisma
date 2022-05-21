@@ -19,6 +19,7 @@ model User {
   password String?
   googleId String?   @unique
   gitHubId Int?      @unique
+  avatar  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,7 +52,7 @@ model Tweet {
 
 model Like {
   id       String @id @default(uuid())
-  author   User   @relation(fields: [authorId], references: [id],  onDelete: Cascade)
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
   tweet    Tweet  @relation(fields: [tweetId], references: [id], onDelete: Cascade)
   tweetId  String

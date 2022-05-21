@@ -48,9 +48,13 @@ export class AuthController {
 	@Post('/signup')
 	@UseInterceptors(FileInterceptor('avatar'))
 	async signUp(
-		@Body() data: SignUpDto,
+		@Body() body: SignUpDto,
 		@UploadedFile() avatar?: Express.Multer.File,
 	): Promise<TokenDto> {
+		let data: SignUpDto = body;
+		if (avatar) {
+			data = { ...data, avatar: avatar.filename };
+		}
 		const user = await this.authService.signUp(data);
 		const token = this.authService.generateToken(user);
 		return { accessToken: token };

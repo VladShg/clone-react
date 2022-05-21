@@ -23,7 +23,7 @@ export const authApi = createApi({
 				}
 			},
 		}),
-		signUp: builder.query({
+		signUp: builder.mutation({
 			query: (body) => {
 				return {
 					url: '/signup',
@@ -94,7 +94,7 @@ export const {
 	useLazyLoginQuery,
 	useLazyGitHubLoginQuery,
 	useLazyGoogleLoginQuery,
-	useLazySignUpQuery,
+	useSignUpMutation,
 	useLazyGoogleConnectQuery,
 	useLazyGitHubConnectQuery,
 	useValidateProfileQuery,

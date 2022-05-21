@@ -17,6 +17,7 @@ export const userApi = createApi({
 				return {
 					url: '/user/' + username,
 					method: 'GET',
+					headers: {}
 				}
 			},
 		}),

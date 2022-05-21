@@ -21,6 +21,9 @@ export class UserEntity implements User {
 	@Exclude()
 	gitHubId: number | null;
 
+	@Exclude()
+	avatar: string | null;
+
 	createdAt: Date;
 	updatedAt: Date;
 

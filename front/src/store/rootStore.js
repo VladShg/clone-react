@@ -23,7 +23,7 @@ export const rootStore = configureStore({
 			userApi.middleware,
 			tweetApi.middleware,
 			createSerializableStateInvariantMiddleware({
-				ignoredPaths: ['authApi.mutations'],
+				ignoredPaths: ['authApi.queries.signUp'],
 			}),
 		])
 	},
