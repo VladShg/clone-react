@@ -1,0 +1,11 @@
+{
+	"allowSyntheticDefaultImports": true,
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@store/*": ["./src/store/*"],
+			"@services/*": ["./src/services/*"],
+			"@utils/*": ["./src/utils/*"]
+		}
+	}
+}
