@@ -1,9 +1,13 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { nextStep, updateProfile } from '@store/auth/registerSlice'
+import {
+	nextStep,
+	registerSelector,
+	updateProfile,
+} from '@store/auth/registerSlice'
 import Modal from '../../Modal'
 import { validateEmail } from '@utils/api'
 
@@ -31,6 +35,7 @@ const schema = yup.object({
 
 export default function InitialStep() {
 	const dispatch = useDispatch()
+	const profile = useSelector(registerSelector).profile
 
 	const {
 		register,
@@ -43,7 +48,11 @@ export default function InitialStep() {
 
 	const onSubmit = (data) => {
 		let { name, email, birth } = data
-		birth = new Date(birth).toISOString()
+		let month = ('0' + (1 + birth.getMonth())).slice(-2)
+		let day = ('0' + birth.getDate()).slice(-2)
+		let year = birth.getFullYear()
+		console.log(birth, `${year}-${month}-${day}`)
+		birth = `${year}-${month}-${day}`
 		dispatch(updateProfile({ name, email, birth }))
 		dispatch(nextStep())
 	}
@@ -53,16 +62,27 @@ export default function InitialStep() {
 			<Modal.Logo />
 			<Modal.Close />
 			<Modal.Title>Create your account</Modal.Title>
-			<Modal.Input props={register('name')} placeholder="Name" />
+			<Modal.Input
+				props={register('name')}
+				defaultValue={profile.name}
+				placeholder="Name"
+			/>
 			<Modal.Warning>{errors.name?.message}</Modal.Warning>
-			<Modal.Input props={register('email')} placeholder="Email" />
+			<Modal.Input
+				props={register('email')}
+				defaultValue={profile.email}
+				placeholder="Email"
+			/>
 			<Modal.Warning>{errors.email?.message}</Modal.Warning>
 			<Modal.SubTitle>Date of birth</Modal.SubTitle>
 			<Modal.Description>
 				This will not be shown publicly. Confirm your own age, even if this
 				account is for a business, a pet, or something else.
 			</Modal.Description>
-			<Modal.DatePicker props={register('birth')} />
+			<Modal.DatePicker
+				props={register('birth')}
+				defaultValue={profile.birth ? profile.birth.slice(0, 10) : ''}
+			/>
 			<Modal.Warning>{errors.birth?.message}</Modal.Warning>
 			<Modal.Button disabled={!isValid} type="submit">
 				Next
