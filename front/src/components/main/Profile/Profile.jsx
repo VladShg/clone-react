@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink, Outlet, useParams } from 'react-router-dom'
-import { useGetUserQuery } from '../../../services/userApi'
+import { useGetAvatarQuery, useGetUserQuery } from '../../../services/userApi'
 import styles from './Profile.module.scss'
 import Spinner from '../../shared/Spinner/Spinner'
 import Avatar from '../../shared/Avatar/Avatar'
@@ -9,8 +9,10 @@ import classNames from 'classnames'
 export default function Profile() {
 	const username = useParams().username
 	const { data: profile, isLoading } = useGetUserQuery(username)
+	const { data: avatar, isLoading: isAvatarLoading } =
+		useGetAvatarQuery(username)
 
-	if (isLoading || !profile) {
+	if (isLoading || !profile || isAvatarLoading) {
 		return (
 			<div className={styles.SpinnerContainer}>
 				<Spinner className={styles.Spinner} />
@@ -22,7 +24,7 @@ export default function Profile() {
 		<div>
 			<div className={styles.Background}></div>
 			<div className={styles.Profile}>
-				<Avatar className={styles.Avatar} src="" size="130" />
+				<Avatar className={styles.Avatar} image={avatar.image} size="130" />
 				<div>
 					<span className={styles.Name}>{profile.name}</span>
 					<span className={styles.Username}>@{profile.username}</span>

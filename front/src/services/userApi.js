@@ -17,11 +17,18 @@ export const userApi = createApi({
 				return {
 					url: '/user/' + username,
 					method: 'GET',
-					headers: {}
+				}
+			},
+		}),
+		getAvatar: builder.query({
+			query: (username) => {
+				return {
+					url: `/user/${username}/avatar`,
+					method: 'GET',
 				}
 			},
 		}),
 	}),
 })
 
-export const { useGetUserQuery } = userApi
+export const { useGetUserQuery, useGetAvatarQuery } = userApi

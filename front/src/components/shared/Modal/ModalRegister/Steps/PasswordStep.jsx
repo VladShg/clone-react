@@ -37,8 +37,6 @@ export default function PasswordStep({ image }) {
 		mode: 'onChange',
 	})
 
-	console.log(image)
-
 	const signUp = async (profile) => {
 		const toastError = () => {
 			toast.error('Failed to register, please try again', {
