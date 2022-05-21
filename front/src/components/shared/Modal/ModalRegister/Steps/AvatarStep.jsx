@@ -17,6 +17,7 @@ export default function AvatarStep({ image, setImage }) {
 			return
 		}
 		const file = e.target.files[0]
+		e.target.value = null
 		if (file) {
 			setImage(file)
 		}
