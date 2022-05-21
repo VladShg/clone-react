@@ -12,7 +12,7 @@ import { useEffect } from 'react'
 export default function ModalRegister({ isOpen, setOpen }) {
 	const { step } = useSelector(registerSelector)
 	const [image, setImage] = useState(null)
-	const handlers = [InitialStep, AvatarStep, UsernameStep, PasswordStep]
+	const handlers = [InitialStep, UsernameStep, AvatarStep, PasswordStep]
 	const Current = handlers[step - 1]
 
 	useEffect(() => {

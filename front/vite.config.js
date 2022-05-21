@@ -12,6 +12,7 @@ export default defineConfig({
 			{ find: '@store', replacement: resolve(rootDir, './src/store') },
 			{ find: '@services', replacement: resolve(rootDir, './src/services') },
 			{ find: '@utils', replacement: resolve(rootDir, './src/utils') },
+			{ find: '@hooks', replacement: resolve(rootDir, './src/hooks') },
 		],
 	},
 })

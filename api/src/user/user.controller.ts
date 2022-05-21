@@ -1,14 +1,6 @@
-import {
-	Controller,
-	Get,
-	HttpException,
-	HttpStatus,
-	Param,
-	StreamableFile,
-	UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { createReadStream, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 import { UserEntity } from '../entity/user.entity';
 import { AvatarDto } from './dto/avatar.dto';

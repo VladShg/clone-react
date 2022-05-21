@@ -10,7 +10,7 @@ Avatar.propTypes = {
 }
 
 export default function Avatar({
-	image,
+	src,
 	className,
 	alignCenter,
 	alignBottom,
@@ -22,15 +22,16 @@ export default function Avatar({
 		[className]: !!className,
 	})
 
-	const style = { width: size + 'px', height: size + 'px' }
-	if (image) {
-		image = `data:image/png;base64, ${image}`
+	const style = {
+		width: size + 'px',
+		height: size + 'px',
 	}
-	console.log(image)
+	if (src) {
+		style.backgroundImage = `url('${src}')`
+	}
 
 	return (
 		<div className={classes}>
-			{image && <img style={style} src={image} />}
 			<div style={style} className={styles.Skeleton} />
 		</div>
 	)

@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import {
 	IsDateString,
 	IsEmail,
@@ -34,6 +34,7 @@ export class SignUpDto implements Prisma.UserCreateInput {
 	@IsOptional()
 	googleId?: string;
 
+	@Transform(({ value }) => (value ? Number.parseInt(value) : null))
 	@IsNumber()
 	@IsOptional()
 	gitHubId: number;

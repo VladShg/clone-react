@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react'
 import config from '../config'
+import { tweetApi } from './tweetApi'
 
 export const authApi = createApi({
 	reducerPath: 'authApi',
@@ -89,6 +90,9 @@ export const authApi = createApi({
 		}),
 	}),
 })
+
+// TODO refactor with toolkit
+export const logoutCleanup = () => tweetApi.util.invalidateTags(['Relation'])
 
 export const {
 	useLazyLoginQuery,

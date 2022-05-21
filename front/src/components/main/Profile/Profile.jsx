@@ -24,7 +24,7 @@ export default function Profile() {
 		<div>
 			<div className={styles.Background}></div>
 			<div className={styles.Profile}>
-				<Avatar className={styles.Avatar} image={avatar.image} size="130" />
+				<Avatar className={styles.Avatar} src={avatar} size="130" />
 				<div>
 					<span className={styles.Name}>{profile.name}</span>
 					<span className={styles.Username}>@{profile.username}</span>

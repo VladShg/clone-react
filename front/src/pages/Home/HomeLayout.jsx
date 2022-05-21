@@ -9,7 +9,6 @@ import Account from '../../components/shared/Account/Account'
 import Modal from '../../components/shared/Modal/Modal'
 import WriteTweet from '../../components/shared/WriteTweet/WriteTweet'
 import toast, { Toaster } from 'react-hot-toast'
-import { useCreateMutation } from '../../services/tweetApi'
 export default function HomeLayout() {
 	const { user } = useSelector(authSelector)
 	const [isOpen, setOpen] = useState(false)

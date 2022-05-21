@@ -5,17 +5,14 @@ import styles from './Account.module.scss'
 import Avatar from '../Avatar/Avatar'
 import classNames from 'classnames'
 import { Link } from 'react-router-dom'
+import { logoutCleanup } from '../../../services/authApi'
 
-export default function Account() {
-	const { user } = useSelector(authSelector)
-	const { name, username, avatar } = user || {}
+function AccountSkeleton({ name, username, avatar, hasMenu = false }) {
 	const [menuOpen, setMenuOpen] = useState(false)
 	const dispatch = useDispatch()
-
-	if (!user) {
-		return null
+	const toggleMenu = () => {
+		if (hasMenu) setMenuOpen(!menuOpen)
 	}
-
 	function Container({ children, className, ...props }) {
 		return (
 			<div
@@ -39,33 +36,69 @@ export default function Account() {
 		return <span className={styles.Username}>{'@' + username}</span>
 	}
 
+	let mainContainer = classNames({ [styles.Interactive]: hasMenu })
+
 	return (
 		<div className={styles.Wrapper}>
-			<div className={classNames(styles.DropDown, { [styles.Open]: menuOpen })}>
-				<Container className={styles.InnerContainer}>
-					<Avatar src={avatar} />
-					<Descryption>
-						<Name name={name} />
-						<Username username={username} />
-					</Descryption>
-				</Container>
-				<Link className={styles.Item} to={`/profile/${user.username}`}>
-					Edit profile
-				</Link>
-				<button className={styles.Item} onClick={() => dispatch(logout())}>
-					Log out from @{username}
-				</button>
-			</div>
-			<Container onClick={() => setMenuOpen(!menuOpen)}>
+			{hasMenu && (
+				<div
+					className={classNames(styles.DropDown, { [styles.Open]: menuOpen })}
+				>
+					<Container className={styles.InnerContainer}>
+						<Avatar src={avatar} />
+						<Descryption>
+							<Name name={name} />
+							<Username username={username} />
+						</Descryption>
+					</Container>
+					<Link className={styles.Item} to={`/profile/${username}`}>
+						Edit profile
+					</Link>
+					<button
+						className={styles.Item}
+						onClick={() => {
+							dispatch(logout())
+							dispatch(logoutCleanup())
+						}}
+					>
+						Log out from @{username}
+					</button>
+				</div>
+			)}
+			<Container onClick={toggleMenu} className={mainContainer}>
 				<Avatar src={avatar} />
 				<Descryption>
-					<div className={styles.Icon}>
-						<i className="fa-solid fa-ellipsis"></i>
-					</div>
+					{hasMenu && (
+						<div className={styles.Icon}>
+							<i className="fa-solid fa-ellipsis"></i>
+						</div>
+					)}
 					<Name name={name} />
 					<Username username={username} />
 				</Descryption>
 			</Container>
 		</div>
 	)
+}
+
+export default function Account() {
+	const { user } = useSelector(authSelector)
+	const { name, username } = user || {}
+
+	if (!user) {
+		return null
+	}
+
+	return (
+		<AccountSkeleton
+			name={name}
+			username={username}
+			avatar={user.avatar}
+			hasMenu
+		/>
+	)
+}
+
+export function AccountPreview({ name, username, avatar }) {
+	return <AccountSkeleton name={name} username={username} avatar={avatar} />
 }

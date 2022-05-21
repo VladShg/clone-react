@@ -1,12 +1,13 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { validateUsername } from '@utils/api'
 import {
 	nextStep,
 	previousStep,
+	registerSelector,
 	updateProfile,
 } from '@store/auth/registerSlice'
 import Modal from '../../Modal'
@@ -30,6 +31,7 @@ const schema = yup
 
 export default function UsernameStep() {
 	const dispatch = useDispatch()
+	const profile = useSelector(registerSelector).profile
 	const {
 		register,
 		handleSubmit,
@@ -52,6 +54,7 @@ export default function UsernameStep() {
 			<Modal.Input
 				type="text"
 				placeholder="Username"
+				defaultValue={profile.username}
 				props={register('username')}
 			/>
 			<Modal.Warning>{errors.username?.message}</Modal.Warning>

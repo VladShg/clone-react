@@ -51,7 +51,6 @@ export default function InitialStep() {
 		let month = ('0' + (1 + birth.getMonth())).slice(-2)
 		let day = ('0' + birth.getDate()).slice(-2)
 		let year = birth.getFullYear()
-		console.log(birth, `${year}-${month}-${day}`)
 		birth = `${year}-${month}-${day}`
 		dispatch(updateProfile({ name, email, birth }))
 		dispatch(nextStep())

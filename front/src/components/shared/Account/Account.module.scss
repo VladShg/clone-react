@@ -9,7 +9,9 @@
 	border-radius: 9999px;
 	margin: 10px 0;
 	transition: 0.2s ease background;
+}
 
+.Interactive {
 	&:hover {
 		background: var(--gray-fade);
 		cursor: pointer;
@@ -61,7 +63,7 @@
 		padding: 20px 10px;
 		width: 100%;
 		text-align: start;
-		transition: color 0.2s, background-color 0.2s ;
+		transition: color 0.2s, background-color 0.2s;
 		color: var(--black);
 		font-family: Manrope, serif;
 		font-size: 16px;

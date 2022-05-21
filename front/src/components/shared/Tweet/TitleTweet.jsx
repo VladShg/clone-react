@@ -1,11 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import {
-	useGetTweetQuery,
-	useTweetRelationsQuery,
-} from '../../../services/tweetApi'
-import { authSelector } from '../../../store/auth/authSlice'
+import useTweet from '@hooks/useTweet'
+import { authSelector } from '@store/auth/authSlice'
 import Avatar from '../Avatar/Avatar'
 import {
 	CreatedAt,
@@ -20,20 +17,11 @@ import {
 import styles from './TitleTweet.module.scss'
 
 export default function TitleTweet({ id }) {
-	let { data, isLoading } = useGetTweetQuery(id)
-	const { data: relations, isLoading: isRelationLoading } =
-		useTweetRelationsQuery(data?.isRetweet ? data?.tweetId : data?.id, {
-			skip: !data,
-		})
+	const { user } = useSelector(authSelector)
+	const { isLoading, tweet, relations } = useTweet({ id })
 
-	if (isLoading || isRelationLoading || !data.id || !relations) {
+	if (isLoading || !user) {
 		return null
-	}
-
-	let tweet = data
-	let isRetweet = data.isRetweet
-	if (isRetweet) {
-		tweet = data.tweet
 	}
 
 	return (
@@ -62,7 +50,7 @@ function Body({ tweet, relations }) {
 			{isAuthor && <DeleteTweet id={tweet.id} />}
 			<div className={styles.Head}>
 				<div className={styles.Author}>
-					<Avatar src="" />
+					<Avatar src={tweet.author.avatar} />
 					<div className={styles.Credentials}>
 						<Name>{tweet.author.name}</Name>
 						<Username>{tweet.author.username}</Username>

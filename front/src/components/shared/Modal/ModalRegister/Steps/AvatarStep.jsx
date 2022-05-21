@@ -1,11 +1,17 @@
 import React from 'react'
-import { nextStep, previousStep } from '@store/auth/registerSlice'
+import {
+	nextStep,
+	previousStep,
+	registerSelector,
+} from '@store/auth/registerSlice'
 import Modal from '../../Modal'
 import styles from '../ModalRegister.module.scss'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { AccountPreview } from '../../../Account/Account'
 
 export default function AvatarStep({ image, setImage }) {
 	const dispatch = useDispatch()
+	const { name, username } = useSelector(registerSelector).profile
 	const onSubmit = (e) => {
 		e.preventDefault()
 		dispatch(nextStep())
@@ -23,19 +29,7 @@ export default function AvatarStep({ image, setImage }) {
 		}
 	}
 
-	let contentRow = null
-	if (image) {
-		contentRow = (
-			<>
-				<span title={image.name} className={styles.Name}>
-					{image.name}
-				</span>
-				<button title="Clear" onClick={onReset} className={styles.Clear}>
-					<i className="fa-solid fa-xmark" />
-				</button>
-			</>
-		)
-	}
+	let src = image ? URL.createObjectURL(image) : ''
 
 	return (
 		<form onSubmit={onSubmit}>
@@ -49,7 +43,14 @@ export default function AvatarStep({ image, setImage }) {
 				onChange={onChange}
 				placeholder="Upload profile picture"
 			/>
-			<div className={styles.AvatarPlaceholder}>{contentRow}</div>
+			<div className={styles.AvatarPlaceholder}>
+				<AccountPreview username={username} name={name} avatar={src} />
+				{image && (
+					<button title="Clear" onClick={onReset} className={styles.Clear}>
+						<i className="fa-solid fa-xmark" />
+					</button>
+				)}
+			</div>
 			<Modal.Button type="submit">{image ? 'Continue' : 'Skip'}</Modal.Button>
 		</form>
 	)

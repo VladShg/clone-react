@@ -3,7 +3,7 @@ import config from '../config'
 
 export const tweetApi = createApi({
 	reducerPath: 'tweetApi',
-	tagTypes: ['Tweet', 'Reply'],
+	tagTypes: ['Tweet', 'Reply', 'Relation'],
 	baseQuery: fetchBaseQuery({
 		baseUrl: `${config.API_URL}/tweet`,
 		prepareHeaders: (headers, { getState }) => {
@@ -149,7 +149,10 @@ export const tweetApi = createApi({
 					method: 'GET',
 				}
 			},
-			providesTags: (res, error, arg) => [{ type: 'Tweet', id: arg }],
+			providesTags: (res, error, arg) => [
+				{ type: 'Tweet', id: arg },
+				{ type: 'Relation' },
+			],
 		}),
 		retweet: builder.mutation({
 			query: (id) => {

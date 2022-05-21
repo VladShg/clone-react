@@ -5,6 +5,10 @@ import {
 	useGetTweetQuery,
 	useTweetRelationsQuery,
 } from '../../../services/tweetApi'
+import {
+	useGetAvatarQuery,
+	useLazyGetAvatarQuery,
+} from '../../../services/userApi'
 import { authSelector } from '../../../store/auth/authSlice'
 import { formatTimeDelta } from '../../../utils/date'
 import Avatar from '../Avatar/Avatar'
@@ -22,12 +26,16 @@ import styles from './Tweet.module.scss'
 
 export default function Tweet({ id }) {
 	let { data, isLoading } = useGetTweetQuery(id)
+	let { data: avatar, isLoading: isAvatarLoading } = useGetAvatarQuery(
+		data?.author?.username,
+		{ skip: isLoading }
+	)
 	const { data: relations, isLoading: isRelationLoading } =
 		useTweetRelationsQuery(data?.isRetweet ? data?.tweetId : data?.id, {
-			skip: !data,
+			skip: isLoading,
 		})
 
-	if (isLoading || isRelationLoading || !data.id || !relations) {
+	if (isLoading || isRelationLoading || isAvatarLoading) {
 		return null
 	}
 
@@ -35,6 +43,7 @@ export default function Tweet({ id }) {
 	if (data.isRetweet) {
 		tweet = data.tweet
 	}
+	tweet = { ...tweet, author: { ...tweet.author, avatar } }
 
 	return (
 		<div className={styles.Container}>
@@ -84,7 +93,7 @@ function Body({ tweet, relations }) {
 	return (
 		<>
 			<div className={styles.Avatar}>
-				<Avatar src="" />
+				<Avatar src={tweet.author.avatar} />
 			</div>
 			<div className={styles.Content}>
 				{isAuthor && <DeleteTweet id={tweet.id} />}
