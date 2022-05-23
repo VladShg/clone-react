@@ -25,6 +25,7 @@ const userData: User = {
 	createdAt: new Date(),
 	updatedAt: new Date(),
 	avatar: null,
+	background: null,
 };
 
 async function resetDatabase(prisma: PrismaService) {
