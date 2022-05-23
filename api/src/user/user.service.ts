@@ -10,6 +10,10 @@ export class UserService {
 		return this.prisma.user.findUnique({ where: { username } });
 	}
 
+	async update(username: string, data: Prisma.UserUpdateInput): Promise<User> {
+		return await this.prisma.user.update({ data: data, where: { username } });
+	}
+
 	async findOne(where: Prisma.UserWhereUniqueInput): Promise<User | null> {
 		return this.prisma.user.findUnique({ where });
 	}

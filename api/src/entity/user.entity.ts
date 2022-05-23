@@ -24,6 +24,9 @@ export class UserEntity implements User {
 	@Exclude()
 	avatar: string | null;
 
+	@Exclude()
+	background: string | null;
+
 	createdAt: Date;
 	updatedAt: Date;
 

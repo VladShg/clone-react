@@ -23,6 +23,11 @@ export default function useTweet({ id }) {
 		target = { ...target, author: { ...target.author, avatar } }
 	}
 
-	console.log(target)
-	return { isLoading, tweet: target, relations }
+	return {
+		isLoading,
+		tweet: target,
+		relations,
+		isRetweet: tweet?.isRetweet,
+		isReply: tweet?.isReply,
+	}
 }

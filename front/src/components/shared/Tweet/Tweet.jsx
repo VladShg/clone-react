@@ -1,16 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import {
-	useGetTweetQuery,
-	useTweetRelationsQuery,
-} from '../../../services/tweetApi'
-import {
-	useGetAvatarQuery,
-	useLazyGetAvatarQuery,
-} from '../../../services/userApi'
-import { authSelector } from '../../../store/auth/authSlice'
-import { formatTimeDelta } from '../../../utils/date'
+import useTweet from '../../../hooks/useTweet'
+import { authSelector } from '@store/auth/authSlice'
+import { formatTimeDelta } from '@utils/date'
 import Avatar from '../Avatar/Avatar'
 import {
 	CreatedAt,
@@ -25,30 +18,16 @@ import {
 import styles from './Tweet.module.scss'
 
 export default function Tweet({ id }) {
-	let { data, isLoading } = useGetTweetQuery(id)
-	let { data: avatar, isLoading: isAvatarLoading } = useGetAvatarQuery(
-		data?.author?.username,
-		{ skip: isLoading }
-	)
-	const { data: relations, isLoading: isRelationLoading } =
-		useTweetRelationsQuery(data?.isRetweet ? data?.tweetId : data?.id, {
-			skip: isLoading,
-		})
+	let { tweet, relations, isLoading, isRetweet, isReply } = useTweet({ id })
 
-	if (isLoading || isRelationLoading || isAvatarLoading) {
+	if (isLoading) {
 		return null
 	}
 
-	let tweet = data
-	if (data.isRetweet) {
-		tweet = data.tweet
-	}
-	tweet = { ...tweet, author: { ...tweet.author, avatar } }
-
 	return (
 		<div className={styles.Container}>
-			{data.isRetweet && <RetweetBadge author={tweet.author} />}
-			{data.isReply && <ReplyBadge tweet={tweet.replyTo} />}
+			{isRetweet && <RetweetBadge author={tweet.author} />}
+			{isReply && <ReplyBadge tweet={tweet.replyTo} />}
 			<Link
 				className={styles.Link}
 				to={`/status/${tweet.author.username}/${tweet.id}`}

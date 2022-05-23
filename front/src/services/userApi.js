@@ -35,8 +35,24 @@ export const userApi = createApi({
 			},
 			providesTags: (result, error, username) => ['User', username],
 		}),
+		getBackground: builder.query({
+			query: (username) => {
+				return {
+					url: `/user/${username}/background`,
+					method: 'GET',
+				}
+			},
+			transformResponse: (res) => {
+				return base64decode(res?.image)
+			},
+			providesTags: (result, error, username) => ['User', username],
+		}),
 	}),
 })
 
-export const { useGetUserQuery, useGetAvatarQuery, useLazyGetAvatarQuery } =
-	userApi
+export const {
+	useGetUserQuery,
+	useGetAvatarQuery,
+	useGetBackgroundQuery,
+	useLazyGetAvatarQuery,
+} = userApi

@@ -1,6 +1,6 @@
 import { IsBase64, IsString } from 'class-validator';
 
-export class AvatarDto {
+export class ImageDto {
 	@IsBase64()
 	@IsString()
 	image: string;

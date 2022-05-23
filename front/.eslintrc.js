@@ -21,6 +21,7 @@ module.exports = {
 		'arrow-body-style': 'off',
 		'prefer-arrow-callback': 'off',
 		'react/prop-types': 'off',
+		'no-console': 'error',
 	},
 	ignorePatterns: ['.eslintrc.js'],
 }

@@ -151,7 +151,7 @@ export const tweetApi = createApi({
 			},
 			providesTags: (res, error, arg) => [
 				{ type: 'Tweet', id: arg },
-				{ type: 'Relation' },
+				'Relation',
 			],
 		}),
 		retweet: builder.mutation({

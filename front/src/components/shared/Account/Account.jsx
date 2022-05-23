@@ -4,8 +4,6 @@ import { authSelector, logout } from '../../../store/auth/authSlice'
 import styles from './Account.module.scss'
 import Avatar from '../Avatar/Avatar'
 import classNames from 'classnames'
-import { Link } from 'react-router-dom'
-import { logoutCleanup } from '../../../services/authApi'
 
 function AccountSkeleton({ name, username, avatar, hasMenu = false }) {
 	const [menuOpen, setMenuOpen] = useState(false)
@@ -51,14 +49,10 @@ function AccountSkeleton({ name, username, avatar, hasMenu = false }) {
 							<Username username={username} />
 						</Descryption>
 					</Container>
-					<Link className={styles.Item} to={`/profile/${username}`}>
-						Edit profile
-					</Link>
 					<button
 						className={styles.Item}
 						onClick={() => {
 							dispatch(logout())
-							dispatch(logoutCleanup())
 						}}
 					>
 						Log out from @{username}
