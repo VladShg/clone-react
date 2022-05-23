@@ -1,10 +1,10 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { useUserTweetsQuery } from '../../../services/tweetApi'
-import { authSelector } from '../../../store/auth/authSlice'
-import Spinner from '../../shared/Spinner/Spinner'
-import Tweet from '../../shared/Tweet/Tweet'
+import { useUserTweetsQuery } from '@services/tweetApi'
+import { authSelector } from '@store/auth/authSlice'
+import Spinner from '@shared/Spinner/Spinner'
+import Tweet from '@shared/Tweet/Tweet'
 import styles from './Profile.module.scss'
 
 export default function ProfileTweets() {
