@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useLazyGitHubLoginQuery } from '../../services/authApi'
-import { setToken } from '../../store/auth/authSlice'
-import Spinner from '../../components/shared/Spinner/Spinner'
+import { useLazyGitHubLoginQuery } from '@services/authApi'
+import { setToken } from '@store/auth/authSlice'
+import Spinner from '@shared/Spinner/Spinner'
 import styles from './GitHubLogin.module.scss'
 
 export default function GitHubLogin() {

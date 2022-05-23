@@ -6,7 +6,9 @@
 			"@store/*": ["./src/store/*"],
 			"@services/*": ["./src/services/*"],
 			"@utils/*": ["./src/utils/*"],
-			"@hooks/*": ["./src/hooks/*"]
+			"@hooks/*": ["./src/hooks/*"],
+			"@pages/*": ["./src/components/pages/*"],
+			"@shared/*": ["./src/components/shared/*"],
 		}
 	}
 }

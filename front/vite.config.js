@@ -2,17 +2,20 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 
-const rootDir = resolve(__dirname)
+const root = resolve(__dirname)
+const components = resolve(__dirname, './src/components/')
 
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [react()],
 	resolve: {
 		alias: [
-			{ find: '@store', replacement: resolve(rootDir, './src/store') },
-			{ find: '@services', replacement: resolve(rootDir, './src/services') },
-			{ find: '@utils', replacement: resolve(rootDir, './src/utils') },
-			{ find: '@hooks', replacement: resolve(rootDir, './src/hooks') },
+			{ find: '@store', replacement: resolve(root, './src/store') },
+			{ find: '@services', replacement: resolve(root, './src/services') },
+			{ find: '@utils', replacement: resolve(root, './src/utils') },
+			{ find: '@hooks', replacement: resolve(root, './src/hooks') },
+			{ find: '@shared', replacement: resolve(components, './shared') },
+			{ find: '@pages', replacement: resolve(components, './pages') },
 		],
 	},
 })

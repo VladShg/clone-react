@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import classNames from 'classnames'
-import HomeLink from '../../components/shared/HomeLink/HomeLink'
+import HomeLink from '@shared/HomeLink/HomeLink'
 import styles from './HomeLayout.module.scss'
 import { Link, Outlet } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { authSelector } from '../../store/auth/authSlice'
-import Account from '../../components/shared/Account/Account'
-import Modal from '../../components/shared/Modal/Modal'
-import WriteTweet from '../../components/shared/WriteTweet/WriteTweet'
+import { authSelector } from '@store/auth/authSlice'
+import Account from '@shared/Account/Account'
+import Modal from '@shared/Modal/Modal'
+import WriteTweet from '@shared/WriteTweet/WriteTweet'
 import toast, { Toaster } from 'react-hot-toast'
 export default function HomeLayout() {
 	const { user } = useSelector(authSelector)

@@ -6,17 +6,17 @@ import {
 	Route,
 	Routes,
 } from 'react-router-dom'
-import GitHubLogin from '../pages/GitHubLogin/GitHubLogin'
-import HomeLayout from '../pages/Home/HomeLayout'
-import Login from '../pages/Login/Login'
-import Feed from '../components/main/Feed/Feed'
+import GitHubLogin from '@pages/GitHubLogin/GitHubLogin'
+import HomeLayout from '@pages/Home/HomeLayout'
+import Login from '@pages/Login/Login'
+import Feed from '@pages/Feed/Feed'
 import AuthRoute from './AuthRoute'
 import PublicRoute from './PublicRoute'
-import Profile from '../components/main/Profile/Profile'
-import ProfileTweets from '../components/main/Profile/ProfileTweets'
-import ProfileLikes from '../components/main/Profile/ProfileLikes'
-import Status from '../components/main/Status/Status'
-import ProfileReplies from '../components/main/Profile/ProfileReplies'
+import Profile from '@pages/Profile/Profile'
+import ProfileTweets from '@pages/Profile/ProfileTweets'
+import ProfileLikes from '@pages/Profile/ProfileLikes'
+import ProfileReplies from '@pages/Profile/ProfileReplies'
+import Status from '@pages/Status/Status'
 
 export default function Router() {
 	const authLayout = (

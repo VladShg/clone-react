@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import styles from './Login.module.scss'
-import backgroundImage from '../../media/background/painted.png'
+import backgroundImage from '../../../media/background/painted.png'
 import classNames from 'classnames'
 import {
 	useLazyGitHubConnectQuery,
 	useLazyGoogleConnectQuery,
-} from './../../services/authApi'
+} from '@services/authApi'
 import { useSearchParams } from 'react-router-dom'
-import ModalRegister from '../../components/shared/Modal/ModalRegister/ModalRegister'
+import ModalRegister from '@shared/Modal/ModalRegister/ModalRegister'
 import { useDispatch, useSelector } from 'react-redux'
 import {
 	registerSelector,
@@ -16,11 +16,11 @@ import {
 	closeRegisterModal,
 	loadProfile,
 	resetInput,
-} from '../../store/auth/registerSlice'
-import ModalLogin from '../../components/shared/Modal/ModalLogin/ModalLogin'
+} from '@store/auth/registerSlice'
+import ModalLogin from '@shared/Modal/ModalLogin/ModalLogin'
 import toast, { Toaster } from 'react-hot-toast'
-import GoogleAuth from '../../components/shared/AuthService/GoogleAuth'
-import GitHubAuth from '../../components/shared/AuthService/GitHubAuth'
+import GoogleAuth from '@shared/AuthService/GoogleAuth'
+import GitHubAuth from '@shared/AuthService/GitHubAuth'
 
 export default function Login() {
 	const [triggerGoogleConnect] = useLazyGoogleConnectQuery()
