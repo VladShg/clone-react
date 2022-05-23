@@ -1,18 +1,16 @@
 import React from 'react'
 import { NavLink, Outlet, useParams } from 'react-router-dom'
-import { useGetAvatarQuery, useGetUserQuery } from '../../../services/userApi'
 import styles from './Profile.module.scss'
-import Spinner from '../../shared/Spinner/Spinner'
-import Avatar from '../../shared/Avatar/Avatar'
+import Spinner from '@shared/Spinner/Spinner'
+import Avatar from '@shared/Avatar/Avatar'
 import classNames from 'classnames'
+import useProfile from '@hooks/useProfile'
 
 export default function Profile() {
 	const username = useParams().username
-	const { data: profile, isLoading } = useGetUserQuery(username)
-	const { data: avatar, isLoading: isAvatarLoading } =
-		useGetAvatarQuery(username)
+	const { user: profile, isLoading } = useProfile(username)
 
-	if (isLoading || !profile || isAvatarLoading) {
+	if (isLoading) {
 		return (
 			<div className={styles.SpinnerContainer}>
 				<Spinner className={styles.Spinner} />
@@ -20,11 +18,24 @@ export default function Profile() {
 		)
 	}
 
+	function ProfileLink({ children, ...props }) {
+		return (
+			<NavLink
+				className={({ isActive }) => {
+					return classNames(styles.Tab, { [styles.ActiveTab]: isActive })
+				}}
+				{...props}
+			>
+				{children}
+			</NavLink>
+		)
+	}
+
 	return (
 		<div>
 			<div className={styles.Background}></div>
 			<div className={styles.Profile}>
-				<Avatar className={styles.Avatar} src={avatar} size="130" />
+				<Avatar className={styles.Avatar} src={profile.avatar} size="130" />
 				<div>
 					<span className={styles.Name}>{profile.name}</span>
 					<span className={styles.Username}>@{profile.username}</span>
@@ -36,31 +47,15 @@ export default function Profile() {
 				</span>
 			</div>
 			<div className={styles.Tabs}>
-				<NavLink
-					className={({ isActive }) => {
-						return classNames(styles.Tab, { [styles.ActiveTab]: isActive })
-					}}
-					end
-					to={`/profile/${profile.username}`}
-				>
+				<ProfileLink end to={`/profile/${profile.username}`}>
 					Tweets
-				</NavLink>
-				<NavLink
-					className={({ isActive }) => {
-						return classNames(styles.Tab, { [styles.ActiveTab]: isActive })
-					}}
-					to={`/profile/${profile.username}/replies`}
-				>
+				</ProfileLink>
+				<ProfileLink to={`/profile/${profile.username}/replies`}>
 					Tweets & replies
-				</NavLink>
-				<NavLink
-					className={({ isActive }) => {
-						return classNames(styles.Tab, { [styles.ActiveTab]: isActive })
-					}}
-					to={`/profile/${profile.username}/likes`}
-				>
+				</ProfileLink>
+				<ProfileLink to={`/profile/${profile.username}/likes`}>
 					Likes
-				</NavLink>
+				</ProfileLink>
 			</div>
 			<Outlet />
 		</div>
