@@ -12,11 +12,13 @@ import Login from '@pages/Login/Login'
 import Feed from '@pages/Feed/Feed'
 import AuthRoute from './AuthRoute'
 import PublicRoute from './PublicRoute'
-import Profile from '@pages/Profile/Profile'
-import ProfileTweets from '@pages/Profile/ProfileTweets'
-import ProfileLikes from '@pages/Profile/ProfileLikes'
-import ProfileReplies from '@pages/Profile/ProfileReplies'
 import Status from '@pages/Status/Status'
+import {
+	Profile,
+	ProfileLikes,
+	ProfileReplies,
+	ProfileTweets,
+} from '@pages/Profile'
 
 export default function Router() {
 	const authLayout = (

@@ -1,13 +1,19 @@
-import React from 'react'
-import { NavLink, Outlet, useParams } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Outlet, useParams } from 'react-router-dom'
 import styles from './Profile.module.scss'
 import Spinner from '@shared/Spinner/Spinner'
 import Avatar from '@shared/Avatar/Avatar'
-import classNames from 'classnames'
 import useProfile from '@hooks/useProfile'
+import ProfileLink from './components/ProfileLink'
+import { useSelector } from 'react-redux'
+import { authSelector } from '@store/auth/authSlice'
+import ModalUpdateProfile from './components/ModalUpdateProfile'
 
 export default function Profile() {
+	const { user } = useSelector(authSelector)
 	const username = useParams().username
+	const [isOpen, setOpen] = useState(false)
+	const toggleModal = () => setOpen(!isOpen)
 	const { user: profile, isLoading } = useProfile(username)
 
 	if (isLoading) {
@@ -18,24 +24,19 @@ export default function Profile() {
 		)
 	}
 
-	function ProfileLink({ children, ...props }) {
-		return (
-			<NavLink
-				className={({ isActive }) => {
-					return classNames(styles.Tab, { [styles.ActiveTab]: isActive })
-				}}
-				{...props}
-			>
-				{children}
-			</NavLink>
-		)
-	}
+	const isUser = username === user?.username
 
 	return (
 		<div>
+			{isUser && <ModalUpdateProfile isOpen={isOpen} setOpen={setOpen} />}
 			<div className={styles.Background}></div>
 			<div className={styles.Profile}>
 				<Avatar className={styles.Avatar} src={profile.avatar} size="130" />
+				{isUser && (
+					<button className={styles.Edit} onClick={toggleModal}>
+						Edit profile
+					</button>
+				)}
 				<div>
 					<span className={styles.Name}>{profile.name}</span>
 					<span className={styles.Username}>@{profile.username}</span>

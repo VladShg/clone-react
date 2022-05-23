@@ -1,15 +1,15 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { useUserRepliesQuery } from '@services/tweetApi'
+import { useUserTweetsQuery } from '@services/tweetApi'
 import { authSelector } from '@store/auth/authSlice'
 import Spinner from '@shared/Spinner/Spinner'
 import Tweet from '@shared/Tweet/Tweet'
-import styles from './Profile.module.scss'
+import styles from '../Profile.module.scss'
 
-export default function ProfileReplies() {
+export default function ProfileTweets() {
 	const username = useParams().username
-	const { data: tweets, isLoading } = useUserRepliesQuery(username)
+	const { data: tweets, isLoading } = useUserTweetsQuery(username)
 	const { user } = useSelector(authSelector)
 
 	if (isLoading || !user) {
