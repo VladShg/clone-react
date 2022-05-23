@@ -78,7 +78,7 @@ export class UserController {
 		@Param('username') username: string,
 	): Promise<ImageDto> {
 		const user = await this.userService.get(username);
-		if (user.avatar) {
+		if (user.background) {
 			const filePath = join(process.cwd(), 'upload', user.background);
 			const image = readFileSync(filePath, 'base64');
 			return { image };
