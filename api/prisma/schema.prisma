@@ -21,6 +21,8 @@ model User {
   gitHubId   Int?      @unique
   avatar     String?
   background String?
+  location   String?
+  bio        String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

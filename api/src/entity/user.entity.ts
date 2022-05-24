@@ -5,6 +5,8 @@ export class UserEntity implements User {
 	id: string;
 	name: string;
 	username: string;
+	location: string | null;
+	bio: string | null;
 
 	@Exclude()
 	birth: Date | null;

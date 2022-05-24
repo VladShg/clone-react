@@ -35,6 +35,8 @@ describe('TweetController', () => {
 		updatedAt: new Date(),
 		avatar: null,
 		background: null,
+		location: null,
+		bio: null,
 	};
 
 	async function resetDatabase(): Promise<void> {
