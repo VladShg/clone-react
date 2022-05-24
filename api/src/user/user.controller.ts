@@ -6,7 +6,7 @@ import {
 	Patch,
 	Req,
 	UnauthorizedException,
-	UploadedFile,
+	UploadedFiles,
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
@@ -43,14 +43,18 @@ export class UserController {
 		@Param('username') username: string,
 		@Body() body: UpdateUserDto,
 		@Req() req: RequestWithUser,
-		@UploadedFile() avatar?: Express.Multer.File,
-		@UploadedFile() background?: Express.Multer.File,
+		@UploadedFiles()
+		files: {
+			avatar?: Express.Multer.File[];
+			background?: Express.Multer.File[];
+		},
 	): Promise<UserEntity> {
 		if (req.user.username !== username) {
 			throw new UnauthorizedException('Insufficient rights');
 		}
-		const user = await this.userService.update(username, {
-			...body,
+		const avatar = files.avatar?.length ? files.avatar[0] : null;
+		const background = files.background?.length ? files.background[0] : null;
+		const user = await this.userService.update(username, body, {
 			avatar: avatar ? avatar.filename : '',
 			background: background ? background.filename : '',
 		});

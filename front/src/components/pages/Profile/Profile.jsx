@@ -8,6 +8,8 @@ import ProfileLink from './components/ProfileLink'
 import { useSelector } from 'react-redux'
 import { authSelector } from '@store/auth/authSlice'
 import ModalUpdateProfile from './components/ModalUpdateProfile'
+import { useUpdateUserMutation } from '@services/userApi'
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function Profile() {
 	const { user } = useSelector(authSelector)
@@ -15,6 +17,17 @@ export default function Profile() {
 	const [isOpen, setOpen] = useState(false)
 	const toggleModal = () => setOpen(!isOpen)
 	const { user: profile, isLoading } = useProfile(username)
+	const [triggerUpdate] = useUpdateUserMutation()
+
+	const updateProfile = async (body) => {
+		let { error } = await triggerUpdate({ username, body })
+		if (!error) {
+			toast.success('Profile updated', { position: 'bottom-center' })
+		} else {
+			toast.error('Failed to update', { position: 'bottom-center' })
+		}
+		setOpen(false)
+	}
 
 	if (isLoading) {
 		return (
@@ -28,7 +41,14 @@ export default function Profile() {
 
 	return (
 		<div>
-			{isUser && <ModalUpdateProfile isOpen={isOpen} setOpen={setOpen} />}
+			{isUser && (
+				<ModalUpdateProfile
+					update={updateProfile}
+					isOpen={isOpen}
+					setOpen={setOpen}
+					profile={profile}
+				/>
+			)}
 			<div className={styles.Background}></div>
 			<div className={styles.Profile}>
 				<Avatar className={styles.Avatar} src={profile.avatar} size="130" />
@@ -59,6 +79,7 @@ export default function Profile() {
 				</ProfileLink>
 			</div>
 			<Outlet />
+			<Toaster />
 		</div>
 	)
 }

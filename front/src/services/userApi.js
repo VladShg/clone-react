@@ -21,7 +21,19 @@ export const userApi = createApi({
 					method: 'GET',
 				}
 			},
-			providesTags: (result, error, username) => ['User', username],
+			providesTags: (result, error, username) => [
+				{ type: 'User', id: username },
+			],
+		}),
+		updateUser: builder.mutation({
+			query: ({ username, body }) => {
+				return {
+					url: `/user/${username}`,
+					method: 'PATCH',
+					body: body,
+				}
+			},
+			invalidatesTags: (res) => [{ type: 'User', id: res.username }],
 		}),
 		getAvatar: builder.query({
 			query: (username) => {
@@ -45,7 +57,9 @@ export const userApi = createApi({
 			transformResponse: (res) => {
 				return base64decode(res?.image)
 			},
-			providesTags: (result, error, username) => ['User', username],
+			providesTags: (result, error, username) => [
+				{ type: 'User', id: username },
+			],
 		}),
 	}),
 })
@@ -53,6 +67,7 @@ export const userApi = createApi({
 export const {
 	useGetUserQuery,
 	useGetAvatarQuery,
+	useUpdateUserMutation,
 	useGetBackgroundQuery,
 	useLazyGetAvatarQuery,
 } = userApi

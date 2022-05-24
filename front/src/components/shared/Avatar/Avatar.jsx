@@ -15,6 +15,7 @@ export default function Avatar({
 	alignCenter,
 	alignBottom,
 	size = 40,
+	...props
 }) {
 	const classes = classNames(styles.Avatar, {
 		[styles.center]: Boolean(alignCenter),
@@ -31,7 +32,7 @@ export default function Avatar({
 	}
 
 	return (
-		<div className={classes}>
+		<div {...props} className={classes}>
 			<div style={style} className={styles.Skeleton} />
 		</div>
 	)
