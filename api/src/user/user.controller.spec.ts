@@ -171,9 +171,6 @@ describe('UserController - files', () => {
 		applyMiddleware(app);
 		await app.init();
 		await resetDatabase(prisma);
-
-		console.log(testDir);
-
 		jest.spyOn(service, 'getFilePath').mockImplementation((filename) => {
 			return join(testDir, filename);
 		});
