@@ -2,6 +2,7 @@ import {
 	Body,
 	Controller,
 	Get,
+	NotFoundException,
 	Param,
 	Patch,
 	Req,
@@ -28,6 +29,9 @@ export class UserController {
 	@UseGuards(AuthGuard('jwt'))
 	async getUser(@Param('username') username: string): Promise<UserEntity> {
 		const user = await this.userService.get(username);
+		if (!user) {
+			throw new NotFoundException();
+		}
 		return new UserEntity(user);
 	}
 
