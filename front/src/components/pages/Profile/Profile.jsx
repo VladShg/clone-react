@@ -37,6 +37,7 @@ export default function Profile() {
 		)
 	}
 
+	const bgStyles = { backgroundImage: `url('${profile.background}')` }
 	const isUser = username === user?.username
 
 	return (
@@ -49,7 +50,7 @@ export default function Profile() {
 					profile={profile}
 				/>
 			)}
-			<div className={styles.Background}></div>
+			<div style={bgStyles} className={styles.Background}></div>
 			<div className={styles.Profile}>
 				<Avatar className={styles.Avatar} src={profile.avatar} size="130" />
 				{isUser && (
@@ -61,11 +62,18 @@ export default function Profile() {
 					<span className={styles.Name}>{profile.name}</span>
 					<span className={styles.Username}>@{profile.username}</span>
 				</div>
-				{profile.description && <span>{profile.description}</span>}
-				<span className={styles.JoinDate}>
-					<i className="fa-solid fa-calendar-days" />
-					Joined {new Date(profile.createdAt).toDateString()}
-				</span>
+				{profile.bio && <div className={styles.Bio}>{profile.bio}</div>}
+				<div className={styles.BottomRow}>
+					{profile.location && (
+						<span className={styles.DateLocation}>
+							<i className="fas fa-search-location" /> {profile.location}
+						</span>
+					)}
+					<span className={styles.DateLocation}>
+						<i className="fa-solid fa-calendar-days" />
+						Joined {new Date(profile.createdAt).toDateString()}
+					</span>
+				</div>
 			</div>
 			<div className={styles.Tabs}>
 				<ProfileLink end to={`/profile/${profile.username}`}>

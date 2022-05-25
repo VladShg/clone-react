@@ -13,7 +13,7 @@ const schema = yup
 			.max(30, 'Name too long')
 			.required('Name cannot be blank'),
 		location: yup.string().max(30, 'Location too long'),
-		bio: yup.string().max(160),
+		bio: yup.string().max(60),
 	})
 	.required()
 
@@ -57,7 +57,7 @@ export default function ModalUpdateProfile({
 						Save
 					</button>
 				</div>
-				<Background image={background.src} setImage={setBackground} />
+				<Background image={background} setImage={setBackground} />
 				<div className={styles.Content}>
 					<SelectAvatar image={avatar.src} setImage={setAvatar} />
 					<Modal.Description>Name</Modal.Description>
@@ -122,7 +122,7 @@ function SelectAvatar({ image, setImage }) {
 
 function Background({ image, setImage }) {
 	const inputRef = React.createRef()
-	const previewStyles = { backgroundImage: `url('${image}')` }
+	const previewStyles = { backgroundImage: `url('${image.src}')` }
 	const onChange = (e) => {
 		if (e.target.files.length) {
 			const file = e.target.files[0]
@@ -151,7 +151,7 @@ function Background({ image, setImage }) {
 				<div onClick={selectImage}>
 					<i className={'fa-solid fa-camera'} />
 				</div>
-				{image && (
+				{image.file && (
 					<div onClick={resetImage}>
 						<i className={'fa-solid fa-times'} />
 					</div>
