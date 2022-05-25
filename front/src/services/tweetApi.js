@@ -30,7 +30,10 @@ export const tweetApi = createApi({
 					method: 'GET',
 				}
 			},
-			providesTags: (result) => {
+			providesTags: (result, error) => {
+				if (error) {
+					return []
+				}
 				let tags = [{ type: 'Tweet', id: result.id }]
 				if (result.isRetweet) {
 					tags.push({ type: 'Tweet', id: result.tweet.id })
@@ -163,6 +166,12 @@ export const tweetApi = createApi({
 				}
 			},
 			invalidatesTags: (result, error, arg) => {
+				if (!result) {
+					return [
+						{ type: 'Tweet', id: 'List' },
+						{ type: 'Tweet', id: arg },
+					]
+				}
 				let tags = [
 					{ type: 'Tweet', id: arg },
 					{ type: 'Tweet', id: 'List' },
