@@ -6,10 +6,7 @@ import { JwtStrategy } from './jwt.straregy';
 import { GoogleController } from './controller/google.controller';
 import { GitHubController } from './controller/github.controller';
 import { PrismaModule } from '../prisma/prisma.module';
-import { MulterModule } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { multerModuleFactory } from '../utils/modules';
 
 @Module({
 	controllers: [AuthController, GoogleController, GitHubController],
@@ -20,14 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 			secret: process.env.SECRET_KEY,
 			signOptions: { expiresIn: '24h' },
 		}),
-		MulterModule.register({
-			storage: diskStorage({
-				destination: './upload',
-				filename: (req, file, cb) => {
-					cb(null, `${uuidv4()}${extname(file.originalname)}`);
-				},
-			}),
-		}),
+		multerModuleFactory(),
 	],
 	exports: [AuthService],
 })

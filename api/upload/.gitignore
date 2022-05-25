@@ -1,2 +1,6 @@
 *
+!__test__
+!__test__/sample
+!__test__/sample/avatar.png
+!__test__/sample/background.png
 !.gitignore

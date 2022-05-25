@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
+import { join } from 'path';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserFiles } from '../types/UpdateUserFiles';
 
 @Injectable()
 export class UserService {
 	constructor(private prisma: PrismaService) {}
+
+	getFilePath(filename: string): string {
+		return join(process.cwd(), 'upload', filename);
+	}
 
 	async get(username: string): Promise<User | null> {
 		return this.prisma.user.findUnique({ where: { username } });

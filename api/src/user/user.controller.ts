@@ -14,7 +14,6 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { readFileSync } from 'fs';
-import { join } from 'path';
 import { UserEntity } from '../entity/user.entity';
 import { RequestWithUser } from '../types/RequestWithUser';
 import { ImageDto } from './dto/avatar.dto';
@@ -74,7 +73,7 @@ export class UserController {
 	): Promise<ImageDto> {
 		const user = await this.userService.get(username);
 		if (user.avatar) {
-			const filePath = join(process.cwd(), 'upload', user.avatar);
+			const filePath = this.userService.getFilePath(user.avatar);
 			const image = readFileSync(filePath, 'base64');
 			return { image };
 		} else {
@@ -89,7 +88,7 @@ export class UserController {
 	): Promise<ImageDto> {
 		const user = await this.userService.get(username);
 		if (user.background) {
-			const filePath = join(process.cwd(), 'upload', user.background);
+			const filePath = this.userService.getFilePath(user.background);
 			const image = readFileSync(filePath, 'base64');
 			return { image };
 		} else {

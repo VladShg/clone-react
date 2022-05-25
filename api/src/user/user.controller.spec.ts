@@ -10,48 +10,64 @@ import { faker } from '@faker-js/faker';
 import { AuthService } from '../auth/auth.service';
 import { AuthModule } from '../auth/auth.module';
 import * as request from 'supertest';
-import * as FormData from 'form-data';
+import { PrismaModule } from '../prisma/prisma.module';
+import { multerModuleFactory } from '../utils/modules';
+import * as fs from 'fs';
+import { extname, join } from 'path';
+
+const testDir = join(process.cwd(), 'upload', '__test__');
+
+async function generateUsers(
+	total: number,
+	prisma: PrismaService,
+): Promise<User[]> {
+	const index = (await prisma.user.count()) + 1;
+	const users: User[] = [];
+
+	while (users.length < total) {
+		const data = {
+			id: faker.datatype.uuid(),
+			name: faker.name.firstName(),
+			email: index + faker.internet.email(),
+			username: index + faker.name.lastName(),
+			gitHubId: null,
+			googleId: null,
+			password: faker.random.alpha(10),
+			birth: new Date(),
+			createdAt: new Date(),
+			updatedAt: new Date(),
+			avatar: null,
+			background: null,
+			location: null,
+			bio: null,
+		};
+		users.push(await prisma.user.create({ data }));
+	}
+	return users;
+}
+
+async function resetDatabase(prisma: PrismaService): Promise<void> {
+	const user = prisma.user.deleteMany();
+	const tweet = prisma.tweet.deleteMany();
+	const like = prisma.like.deleteMany();
+	await prisma.$transaction([user, tweet, like]);
+}
+
+function cleanDirectory() {
+	fs.readdir(testDir, (err, files) => {
+		for (const file of files) {
+			if (extname(file)) {
+				fs.unlinkSync(join(testDir, file));
+			}
+		}
+	});
+}
 
 describe('UserController', () => {
 	let controller: UserController;
-	let service: UserService;
 	let auth: AuthService;
 	let prisma: PrismaService;
 	let app: INestApplication;
-
-	async function generateUsers(total: number): Promise<User[]> {
-		const index = (await prisma.user.count()) + 1;
-		const users: User[] = [];
-
-		while (users.length < total) {
-			const data = {
-				id: faker.datatype.uuid(),
-				name: faker.name.firstName(),
-				email: index + faker.internet.email(),
-				username: index + faker.name.lastName(),
-				gitHubId: null,
-				googleId: null,
-				password: faker.random.alpha(10),
-				birth: new Date(),
-				createdAt: new Date(),
-				updatedAt: new Date(),
-				avatar: null,
-				background: null,
-				location: null,
-				bio: null,
-			};
-			users.push(await prisma.user.create({ data }));
-		}
-		return users;
-	}
-
-	async function resetDatabase(): Promise<void> {
-		const user = prisma.user.deleteMany();
-		const tweet = prisma.tweet.deleteMany();
-		const like = prisma.like.deleteMany();
-
-		await prisma.$transaction([user, tweet, like]);
-	}
 
 	beforeAll(async () => {
 		const module = await Test.createTestingModule({
@@ -59,14 +75,13 @@ describe('UserController', () => {
 		}).compile();
 
 		controller = module.get<UserController>(UserController);
-		service = module.get<UserService>(UserService);
 		auth = module.get<AuthService>(AuthService);
 		prisma = module.get<PrismaService>(PrismaService);
 
 		app = module.createNestApplication();
 		applyMiddleware(app);
 		await app.init();
-		await resetDatabase();
+		await resetDatabase(prisma);
 	});
 
 	afterEach(async () => {
@@ -78,7 +93,7 @@ describe('UserController', () => {
 	});
 
 	it('GET /:username - authorized', async () => {
-		const users: User[] = await generateUsers(2);
+		const users: User[] = await generateUsers(2, prisma);
 
 		const token = auth.generateToken(users[0]);
 		const response: request.Response = await request(app.getHttpServer())
@@ -89,7 +104,7 @@ describe('UserController', () => {
 	});
 
 	it('GET /:username - unauthorized', async () => {
-		const users: User[] = await generateUsers(2);
+		const users: User[] = await generateUsers(2, prisma);
 
 		const response = await request(app.getHttpServer()).get(
 			`/user/${users[1].username}`,
@@ -98,7 +113,7 @@ describe('UserController', () => {
 	});
 
 	it('GET /:username - user does not exist', async () => {
-		const users: User[] = await generateUsers(2);
+		const users: User[] = await generateUsers(2, prisma);
 		const token = auth.generateToken(users[0]);
 
 		const response = await request(app.getHttpServer())
@@ -108,7 +123,7 @@ describe('UserController', () => {
 	});
 
 	it('PATCH /:username - without files', async () => {
-		const users = await generateUsers(1);
+		const users = await generateUsers(1, prisma);
 		const user = users[0];
 
 		const name = 'UpdatedName';
@@ -124,5 +139,93 @@ describe('UserController', () => {
 		expect(response.body.name).toBe(name);
 		expect(response.body.location).toBe(location);
 		expect(response.body.bio).toBe(bio);
+	});
+});
+
+describe('UserController - files', () => {
+	let controller: UserController;
+	let service: UserService;
+	let auth: AuthService;
+	let prisma: PrismaService;
+	let app: INestApplication;
+
+	beforeAll(async () => {
+		const module = await Test.createTestingModule({
+			imports: [
+				PrismaModule,
+				multerModuleFactory('./upload/__test__'),
+				AuthModule,
+			],
+			controllers: [UserController],
+			providers: [UserService],
+		}).compile();
+
+		cleanDirectory();
+
+		controller = module.get<UserController>(UserController);
+		service = module.get<UserService>(UserService);
+		auth = module.get<AuthService>(AuthService);
+		prisma = module.get<PrismaService>(PrismaService);
+
+		app = module.createNestApplication();
+		applyMiddleware(app);
+		await app.init();
+		await resetDatabase(prisma);
+
+		console.log(testDir);
+
+		jest.spyOn(service, 'getFilePath').mockImplementation((filename) => {
+			return join(testDir, filename);
+		});
+	});
+
+	afterEach(() => {
+		cleanDirectory();
+	});
+
+	it('should be defined', () => {
+		expect(controller).toBeDefined();
+	});
+
+	it('PATCH /:username - avatar', async () => {
+		const sample = join(testDir, 'sample', 'avatar.png');
+		const users = await generateUsers(1, prisma);
+		let user = users[0];
+
+		let response = await request(app.getHttpServer())
+			.patch(`/user/${user.username}`)
+			.auth(auth.generateToken(user), { type: 'bearer' })
+			.attach('avatar', sample);
+
+		user = await service.get(user.username);
+		response = await request(app.getHttpServer())
+			.get(`/user/${user.username}/avatar`)
+			.auth(auth.generateToken(user), { type: 'bearer' });
+
+		expect(response.ok).toBe(true);
+		expect(response.body.image).toBe(fs.readFileSync(sample, 'base64'));
+		expect(user.avatar).not.toBeNull();
+		expect(fs.existsSync(join(testDir, user.avatar))).toBe(true);
+	});
+
+	it('PATCH /:username - background', async () => {
+		const sample = join(testDir, 'sample', 'background.png');
+		const users = await generateUsers(1, prisma);
+		let user = users[0];
+
+		let response = await request(app.getHttpServer())
+			.patch(`/user/${user.username}`)
+			.auth(auth.generateToken(user), { type: 'bearer' })
+			.attach('background', sample);
+
+		user = await service.get(user.username);
+		response = await request(app.getHttpServer())
+			.get(`/user/${user.username}/background`)
+			.auth(auth.generateToken(user), { type: 'bearer' });
+
+		expect(response.ok).toBe(true);
+		expect(response.body.image).toBe(fs.readFileSync(sample, 'base64'));
+		expect(user.background).not.toBeNull();
+		expect(fs.existsSync(join(testDir, user.background))).toBe(true);
 	});
 });
