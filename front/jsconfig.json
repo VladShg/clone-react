@@ -8,7 +8,7 @@
 			"@utils/*": ["./src/utils/*"],
 			"@hooks/*": ["./src/hooks/*"],
 			"@pages/*": ["./src/components/pages/*"],
-			"@shared/*": ["./src/components/shared/*"],
+			"@shared/*": ["./src/components/shared/*"]
 		}
 	}
 }

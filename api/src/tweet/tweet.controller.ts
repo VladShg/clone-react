@@ -5,6 +5,7 @@ import {
 	Get,
 	HttpException,
 	HttpStatus,
+	NotFoundException,
 	Param,
 	Post,
 	Query,
@@ -84,6 +85,9 @@ export class TweetController {
 	@UseGuards(AuthGuard('jwt'))
 	async getTweet(@Param('id') id: string): Promise<TweetEntity> {
 		const tweet = await this.tweetService.get(id);
+		if (!tweet) {
+			throw new NotFoundException();
+		}
 		return new TweetEntity(tweet);
 	}
 

@@ -52,8 +52,10 @@ export class UserController {
 		if (req.user.username !== username) {
 			throw new UnauthorizedException('Insufficient rights');
 		}
+
 		const avatar = files.avatar?.length ? files.avatar[0] : null;
 		const background = files.background?.length ? files.background[0] : null;
+
 		const user = await this.userService.update(username, body, {
 			avatar: avatar ? avatar.filename : '',
 			background: background ? background.filename : '',
