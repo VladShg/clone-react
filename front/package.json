@@ -3,6 +3,7 @@
 	"version": "0.0.0",
 	"scripts": {
 		"dev": "vite",
+		"test": "cypress open",
 		"build": "vite build",
 		"preview": "vite preview"
 	},
@@ -27,8 +28,10 @@
 	"devDependencies": {
 		"@redux-devtools/core": "3.12.0",
 		"@vitejs/plugin-react": "1.3.2",
+		"cypress": "^9.7.0",
 		"eslint": "8.15.0",
 		"eslint-config-prettier": "8.5.0",
+		"eslint-plugin-cypress": "^2.12.1",
 		"eslint-plugin-prettier": "4.0.0",
 		"eslint-plugin-react": "7.29.4",
 		"prettier": "2.6.2",
