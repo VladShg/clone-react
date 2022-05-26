@@ -6,62 +6,19 @@ import { applyMiddleware } from '../utils/middleware';
 import { UserController } from './user.controller';
 import { UserModule } from './user.module';
 import { UserService } from './user.service';
-import { faker } from '@faker-js/faker';
 import { AuthService } from '../auth/auth.service';
 import { AuthModule } from '../auth/auth.module';
 import * as request from 'supertest';
 import { PrismaModule } from '../prisma/prisma.module';
 import { multerModuleFactory } from '../utils/modules';
 import * as fs from 'fs';
-import { extname, join } from 'path';
-
-const testDir = join(process.cwd(), 'upload', '__test__');
-
-async function generateUsers(
-	total: number,
-	prisma: PrismaService,
-): Promise<User[]> {
-	const index = (await prisma.user.count()) + 1;
-	const users: User[] = [];
-
-	while (users.length < total) {
-		const data = {
-			id: faker.datatype.uuid(),
-			name: faker.name.firstName(),
-			email: index + faker.internet.email(),
-			username: index + faker.name.lastName(),
-			gitHubId: null,
-			googleId: null,
-			password: faker.random.alpha(10),
-			birth: new Date(),
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			avatar: null,
-			background: null,
-			location: null,
-			bio: null,
-		};
-		users.push(await prisma.user.create({ data }));
-	}
-	return users;
-}
-
-async function resetDatabase(prisma: PrismaService): Promise<void> {
-	const user = prisma.user.deleteMany();
-	const tweet = prisma.tweet.deleteMany();
-	const like = prisma.like.deleteMany();
-	await prisma.$transaction([user, tweet, like]);
-}
-
-function cleanDirectory() {
-	fs.readdir(testDir, (err, files) => {
-		for (const file of files) {
-			if (extname(file)) {
-				fs.unlinkSync(join(testDir, file));
-			}
-		}
-	});
-}
+import {
+	cleanTestDir,
+	generateUsers,
+	getTestDir,
+	resetDatabase,
+} from '../utils/test';
+import { join } from 'path';
 
 describe('UserController', () => {
 	let controller: UserController;
@@ -148,6 +105,7 @@ describe('UserController - files', () => {
 	let auth: AuthService;
 	let prisma: PrismaService;
 	let app: INestApplication;
+	const testDir = getTestDir();
 
 	beforeAll(async () => {
 		const module = await Test.createTestingModule({
@@ -160,7 +118,7 @@ describe('UserController - files', () => {
 			providers: [UserService],
 		}).compile();
 
-		cleanDirectory();
+		cleanTestDir();
 
 		controller = module.get<UserController>(UserController);
 		service = module.get<UserService>(UserService);
@@ -177,7 +135,7 @@ describe('UserController - files', () => {
 	});
 
 	afterEach(() => {
-		cleanDirectory();
+		cleanTestDir();
 	});
 
 	it('should be defined', () => {

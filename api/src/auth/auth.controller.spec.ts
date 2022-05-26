@@ -12,6 +12,16 @@ import { AuthModule } from './auth.module';
 import { GoogleTokenDto } from './dto/google-token.dto';
 import { GitHubCodeDto } from './dto/github-code.dto';
 import { applyMiddleware } from '../utils/middleware';
+import { PrismaModule } from '../prisma/prisma.module';
+import { AuthController } from './controller/auth.controller';
+import { GoogleController } from './controller/google.controller';
+import { GitHubController } from './controller/github.controller';
+import { JwtStrategy } from './jwt.straregy';
+import { JwtModule } from '@nestjs/jwt';
+import { multerModuleFactory } from '../utils/modules';
+import { cleanTestDir, getTestDir, resetDatabase } from '../utils/test';
+import { join } from 'path';
+import { readFileSync } from 'fs';
 
 const userData: User = {
 	id: faker.datatype.uuid(),
@@ -30,13 +40,6 @@ const userData: User = {
 	bio: null,
 };
 
-async function resetDatabase(prisma: PrismaService) {
-	await prisma.$transaction([
-		prisma.user.deleteMany(),
-		prisma.like.deleteMany(),
-		prisma.tweet.deleteMany(),
-	]);
-}
 async function createUser(prisma: PrismaService, data: User): Promise<User> {
 	return await prisma.user.create({
 		data: {
@@ -55,7 +58,17 @@ describe('AuthController', () => {
 
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
-			imports: [AuthModule],
+			controllers: [AuthController, GoogleController, GitHubController],
+			providers: [AuthService, JwtStrategy],
+			imports: [
+				PrismaModule,
+				JwtModule.register({
+					secret: process.env.SECRET_KEY,
+					signOptions: { expiresIn: '24h' },
+				}),
+				multerModuleFactory('./upload/__test__'),
+			],
+			exports: [AuthService],
 		}).compile();
 		app = module.createNestApplication();
 		applyMiddleware(app);
@@ -64,6 +77,7 @@ describe('AuthController', () => {
 		service = module.get<AuthService>(AuthService);
 		prisma = module.get<PrismaService>(PrismaService);
 
+		cleanTestDir();
 		await resetDatabase(prisma);
 	});
 
@@ -74,6 +88,7 @@ describe('AuthController', () => {
 
 	afterEach(async () => {
 		await resetDatabase(prisma);
+		cleanTestDir();
 	});
 
 	afterAll(async () => {
@@ -117,35 +132,6 @@ describe('AuthController', () => {
 		expect(response.ok).toBe(false);
 	});
 
-	it('POST /signup', async () => {
-		let response: request.Response;
-		const payload: SignUpDto = {
-			name: 'name',
-			email: 'sample@mail.com',
-			username: 'username',
-			password: 'password',
-			birth: new Date().toJSON(),
-			gitHubId: null,
-			googleId: null,
-		};
-		response = await request(app.getHttpServer())
-			.post('/auth/signup')
-			.send(payload);
-		expect(response.statusCode).toBe(201);
-		const userToken = response.body.accessToken;
-
-		response = await request(app.getHttpServer())
-			.get('/auth/account')
-			.auth(userToken, { type: 'bearer' });
-		expect(response.ok).toBe(true);
-		expect(response.body.name).toBe(payload.name);
-
-		response = await request(app.getHttpServer())
-			.post('/auth/signup')
-			.send(payload);
-		expect(response.ok).toBe(false);
-	});
-
 	it('GET /lookup', async () => {
 		let response: request.Response;
 
@@ -175,6 +161,63 @@ describe('AuthController', () => {
 
 		response = await request(app.getHttpServer()).get('/auth/lookup');
 		expect(response.status).toBe(400);
+	});
+
+	it('POST /signup', async () => {
+		let response: request.Response;
+		const payload: SignUpDto = {
+			name: 'name',
+			email: 'sample@mail.com',
+			username: 'username',
+			password: 'password',
+			birth: new Date().toJSON(),
+			gitHubId: null,
+			googleId: null,
+		};
+		response = await request(app.getHttpServer())
+			.post('/auth/signup')
+			.send(payload);
+		expect(response.statusCode).toBe(201);
+		const userToken = response.body.accessToken;
+
+		response = await request(app.getHttpServer())
+			.get('/auth/account')
+			.auth(userToken, { type: 'bearer' });
+		expect(response.ok).toBe(true);
+		expect(response.body.name).toBe(payload.name);
+
+		response = await request(app.getHttpServer())
+			.post('/auth/signup')
+			.send(payload);
+		expect(response.ok).toBe(false);
+	});
+
+	it('POST /signup - avatar', async () => {
+		const testDir = getTestDir();
+		const sample = join(getTestDir(), 'sample', 'avatar.png');
+		const payload = {
+			name: 'name',
+			email: 'sample@mail.com',
+			username: 'username',
+			password: 'password',
+			birth: new Date().toJSON(),
+		};
+		const response = await request(app.getHttpServer())
+			.post('/auth/signup')
+			.field('name', payload.name)
+			.field('email', payload.email)
+			.field('username', payload.username)
+			.field('password', payload.password)
+			.field('birth', payload.birth)
+			.attach('avatar', sample);
+		expect(response.statusCode).toBe(201);
+		const user = await prisma.user.findUnique({
+			where: { username: payload.username },
+		});
+		expect(user.avatar).not.toBeNull();
+		expect(readFileSync(join(testDir, user.avatar), 'base64')).toBe(
+			readFileSync(sample, 'base64'),
+		);
 	});
 });
 
