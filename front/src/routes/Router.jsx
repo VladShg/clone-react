@@ -34,7 +34,7 @@ export default function Router() {
 	)
 
 	return (
-		<BrowserRouter>
+		<BrowserRouter basename="/react-clone/">
 			<Routes>
 				<Route path="/" element={authLayout}>
 					<Route path="home" element={<Feed />} />
