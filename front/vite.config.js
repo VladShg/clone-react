@@ -8,7 +8,6 @@ const components = resolve(__dirname, './src/components/')
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [react()],
-	base: '/react-clone/',
 	resolve: {
 		alias: [
 			{ find: '@store', replacement: resolve(root, './src/store') },
