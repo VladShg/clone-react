@@ -1,4 +1,4 @@
-name: Publish to GitHub pages
+name: Merge master into deployment branch
 on:
   push:
     branches: [master]
