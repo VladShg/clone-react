@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Merge main -> deploy
+    - name: Merge master -> deploy
       uses: devmasx/merge-branch@master
       with:
         type: now
-        from_branch: main
+        from_branch: master
         target_branch: deploy
         github_token: ${{ github.token }}
         
