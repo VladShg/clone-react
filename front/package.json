@@ -7,8 +7,12 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@emotion/react": "^11.9.0",
+		"@emotion/styled": "^11.8.1",
 		"@faker-js/faker": "6.3.1",
 		"@hookform/resolvers": "2.8.10",
+		"@mui/icons-material": "^5.8.0",
+		"@mui/material": "^5.8.1",
 		"@reduxjs/toolkit": "1.8.1",
 		"classnames": "2.3.1",
 		"js-cookie": "3.0.1",
