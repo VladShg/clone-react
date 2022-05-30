@@ -19,19 +19,19 @@ import {
 } from '@store/auth/registerSlice'
 import ModalLogin from '@shared/Modal/ModalLogin/ModalLogin'
 import toast, { Toaster } from 'react-hot-toast'
-import GoogleAuth from '@shared/AuthService/GoogleAuth'
-import GitHubAuth from '@shared/AuthService/GitHubAuth'
+import GoogleAuth from '@shared/AuthControl/GoogleAuth'
+import GitHubAuth from '@shared/AuthControl/GitHubAuth'
 
 export default function Login() {
-	const [triggerGoogleConnect] = useLazyGoogleConnectQuery()
+	const [triggerGoogleConnect, googleResponse] = useLazyGoogleConnectQuery()
 	const [triggerGitHubConnect, gitHubResponse] = useLazyGitHubConnectQuery()
 	const [params, setSearchParams] = useSearchParams()
 	const { isRegisterModalOpen, isLoginModalOpen } =
 		useSelector(registerSelector)
 	const dispatch = useDispatch()
 
-	let inputDisabled = gitHubResponse.isLoading || gitHubResponse.isFetching
-	let isGitHubLoading = gitHubResponse.isLoading || gitHubResponse.isFetching
+	let inputDisabled = googleResponse.isFetching
+	let isGitHubLoading = gitHubResponse.isFetching
 
 	useEffect(async () => {
 		dispatch(resetInput())

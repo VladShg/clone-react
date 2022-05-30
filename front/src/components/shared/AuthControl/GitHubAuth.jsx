@@ -1,13 +1,11 @@
-import classNames from 'classnames'
 import React from 'react'
+import { AuthButton } from './AuthButton'
 import config from '../../../config'
 import Spinner from '../Spinner/Spinner'
-import styles from './AuthService.module.scss'
 
 export default function GitHubAuth({
-	className,
-	children,
-	spinner = false,
+	children = 'Sign up with GitHub',
+	spinner = true,
 	redirect = `/auth/login`,
 	...props
 }) {
@@ -22,13 +20,9 @@ export default function GitHubAuth({
 		})
 
 	return (
-		<a
-			className={classNames(styles.Control, { [className]: !!className })}
-			href={!props.disabled ? url : '##'}
-			{...props}
-		>
+		<AuthButton href={!props.disabled ? url : '##'}>
 			{spinner && <Spinner />}
-			{children || 'Sign up with GitHub'}
-		</a>
+			{children}
+		</AuthButton>
 	)
 }
