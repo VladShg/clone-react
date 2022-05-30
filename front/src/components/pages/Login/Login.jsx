@@ -21,6 +21,10 @@ import ModalLogin from '@shared/Modal/ModalLogin/ModalLogin'
 import toast, { Toaster } from 'react-hot-toast'
 import GoogleAuth from '@shared/AuthControl/GoogleAuth'
 import GitHubAuth from '@shared/AuthControl/GitHubAuth'
+import { Stack, Typography } from '@mui/material'
+import Divider from '@mui/material/Divider'
+import { Container } from '@mui/system'
+import { LoginButton, SignUpButton } from './LoginButton'
 
 export default function Login() {
 	const [triggerGoogleConnect, googleResponse] = useLazyGoogleConnectQuery()
@@ -91,36 +95,39 @@ export default function Login() {
 				<img src={backgroundImage} alt="wall" />
 			</div>
 			<div>
-				<div className={styles.loginContainer}>
+				<Stack
+					direction="column"
+					alignItems="flex-start"
+					justifyContent="center"
+					sx={{ maxWidth: '300px', ml: '60px', height: '100%' }}
+				>
 					<i className={classNames('fa-solid fa-crow', styles.logo)} />
-					<h1>Happening now</h1>
-					<h2>Join Crower today.</h2>
+					<Typography variant="h1">Happening now</Typography>
+					<Typography variant="h2">Join Crower today.</Typography>
 					<GoogleAuth
 						className={styles.signupService}
 						disabled={inputDisabled}
 						onSignUp={onSignUp}
 					/>
 					<GitHubAuth loading={isGitHubLoading} disabled={inputDisabled} />
-					<span className={styles.separator}>or</span>
-					<button
-						className={styles.signupManual}
+					<Container disableGutters>
+						<Divider sx={{ marginBottom: '10px', width: '100%' }}>or</Divider>
+					</Container>
+					<SignUpButton
 						onClick={() => {
 							dispatch(setRegisterModal(true))
 						}}
 					>
 						Sign up with email
-					</button>
-					<span className={styles.termsNotice}>
+					</SignUpButton>
+					<Typography variant="notice" marginBottom="40px">
 						By signing up, you agree to the Terms of Service and Privacy Policy,
 						including Cookie Use.
-					</span>
-					<h3>Already have an account?</h3>
-					<button
-						className={styles.signIn}
-						onClick={() => dispatch(setLoginModal(true))}
-					>
+					</Typography>
+					<Typography variant="h3">Already have an account?</Typography>
+					<LoginButton onClick={() => dispatch(setLoginModal(true))}>
 						Sign in
-					</button>
+					</LoginButton>
 					<ModalRegister
 						isOpen={isRegisterModalOpen}
 						setOpen={(value) => {
@@ -135,7 +142,7 @@ export default function Login() {
 						isOpen={isLoginModalOpen}
 						setOpen={(value) => dispatch(setLoginModal(value))}
 					></ModalLogin>
-				</div>
+				</Stack>
 			</div>
 			<Toaster />
 		</div>
