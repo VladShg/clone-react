@@ -1,7 +1,8 @@
-import Button from '@mui/material/Button'
+import { LoadingButton } from '@mui/lab'
 import { styled } from '@mui/material/styles'
+import { grey, common } from '@mui/material/colors'
 
-export const AuthButton = styled(Button)({
+export const AuthButton = styled(LoadingButton)(({ theme }) => ({
 	fontFamily: 'Manrope, serif',
 	fontSize: '16px',
 	fontWeight: 400,
@@ -9,22 +10,23 @@ export const AuthButton = styled(Button)({
 	textDecoration: 'none',
 	textTransform: 'none',
 	color: 'black',
-	background: 'var(--white)',
+	background: common.white,
 	width: '100%',
 	maxWidth: '300px',
 
-	position: 'relative',
 	marginBottom: '10px',
 	padding: '10px 0px',
-	boxSizing: 'border-box',
-	display: 'inline-block',
 
-	border: '1px solid var(--border-grey)',
+	border: `1px solid ${grey.A200}`,
 	borderRadius: '50px',
 
 	transition: '0.2s ease background',
 	'&:hover': {
 		cursor: 'pointer',
-		background: 'var(--white-fade)',
+		background: grey.A100,
 	},
-})
+
+	'& .MuiLoadingButton-loadingIndicator': {
+		color: theme.palette.primary.main,
+	},
+}))

@@ -1,9 +1,18 @@
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Router from './routes/Router'
 import { useLazyAuthorizeQuery } from './services/authApi'
 import { useLazyGetAvatarQuery } from './services/userApi'
 import { authSelector, setToken, setUser } from './store/auth/authSlice'
+
+const theme = createTheme({
+	palette: {
+		primary: {
+			main: '#1d9bf0',
+		},
+	},
+})
 
 export default function App() {
 	const { token, user } = useSelector(authSelector)
@@ -35,5 +44,9 @@ export default function App() {
 
 	useEffect(checkToken, [token])
 
-	return <Router />
+	return (
+		<ThemeProvider theme={theme}>
+			<Router />
+		</ThemeProvider>
+	)
 }

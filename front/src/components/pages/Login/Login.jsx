@@ -100,11 +100,7 @@ export default function Login() {
 						disabled={inputDisabled}
 						onSignUp={onSignUp}
 					/>
-					<GitHubAuth
-						spinner={isGitHubLoading}
-						className={styles.signupService}
-						disabled={inputDisabled}
-					/>
+					<GitHubAuth loading={isGitHubLoading} disabled={inputDisabled} />
 					<span className={styles.separator}>or</span>
 					<button
 						className={styles.signupManual}

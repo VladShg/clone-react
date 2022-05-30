@@ -1,11 +1,10 @@
 import React from 'react'
 import { AuthButton } from './AuthButton'
 import config from '../../../config'
-import Spinner from '../Spinner/Spinner'
 
 export default function GitHubAuth({
 	children = 'Sign up with GitHub',
-	spinner = true,
+	loading = true,
 	redirect = `/auth/login`,
 	...props
 }) {
@@ -20,8 +19,7 @@ export default function GitHubAuth({
 		})
 
 	return (
-		<AuthButton href={!props.disabled ? url : '##'}>
-			{spinner && <Spinner />}
+		<AuthButton loading={loading} href={!props.disabled ? url : '##'}>
 			{children}
 		</AuthButton>
 	)

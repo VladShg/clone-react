@@ -9,7 +9,10 @@ export default function GoogleAuth({
 	children = 'Sign up with Google',
 }) {
 	const button = (renderProps) => (
-		<AuthButton disabled={disabled} onClick={renderProps.onClick}>
+		<AuthButton
+			disabled={disabled || renderProps.disabled}
+			onClick={renderProps.onClick}
+		>
 			{children}
 		</AuthButton>
 	)
