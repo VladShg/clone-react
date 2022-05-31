@@ -6,9 +6,10 @@ import { Link, Outlet } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { authSelector } from '@store/auth/authSlice'
 import Account from '@shared/Account/Account'
-import Modal from '@shared/Modal/Modal'
 import WriteTweet from '@shared/WriteTweet/WriteTweet'
 import toast, { Toaster } from 'react-hot-toast'
+import { Modal } from '@mui/material'
+import { ModalBody, ModalControl } from '@shared/Modal/Modal'
 export default function HomeLayout() {
 	const { user } = useSelector(authSelector)
 	const [isOpen, setOpen] = useState(false)
@@ -67,28 +68,33 @@ export default function HomeLayout() {
 				</div>
 				<div className={styles.Section}>
 					<Outlet />
-					<Modal isOpen={isOpen} className={styles.Modal} setOpen={setOpen}>
-						<Modal.Close className={styles.Close} />
-						<WriteTweet
-							className={styles.Write}
-							onCreate={(tweet) => {
-								const dismiss = () => toast.dismiss(toastId)
-								setOpen(false)
-								let toastId = toast(
-									<>
-										Your Tweet was sent.
-										<Link
-											to={`/status/${user.username}/${tweet.id}`}
-											onClick={dismiss}
-											className={styles.TweetLink}
-										>
-											View
-										</Link>
-									</>,
-									{ position: 'bottom-center' }
-								)
-							}}
-						/>
+					<Modal open={isOpen} onClose={() => setOpen(false)}>
+						<ModalBody sx={{ padding: '10px 30px', borderRadius: '15px' }}>
+							<ModalControl
+								icon="times"
+								style={{ left: '10px', top: '10px' }}
+							/>
+							<WriteTweet
+								className={styles.Write}
+								onCreate={(tweet) => {
+									const dismiss = () => toast.dismiss(toastId)
+									setOpen(false)
+									let toastId = toast(
+										<>
+											Your Tweet was sent.
+											<Link
+												to={`/status/${user.username}/${tweet.id}`}
+												onClick={dismiss}
+												className={styles.TweetLink}
+											>
+												View
+											</Link>
+										</>,
+										{ position: 'bottom-center' }
+									)
+								}}
+							/>
+						</ModalBody>
 					</Modal>
 					<Toaster />
 				</div>
