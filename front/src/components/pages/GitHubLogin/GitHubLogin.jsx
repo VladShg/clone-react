@@ -4,7 +4,17 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useLazyGitHubLoginQuery } from '@services/authApi'
 import { setToken } from '@store/auth/authSlice'
 import Spinner from '@shared/Spinner/Spinner'
-import styles from './GitHubLogin.module.scss'
+import { styled } from '@mui/material/styles'
+import { Container } from '@mui/system'
+
+const PageSpinner = styled(Spinner)(() => ({
+	position: 'absolute',
+	top: '50%',
+	left: '50%',
+	transform: 'translate(-50%, -50%)',
+	width: '100px',
+	height: '100px',
+}))
 
 export default function GitHubLogin() {
 	const [trigger] = useLazyGitHubLoginQuery()
@@ -30,8 +40,8 @@ export default function GitHubLogin() {
 	}, [])
 
 	return (
-		<div className={styles.Container}>
-			<Spinner className={styles.Spinner} />
-		</div>
+		<Container position="relative" height="100%" width="100%">
+			<PageSpinner />
+		</Container>
 	)
 }

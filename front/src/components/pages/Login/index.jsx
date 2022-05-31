@@ -43,3 +43,11 @@ export const SignUpButton = styled(Button)(({ theme }) => ({
 		cursor: 'pointer',
 	},
 }))
+
+export const BackgroundImage = styled('img')(() => ({
+	width: '100%',
+	height: '100%',
+	maxWidth: '100%',
+	objectFit: 'cover',
+	verticalAlign: 'middle',
+}))

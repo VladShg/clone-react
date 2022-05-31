@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import styles from './Login.module.scss'
-import backgroundImage from '../../../media/background/painted.png'
+import background from './assets/background.png'
 import {
 	useLazyGitHubConnectQuery,
 	useLazyGoogleConnectQuery,
@@ -20,9 +19,9 @@ import ModalLogin from '@shared/Modal/ModalLogin/ModalLogin'
 import toast, { Toaster } from 'react-hot-toast'
 import GoogleAuth from '@shared/AuthControl/GoogleAuth'
 import GitHubAuth from '@shared/AuthControl/GitHubAuth'
-import { LoginButton, SignUpButton } from '.'
+import { BackgroundImage, LoginButton, SignUpButton } from '.'
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
-import { Stack, Typography, Divider } from '@mui/material'
+import { Stack, Typography, Divider, Grid } from '@mui/material'
 import { Container } from '@mui/system'
 import { BackgroundLogo, SubtleLogo } from '@shared/Logo/Logo'
 
@@ -89,61 +88,59 @@ export default function Login() {
 	}
 
 	return (
-		<div className={styles.container}>
-			<Container disableGutters sx={{ position: 'relative' }}>
+		<Grid container gridTemplateColumns="1fr 1fr" height="100%">
+			<Grid item xs={6} position="relative">
 				<BackgroundLogo icon={solid('crow')} />
-				<img
-					className={styles.backgroundImg}
-					src={backgroundImage}
-					alt="wall"
-				/>
-			</Container>
-			<Stack
-				direction="column"
-				alignItems="flex-start"
-				justifyContent="center"
-				gap="10px"
-				sx={{ maxWidth: '300px', ml: '60px', height: '100%' }}
-			>
-				<SubtleLogo icon={solid('crow')} />
-				<Typography variant="h1">Happening now</Typography>
-				<Typography variant="h2">Join Crower today.</Typography>
-				<GoogleAuth disabled={inputDisabled} onSignUp={onSignUp} />
-				<GitHubAuth loading={isGitHubLoading} disabled={inputDisabled} />
-				<Container disableGutters>
-					<Divider sx={{ width: '100%' }}>or</Divider>
-				</Container>
-				<SignUpButton
-					onClick={() => {
-						dispatch(setRegisterModal(true))
-					}}
+				<BackgroundImage src={background} alt="wall" />
+			</Grid>
+			<Grid item xs={6}>
+				<Stack
+					direction="column"
+					alignItems="flex-start"
+					justifyContent="center"
+					gap="10px"
+					sx={{ maxWidth: '300px', ml: '60px', height: '100%' }}
 				>
-					Sign up with email
-				</SignUpButton>
-				<Typography variant="notice" marginBottom="40px">
-					By signing up, you agree to the Terms of Service and Privacy Policy,
-					including Cookie Use.
-				</Typography>
-				<Typography variant="h3">Already have an account?</Typography>
-				<LoginButton onClick={() => dispatch(setLoginModal(true))}>
-					Sign in
-				</LoginButton>
-				<ModalRegister
-					isOpen={isRegisterModalOpen}
-					setOpen={(value) => {
-						if (!value) {
-							dispatch(closeRegisterModal())
-						} else {
-							dispatch(setRegisterModal(value))
-						}
-					}}
-				/>
-				<ModalLogin
-					isOpen={isLoginModalOpen}
-					setOpen={(value) => dispatch(setLoginModal(value))}
-				/>
-			</Stack>
+					<SubtleLogo icon={solid('crow')} />
+					<Typography variant="h1">Happening now</Typography>
+					<Typography variant="h2">Join Crower today.</Typography>
+					<GoogleAuth disabled={inputDisabled} onSignUp={onSignUp} />
+					<GitHubAuth loading={isGitHubLoading} disabled={inputDisabled} />
+					<Container disableGutters>
+						<Divider sx={{ width: '100%' }}>or</Divider>
+					</Container>
+					<SignUpButton
+						onClick={() => {
+							dispatch(setRegisterModal(true))
+						}}
+					>
+						Sign up with email
+					</SignUpButton>
+					<Typography variant="notice" marginBottom="40px">
+						By signing up, you agree to the Terms of Service and Privacy Policy,
+						including Cookie Use.
+					</Typography>
+					<Typography variant="h3">Already have an account?</Typography>
+					<LoginButton onClick={() => dispatch(setLoginModal(true))}>
+						Sign in
+					</LoginButton>
+					<ModalRegister
+						isOpen={isRegisterModalOpen}
+						setOpen={(value) => {
+							if (!value) {
+								dispatch(closeRegisterModal())
+							} else {
+								dispatch(setRegisterModal(value))
+							}
+						}}
+					/>
+					<ModalLogin
+						isOpen={isLoginModalOpen}
+						setOpen={(value) => dispatch(setLoginModal(value))}
+					/>
+				</Stack>
+			</Grid>
 			<Toaster />
-		</div>
+		</Grid>
 	)
 }
