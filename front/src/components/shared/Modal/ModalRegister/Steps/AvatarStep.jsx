@@ -4,11 +4,13 @@ import {
 	previousStep,
 	registerSelector,
 } from '@store/auth/registerSlice'
-import styles from '../ModalRegister.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { AccountPreview } from '../../../Account/Account'
 import { ModalControl, ModalLogo, ModalSubmit } from '@shared/Modal/Modal'
-import { Stack, Typography } from '@mui/material'
+import { IconButton, Stack, Typography } from '@mui/material'
+import { AvatarInput } from '../ProfilePreview'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
 
 export default function AvatarStep({ image, setImage }) {
 	const dispatch = useDispatch()
@@ -40,21 +42,15 @@ export default function AvatarStep({ image, setImage }) {
 			/>
 			<ModalLogo />
 			<Typography variant="modalTitle">Add a profile picture</Typography>
-			<input
-				className={styles.AvatarInput}
-				type="file"
-				accept=".jpg, .jpeg, .png"
-				onChange={onChange}
-				placeholder="Upload profile picture"
-			/>
-			<div className={styles.AvatarPlaceholder}>
+			<AvatarInput type="file" accept=".jpg, .jpeg, .png" onChange={onChange} />
+			<Stack direction="row" justifyContent="space-between" alignItems="center">
 				<AccountPreview username={username} name={name} avatar={src} />
 				{image && (
-					<button title="Clear" onClick={onReset} className={styles.Clear}>
-						<i className="fa-solid fa-xmark" />
-					</button>
+					<IconButton onClick={onReset}>
+						<FontAwesomeIcon fontSize="24" icon={solid('xmark')} />
+					</IconButton>
 				)}
-			</div>
+			</Stack>
 			<ModalSubmit type="submit">{image ? 'Continue' : 'Skip'}</ModalSubmit>
 		</Stack>
 	)

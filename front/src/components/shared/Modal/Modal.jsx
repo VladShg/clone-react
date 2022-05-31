@@ -75,3 +75,5 @@ export function ModalLogo() {
 		</Grid>
 	)
 }
+
+export default null
