@@ -3,11 +3,11 @@ import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import { useLazyLoginQuery } from '../../../../services/authApi'
 import { setToken } from '../../../../store/auth/authSlice'
-import Modal from '../Modal'
-import styles from './ModalLogin.module.scss'
+import Modal, { ModalBody, ModalField, ModalSubmit } from '../Modal'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import toast from 'react-hot-toast'
+import { Stack, Typography } from '@mui/material'
 
 const schema = yup
 	.object({
@@ -40,29 +40,29 @@ export const PasswordWindow = function ({ login, setLogin }) {
 	}
 
 	return (
-		<div className={styles.PasswordContainer}>
-			<form onSubmit={handleSubmit(onLogin)}>
-				<div className={styles.PasswordModal}>
-					<Modal.Back
-						onClick={() => setLogin((prev) => ({ ...prev, isOpen: false }))}
-					/>
-					<div className={styles.InputContainer}>
-						<Modal.SubTitle>Username or login</Modal.SubTitle>
-						<Modal.Input value={login} disabled />
-						<Modal.SubTitle>Password</Modal.SubTitle>
-						<Modal.Input
-							type="password"
-							placeholder="Password"
-							props={register('password')}
-						/>
-					</div>
-					<div className={styles.SubmitContainer}>
-						<Modal.Button type="submit" disabled={isLoading || !isValid}>
-							Submit
-						</Modal.Button>
-					</div>
-				</div>
-			</form>
-		</div>
+		<ModalBody>
+			<Stack
+				direction="column"
+				gap="20px"
+				component="form"
+				onSubmit={handleSubmit(onLogin)}
+			>
+				<Modal.Back
+					onClick={() => setLogin((prev) => ({ ...prev, isOpen: false }))}
+				/>
+				<Typography variant="modalSub">Username or login</Typography>
+				<ModalField fullWidth value={login} variant="filled" disabled />
+				<Typography variant="modalSub">Password</Typography>
+				<ModalField
+					fullWidth
+					type="password"
+					placeholder="Password"
+					{...register('password')}
+				/>
+				<ModalSubmit type="submit" disabled={isLoading || !isValid}>
+					Submit
+				</ModalSubmit>
+			</Stack>
+		</ModalBody>
 	)
 }

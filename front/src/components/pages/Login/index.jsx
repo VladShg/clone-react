@@ -1,11 +1,13 @@
 import { styled } from '@mui/material/styles'
 import { grey } from '@mui/material/colors'
-import Button from '@shared/Button/Button'
+import Button from '@mui/material/Button'
 
 export const LoginButton = styled(Button)(({ theme }) => ({
-	padding: '10px 0px',
-	textAlign: 'center',
+	fontFamily: 'Manrope',
+	textTransform: 'none',
 	fontSize: '16px',
+	textAlign: 'center',
+	padding: '10px 0px',
 	borderRadius: '50px',
 
 	width: '100%',
@@ -23,14 +25,15 @@ export const LoginButton = styled(Button)(({ theme }) => ({
 }))
 
 export const SignUpButton = styled(Button)(({ theme }) => ({
-	padding: '10px 0px',
+	fontFamily: 'Manrope',
 	textAlign: 'center',
+	textTransform: 'none',
 	fontSize: '16px',
+	padding: '10px 0px',
 	borderRadius: '50px',
 	width: '100%',
 	maxWidth: '300px',
 	border: 'none',
-	marginBottom: '10px',
 	background: theme.palette.primary.main,
 	color: theme.palette.common.white,
 	transition: '0.2s ease background',

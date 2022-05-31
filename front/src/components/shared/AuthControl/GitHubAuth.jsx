@@ -4,7 +4,7 @@ import config from '../../../config'
 
 export default function GitHubAuth({
 	children = 'Sign up with GitHub',
-	loading = true,
+	loading = false,
 	redirect = `/auth/login`,
 	...props
 }) {

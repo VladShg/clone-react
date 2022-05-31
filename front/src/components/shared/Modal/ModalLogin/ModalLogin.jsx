@@ -2,19 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import { useLazyGoogleLoginQuery } from '../../../../services/authApi'
-import { setToken } from '../../../../store/auth/authSlice'
+import { useLazyGoogleLoginQuery } from '@services/authApi'
+import { setToken } from '@store/auth/authSlice'
 import GitHubAuth from '../../AuthControl/GitHubAuth'
 import GoogleAuth from '../../AuthControl/GoogleAuth'
-import Modal from '../Modal'
-import styles from './ModalLogin.module.scss'
 import { PasswordWindow } from './PasswordWindow'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Modal, Grid, Divider, Stack } from '@mui/material'
+import { SubtleLogo } from '@shared/Logo/Logo'
+import { ModalBody, ModalField, ModalSubmit } from '../Modal'
 
 const schema = yup
 	.object({
-		login: yup.string().required(),
+		login: yup.string().required('Field should not be empty'),
 	})
 	.required()
 
@@ -26,8 +27,9 @@ export default function ModalLogin({ isOpen, setOpen }) {
 	const {
 		register,
 		handleSubmit,
+
 		reset,
-		formState: { isValid },
+		formState: { isValid, errors },
 	} = useForm({
 		resolver: yupResolver(schema),
 		mode: 'onChange',
@@ -57,28 +59,41 @@ export default function ModalLogin({ isOpen, setOpen }) {
 		setLogin({ isOpen: true, value: data.login })
 	}
 
-	return (
-		<Modal isOpen={isOpen} setOpen={setOpen} className={styles.Modal}>
-			{login.isOpen && (
-				<PasswordWindow setLogin={setLogin} login={login.value} />
-			)}
-			<Modal.Logo />
-			<Modal.Close />
-			<GoogleAuth className={styles.Auth} onSignUp={onLogin}>
-				Sign in with Google
-			</GoogleAuth>
+	const body = (
+		<ModalBody>
+			<Grid container justifyContent="center">
+				<SubtleLogo icon="crow" />
+			</Grid>
+			<GoogleAuth onSignUp={onLogin}>Sign in with Google</GoogleAuth>
 			<GitHubAuth redirect="/auth/login/github">Sign in with Github</GitHubAuth>
-			<Modal.Description></Modal.Description>
-			<Modal.Separator>Or</Modal.Separator>
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<Modal.Input
+			<Divider>or</Divider>
+			<Stack
+				component="form"
+				direction="column"
+				gap="20px"
+				onSubmit={handleSubmit(onSubmit)}
+			>
+				<ModalField
+					fullWidth
+					error={errors?.login?.message}
+					label={errors?.login?.message}
 					placeholder="Username or login"
-					props={register('login')}
-				></Modal.Input>
-				<Modal.Button type="submit" disabled={!isValid}>
+					{...register('login')}
+				></ModalField>
+				<ModalSubmit type="submit" disabled={!isValid}>
 					Continue
-				</Modal.Button>
-			</form>
+				</ModalSubmit>
+			</Stack>
+		</ModalBody>
+	)
+
+	return (
+		<Modal open={isOpen} onClose={() => setOpen(false)}>
+			{login.isOpen ? (
+				<PasswordWindow setLogin={setLogin} login={login.value} />
+			) : (
+				body
+			)}
 		</Modal>
 	)
 }

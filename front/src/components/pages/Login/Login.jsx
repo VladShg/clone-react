@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import styles from './Login.module.scss'
 import backgroundImage from '../../../media/background/painted.png'
-import classNames from 'classnames'
 import {
 	useLazyGitHubConnectQuery,
 	useLazyGoogleConnectQuery,
@@ -21,10 +20,11 @@ import ModalLogin from '@shared/Modal/ModalLogin/ModalLogin'
 import toast, { Toaster } from 'react-hot-toast'
 import GoogleAuth from '@shared/AuthControl/GoogleAuth'
 import GitHubAuth from '@shared/AuthControl/GitHubAuth'
-import { Stack, Typography } from '@mui/material'
-import Divider from '@mui/material/Divider'
+import { LoginButton, SignUpButton } from '.'
+import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
+import { Stack, Typography, Divider } from '@mui/material'
 import { Container } from '@mui/system'
-import { LoginButton, SignUpButton } from './LoginButton'
+import { BackgroundLogo, SubtleLogo } from '@shared/Logo/Logo'
 
 export default function Login() {
 	const [triggerGoogleConnect, googleResponse] = useLazyGoogleConnectQuery()
@@ -90,60 +90,59 @@ export default function Login() {
 
 	return (
 		<div className={styles.container}>
-			<div className={styles.background}>
-				<i className={classNames('fa-solid fa-crow', styles.backgroundLogo)} />
-				<img src={backgroundImage} alt="wall" />
-			</div>
-			<div>
-				<Stack
-					direction="column"
-					alignItems="flex-start"
-					justifyContent="center"
-					sx={{ maxWidth: '300px', ml: '60px', height: '100%' }}
+			<Container disableGutters sx={{ position: 'relative' }}>
+				<BackgroundLogo icon={solid('crow')} />
+				<img
+					className={styles.backgroundImg}
+					src={backgroundImage}
+					alt="wall"
+				/>
+			</Container>
+			<Stack
+				direction="column"
+				alignItems="flex-start"
+				justifyContent="center"
+				gap="10px"
+				sx={{ maxWidth: '300px', ml: '60px', height: '100%' }}
+			>
+				<SubtleLogo icon={solid('crow')} />
+				<Typography variant="h1">Happening now</Typography>
+				<Typography variant="h2">Join Crower today.</Typography>
+				<GoogleAuth disabled={inputDisabled} onSignUp={onSignUp} />
+				<GitHubAuth loading={isGitHubLoading} disabled={inputDisabled} />
+				<Container disableGutters>
+					<Divider sx={{ width: '100%' }}>or</Divider>
+				</Container>
+				<SignUpButton
+					onClick={() => {
+						dispatch(setRegisterModal(true))
+					}}
 				>
-					<i className={classNames('fa-solid fa-crow', styles.logo)} />
-					<Typography variant="h1">Happening now</Typography>
-					<Typography variant="h2">Join Crower today.</Typography>
-					<GoogleAuth
-						className={styles.signupService}
-						disabled={inputDisabled}
-						onSignUp={onSignUp}
-					/>
-					<GitHubAuth loading={isGitHubLoading} disabled={inputDisabled} />
-					<Container disableGutters>
-						<Divider sx={{ marginBottom: '10px', width: '100%' }}>or</Divider>
-					</Container>
-					<SignUpButton
-						onClick={() => {
-							dispatch(setRegisterModal(true))
-						}}
-					>
-						Sign up with email
-					</SignUpButton>
-					<Typography variant="notice" marginBottom="40px">
-						By signing up, you agree to the Terms of Service and Privacy Policy,
-						including Cookie Use.
-					</Typography>
-					<Typography variant="h3">Already have an account?</Typography>
-					<LoginButton onClick={() => dispatch(setLoginModal(true))}>
-						Sign in
-					</LoginButton>
-					<ModalRegister
-						isOpen={isRegisterModalOpen}
-						setOpen={(value) => {
-							if (!value) {
-								dispatch(closeRegisterModal())
-							} else {
-								dispatch(setRegisterModal(value))
-							}
-						}}
-					/>
-					<ModalLogin
-						isOpen={isLoginModalOpen}
-						setOpen={(value) => dispatch(setLoginModal(value))}
-					></ModalLogin>
-				</Stack>
-			</div>
+					Sign up with email
+				</SignUpButton>
+				<Typography variant="notice" marginBottom="40px">
+					By signing up, you agree to the Terms of Service and Privacy Policy,
+					including Cookie Use.
+				</Typography>
+				<Typography variant="h3">Already have an account?</Typography>
+				<LoginButton onClick={() => dispatch(setLoginModal(true))}>
+					Sign in
+				</LoginButton>
+				<ModalRegister
+					isOpen={isRegisterModalOpen}
+					setOpen={(value) => {
+						if (!value) {
+							dispatch(closeRegisterModal())
+						} else {
+							dispatch(setRegisterModal(value))
+						}
+					}}
+				/>
+				<ModalLogin
+					isOpen={isLoginModalOpen}
+					setOpen={(value) => dispatch(setLoginModal(value))}
+				/>
+			</Stack>
 			<Toaster />
 		</div>
 	)
