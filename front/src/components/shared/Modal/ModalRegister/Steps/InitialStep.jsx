@@ -8,8 +8,14 @@ import {
 	registerSelector,
 	updateProfile,
 } from '@store/auth/registerSlice'
-import Modal from '../../Modal'
 import { validateEmail } from '@utils/api'
+import {
+	ModalControl,
+	ModalField,
+	ModalLogo,
+	ModalSubmit,
+} from '@shared/Modal/Modal'
+import { Stack, Typography } from '@mui/material'
 
 const schema = yup.object({
 	name: yup.string().required('Name should not be empty'),
@@ -33,7 +39,7 @@ const schema = yup.object({
 		),
 })
 
-export default function InitialStep() {
+export default function InitialStep({ setOpen }) {
 	const dispatch = useDispatch()
 	const profile = useSelector(registerSelector).profile
 
@@ -57,35 +63,47 @@ export default function InitialStep() {
 	}
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
-			<Modal.Logo />
-			<Modal.Close />
-			<Modal.Title>Create your account</Modal.Title>
-			<Modal.Input
-				props={register('name')}
+		<Stack
+			component="form"
+			direction="column"
+			gap="20px"
+			onSubmit={handleSubmit(onSubmit)}
+		>
+			<ModalLogo />
+			<ModalControl icon="times" onClick={() => setOpen(false)} />
+			<Typography variant="modalTitle">Create your account</Typography>
+			<ModalField
+				{...register('name')}
+				error={errors.name?.message}
+				label={errors.name?.message}
 				defaultValue={profile.name}
+				fullWidth
 				placeholder="Name"
 			/>
-			<Modal.Warning>{errors.name?.message}</Modal.Warning>
-			<Modal.Input
-				props={register('email')}
+			<ModalField
+				{...register('email')}
+				error={errors.email?.message}
+				label={errors.email?.message}
 				defaultValue={profile.email}
+				fullWidth
 				placeholder="Email"
 			/>
-			<Modal.Warning>{errors.email?.message}</Modal.Warning>
-			<Modal.SubTitle>Date of birth</Modal.SubTitle>
-			<Modal.Description>
+			<Typography variant="modalSub">Date of birth</Typography>
+			<Typography variant="modalDesc">
 				This will not be shown publicly. Confirm your own age, even if this
 				account is for a business, a pet, or something else.
-			</Modal.Description>
-			<Modal.DatePicker
-				props={register('birth')}
+			</Typography>
+			<ModalField
+				{...register('birth')}
+				type="date"
+				fullWidth
+				error={errors.birth?.message}
+				label={errors.birth?.message}
 				defaultValue={profile.birth ? profile.birth.slice(0, 10) : ''}
 			/>
-			<Modal.Warning>{errors.birth?.message}</Modal.Warning>
-			<Modal.Button disabled={!isValid} type="submit">
+			<ModalSubmit disabled={!isValid} type="submit">
 				Next
-			</Modal.Button>
-		</form>
+			</ModalSubmit>
+		</Stack>
 	)
 }

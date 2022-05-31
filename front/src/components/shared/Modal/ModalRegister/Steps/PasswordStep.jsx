@@ -4,10 +4,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { previousStep, registerSelector } from '@store/auth/registerSlice'
-import Modal from '../../Modal'
 import { useSignUpMutation } from '@services/authApi'
 import { setToken } from '@store/auth/authSlice'
 import toast from 'react-hot-toast'
+import {
+	ModalControl,
+	ModalField,
+	ModalLogo,
+	ModalSubmit,
+} from '@shared/Modal/Modal'
+import { Stack, Typography } from '@mui/material'
 
 const schema = yup
 	.object({
@@ -77,29 +83,42 @@ export default function PasswordStep({ image }) {
 	}
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
-			<Modal.Back onClick={() => dispatch(previousStep())} />
-			<Modal.Logo />
-			<Modal.Title>Enter password</Modal.Title>
-			<Modal.Input
+		<Stack
+			onSubmit={handleSubmit(onSubmit)}
+			component="form"
+			direction="column"
+			gap="20px"
+		>
+			<ModalControl
+				icon="arrow-left"
+				onClick={() => dispatch(previousStep())}
+			/>
+			<ModalLogo />
+			<Typography variant="modalTitle">Enter password</Typography>
+			<ModalField
 				placeholder="Password"
 				type="password"
-				props={register('password')}
+				error={errors.password?.message}
+				label={errors.password?.message}
+				{...register('password')}
+				fullWidth
 			/>
-			<Modal.Input
+			<ModalField
 				placeholder="Confirm password"
 				type="password"
-				props={register('confirm')}
+				error={errors.confirm?.message}
+				label={errors.confirm?.message}
+				{...register('confirm')}
+				fullWidth
 			/>
-			<Modal.Warning>
-				{errors.password?.message || errors.confirm?.message}
-			</Modal.Warning>
-			<Modal.Button type="submit" disabled={!isValid}>
+			<ModalSubmit type="submit" disabled={!isValid}>
 				Submit
-			</Modal.Button>
+			</ModalSubmit>
 			{(googleId || gitHubId) && (
-				<Modal.Button onClick={skipPassword}>Skip</Modal.Button>
+				<ModalSubmit type="submit" onClick={skipPassword}>
+					Skip
+				</ModalSubmit>
 			)}
-		</form>
+		</Stack>
 	)
 }

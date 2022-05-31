@@ -19,7 +19,18 @@ const theme = createTheme({
 			fontWeight: '700',
 			fontSize: '15px',
 			lineHeight: '20px',
-			margin: 0,
+		},
+		modalTitle: {
+			color: common.black,
+			fontWeight: '700',
+			fontSize: '31px',
+			lineHeight: '36px',
+		},
+		modalDesc: {
+			color: '#536471',
+			fontWeight: '400',
+			fontSize: '14px',
+			lineHeight: '16px',
 		},
 	},
 	palette: {

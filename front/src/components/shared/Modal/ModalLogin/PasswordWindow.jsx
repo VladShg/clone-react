@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import { useLazyLoginQuery } from '../../../../services/authApi'
 import { setToken } from '../../../../store/auth/authSlice'
-import Modal, { ModalBody, ModalField, ModalSubmit } from '../Modal'
+import { ModalControl, ModalBody, ModalField, ModalSubmit } from '../Modal'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import toast from 'react-hot-toast'
@@ -47,7 +47,8 @@ export const PasswordWindow = function ({ login, setLogin }) {
 				component="form"
 				onSubmit={handleSubmit(onLogin)}
 			>
-				<Modal.Back
+				<ModalControl
+					icon="arrow-left"
 					onClick={() => setLogin((prev) => ({ ...prev, isOpen: false }))}
 				/>
 				<Typography variant="modalSub">Username or login</Typography>

@@ -9,9 +9,14 @@ import GoogleAuth from '../../AuthControl/GoogleAuth'
 import { PasswordWindow } from './PasswordWindow'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Modal, Grid, Divider, Stack } from '@mui/material'
-import { SubtleLogo } from '@shared/Logo/Logo'
-import { ModalBody, ModalField, ModalSubmit } from '../Modal'
+import { Modal, Divider, Stack } from '@mui/material'
+import {
+	ModalControl,
+	ModalBody,
+	ModalField,
+	ModalLogo,
+	ModalSubmit,
+} from '../Modal'
 
 const schema = yup
 	.object({
@@ -61,9 +66,8 @@ export default function ModalLogin({ isOpen, setOpen }) {
 
 	const body = (
 		<ModalBody>
-			<Grid container justifyContent="center">
-				<SubtleLogo icon="crow" />
-			</Grid>
+			<ModalLogo />
+			<ModalControl icon="times" onClick={() => setOpen(false)} />
 			<GoogleAuth onSignUp={onLogin}>Sign in with Google</GoogleAuth>
 			<GitHubAuth redirect="/auth/login/github">Sign in with Github</GitHubAuth>
 			<Divider>or</Divider>

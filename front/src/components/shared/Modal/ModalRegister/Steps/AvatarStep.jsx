@@ -4,10 +4,11 @@ import {
 	previousStep,
 	registerSelector,
 } from '@store/auth/registerSlice'
-import Modal from '../../Modal'
 import styles from '../ModalRegister.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { AccountPreview } from '../../../Account/Account'
+import { ModalControl, ModalLogo, ModalSubmit } from '@shared/Modal/Modal'
+import { Stack, Typography } from '@mui/material'
 
 export default function AvatarStep({ image, setImage }) {
 	const dispatch = useDispatch()
@@ -32,10 +33,13 @@ export default function AvatarStep({ image, setImage }) {
 	let src = image ? URL.createObjectURL(image) : ''
 
 	return (
-		<form onSubmit={onSubmit}>
-			<Modal.Back onClick={() => dispatch(previousStep())} />
-			<Modal.Logo />
-			<Modal.Title>Add a profile picture</Modal.Title>
+		<Stack component="form" direction="column" gap="20px" onSubmit={onSubmit}>
+			<ModalControl
+				icon="arrow-left"
+				onClick={() => dispatch(previousStep())}
+			/>
+			<ModalLogo />
+			<Typography variant="modalTitle">Add a profile picture</Typography>
 			<input
 				className={styles.AvatarInput}
 				type="file"
@@ -51,7 +55,7 @@ export default function AvatarStep({ image, setImage }) {
 					</button>
 				)}
 			</div>
-			<Modal.Button type="submit">{image ? 'Continue' : 'Skip'}</Modal.Button>
-		</form>
+			<ModalSubmit type="submit">{image ? 'Continue' : 'Skip'}</ModalSubmit>
+		</Stack>
 	)
 }

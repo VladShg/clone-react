@@ -10,7 +10,13 @@ import {
 	registerSelector,
 	updateProfile,
 } from '@store/auth/registerSlice'
-import Modal from '../../Modal'
+import { Stack, Typography } from '@mui/material'
+import {
+	ModalControl,
+	ModalField,
+	ModalLogo,
+	ModalSubmit,
+} from '@shared/Modal/Modal'
 
 const schema = yup
 	.object({
@@ -47,18 +53,29 @@ export default function UsernameStep() {
 	}
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
-			<Modal.Back onClick={() => dispatch(previousStep())} />
-			<Modal.Logo />
-			<Modal.Title>Choose a username</Modal.Title>
-			<Modal.Input
-				type="text"
-				placeholder="Username"
-				defaultValue={profile.username}
-				props={register('username')}
+		<Stack
+			component="form"
+			direction="column"
+			gap="20px"
+			onSubmit={handleSubmit(onSubmit)}
+		>
+			<ModalControl
+				icon="arrow-left"
+				onClick={() => dispatch(previousStep())}
 			/>
-			<Modal.Warning>{errors.username?.message}</Modal.Warning>
-			<Modal.Button disabled={!isValid}>Next</Modal.Button>
-		</form>
+			<ModalLogo />
+			<Typography variant="modalTitle">Choose a username</Typography>
+			<ModalField
+				{...register('username')}
+				error={errors.username?.message}
+				label={errors.username?.message}
+				defaultValue={profile.username}
+				placeholder="Username"
+				fullWidth
+			/>
+			<ModalSubmit type="submit" disabled={!isValid}>
+				Next
+			</ModalSubmit>
+		</Stack>
 	)
 }
