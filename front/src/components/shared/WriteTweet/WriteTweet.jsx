@@ -3,18 +3,17 @@ import { useSelector } from 'react-redux'
 import { useCreateMutation } from '../../../services/tweetApi'
 import { authSelector } from '../../../store/auth/authSlice'
 import Avatar from '../Avatar/Avatar'
-import Button from '../Button/Button'
 import WordCounter from '../WordCounter/WordCounter'
-import styles from './WriteTweet.module.scss'
-import TextareaAutosize from 'react-textarea-autosize'
-import classNames from 'classnames'
+import { PrimaryButton } from '@shared/Button/Button'
+import { InputBase, Stack, styled } from '@mui/material'
+import { grey } from '@mui/material/colors'
 
 export default function WriteTweet({
 	placeholder = "What's happening",
 	useWrite = useCreateMutation,
 	onCreate = () => {},
 	replyId = null,
-	className = '',
+	border,
 }) {
 	const { user } = useSelector(authSelector)
 	const [createTweet, { isLoading }] = useWrite('shared-create-tweet')
@@ -27,22 +26,23 @@ export default function WriteTweet({
 		return null
 	}
 
-	const clsx = classNames(styles.container, { [className]: !!className })
-
 	return (
-		<div className={clsx}>
+		<Stack
+			padding="20px 10px"
+			direction="row"
+			borderBottom={border && `1px solid ${grey.A200}`}
+		>
 			<Avatar src={user.avatar} />
-			<div className={styles.inputRow}>
-				<TextareaAutosize
-					multiple
-					type="text"
-					className={styles.input}
+			<Stack direction="column" flexGrow="1">
+				<TweetInput
 					placeholder={placeholder}
 					onChange={(e) => setInput(e.target.value)}
+					multiline
+					fullWidth
 					value={input}
 				/>
-				<div className={styles.mediaRow}>
-					<Button
+				<Stack direction="row-reverse">
+					<PrimaryButton
 						onClick={async (e) => {
 							e.preventDefault()
 							let res = await createTweet({ message: input, replyId })
@@ -52,10 +52,36 @@ export default function WriteTweet({
 						disabled={isDisabled}
 					>
 						Tweet
-					</Button>
+					</PrimaryButton>
 					{input.length > 0 && <WordCounter text={input} />}
-				</div>
-			</div>
-		</div>
+				</Stack>
+			</Stack>
+		</Stack>
 	)
 }
+
+const TweetInput = styled(InputBase)(({ theme }) => ({
+	display: 'block',
+	width: '100%',
+	maxWidth: '100%',
+	overflow: 'hidden',
+	lineHeight: '20px',
+	wordBreak: 'break-word',
+	marginBottom: '10px',
+
+	fontFamily: 'Manrope, serif',
+	fontSize: '16px',
+	outline: 'none',
+	resize: 'none',
+	flexGrow: '1',
+	border: 'none',
+
+	'&:hover': {
+		cursor: 'text',
+	},
+
+	'&:empty::before': {
+		fontSize: '20px',
+		color: theme.palette.grey,
+	},
+}))

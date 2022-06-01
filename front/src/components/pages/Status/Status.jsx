@@ -19,6 +19,7 @@ export default function Status() {
 			<NavBar title="Tweet" navigateBack />
 			<TitleTweet id={tweetId} key={tweetId} />
 			<WriteTweet
+				border
 				replyId={tweetId}
 				useWrite={useReplyMutation}
 				placeholder="Write your reply"

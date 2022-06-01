@@ -10,9 +10,28 @@ import WriteTweet from '@shared/WriteTweet/WriteTweet'
 import toast, { Toaster } from 'react-hot-toast'
 import { Modal } from '@mui/material'
 import { ModalBody, ModalControl } from '@shared/Modal/Modal'
+import { PrimaryButton } from '@shared/Button/Button'
 export default function HomeLayout() {
 	const { user } = useSelector(authSelector)
 	const [isOpen, setOpen] = useState(false)
+
+	const createTweet = (tweet) => {
+		const dismiss = () => toast.dismiss(toastId)
+		setOpen(false)
+		let toastId = toast(
+			<>
+				Your Tweet was sent.
+				<Link
+					to={`/status/${user.username}/${tweet.id}`}
+					onClick={dismiss}
+					className={styles.TweetLink}
+				>
+					View
+				</Link>
+			</>,
+			{ position: 'bottom-center' }
+		)
+	}
 
 	return (
 		<>
@@ -57,12 +76,9 @@ export default function HomeLayout() {
 							<i className="fa-solid fa-ellipsis" />
 							<span>More</span>
 						</HomeLink>
-						<button
-							onClick={() => setOpen(!isOpen)}
-							className={styles.PrimaryButton}
-						>
+						<PrimaryButton onClick={() => setOpen(!isOpen)}>
 							Tweet
-						</button>
+						</PrimaryButton>
 					</div>
 					<Account />
 				</div>
@@ -72,28 +88,10 @@ export default function HomeLayout() {
 						<ModalBody sx={{ padding: '10px 30px' }}>
 							<ModalControl
 								icon="times"
+								onClick={() => setOpen(false)}
 								style={{ left: '10px', top: '10px' }}
 							/>
-							<WriteTweet
-								className={styles.Write}
-								onCreate={(tweet) => {
-									const dismiss = () => toast.dismiss(toastId)
-									setOpen(false)
-									let toastId = toast(
-										<>
-											Your Tweet was sent.
-											<Link
-												to={`/status/${user.username}/${tweet.id}`}
-												onClick={dismiss}
-												className={styles.TweetLink}
-											>
-												View
-											</Link>
-										</>,
-										{ position: 'bottom-center' }
-									)
-								}}
-							/>
+							<WriteTweet onCreate={createTweet} />
 						</ModalBody>
 					</Modal>
 					<Toaster />

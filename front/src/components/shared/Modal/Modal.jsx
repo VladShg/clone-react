@@ -64,7 +64,7 @@ export const ModalControl = styled(FontAwesomeIcon)(({ theme }) => ({
 	fontSize: '24px',
 	transition: '0.2s ease transform',
 	'&:hover': {
-		transform: 'translateY(-2px)',
+		transform: 'scale(1.5)',
 		cursor: 'pointer',
 	},
 }))

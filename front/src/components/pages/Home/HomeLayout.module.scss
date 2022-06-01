@@ -93,23 +93,6 @@ a.Navigation {
 	}
 }
 
-.Modal:not(.y) {
-	padding: 10px 20px;
-	min-width: 400px;
-}
-
-.Close:not(.y) {
-	top: 10px;
-	left: 10px;
-
-	font-size: 16px;
-	transition: 0.2s ease transform;
-
-	&:hover {
-		transform: translateY(-2px);
-		cursor: pointer;
-	}
-}
 
 .Write:not(.y) {
 	height: 100%;
@@ -120,22 +103,4 @@ a.Navigation {
 .TweetLink {
 	color: var(--black);
 	margin-left: 10px;
-}
-
-.PrimaryButton {
-	font-family: Manrope, serif;
-	text-decoration: none;
-	background: var(--main);
-	color: white;
-	border: none;
-	border-radius: 9999px;
-	padding: 10px 20px;
-	text-align: center;
-	font-size: 16px;
-	font-weight: bold;
-	transition: 0.2s ease background;
-	&:hover {
-		background: var(--main-fade);
-		cursor: pointer;
-	}
 }

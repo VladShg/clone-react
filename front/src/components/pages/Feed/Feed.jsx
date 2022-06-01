@@ -1,12 +1,13 @@
 import React from 'react'
 import styles from './Feed.module.scss'
-import WriteTweet from '../../shared/WriteTweet/WriteTweet'
-import { useGetFeedQuery } from '../../../services/tweetApi'
-import Tweet from '../../shared/Tweet/Tweet'
+import WriteTweet from '@shared/WriteTweet/WriteTweet'
+import Tweet from '@shared/Tweet/Tweet'
+import Spinner from '@shared/Spinner/Spinner'
+import NavBar from '@shared/NavBar/NavBar'
 import { useSelector } from 'react-redux'
-import { authSelector } from '../../../store/auth/authSlice'
-import Spinner from '../../shared/Spinner/Spinner'
-import NavBar from '../../shared/NavBar/NavBar'
+import { useGetFeedQuery } from '@services/tweetApi'
+import { authSelector } from '@store/auth/authSlice'
+import { Container, Stack } from '@mui/material'
 
 export default function Feed() {
 	const { data: tweets, isLoading } = useGetFeedQuery()
@@ -14,21 +15,25 @@ export default function Feed() {
 
 	if (isLoading || !user) {
 		return (
-			<div className={styles.container}>
-				<div className={styles.SpinnerContainer}>
+			<Container sx={{ height: '100%' }} position="relative" >
+				<Stack
+					sx={{ width: '100%', height: '100%' }}
+					alignItems="center"
+					justifyContent="center"
+				>
 					<Spinner className={styles.Spinner} />
-				</div>
-			</div>
+				</Stack>
+			</Container>
 		)
 	}
 
 	return (
-		<div className={styles.container}>
+		<Container height="100%" position="relative" disableGutters>
 			<NavBar title="Home" />
-			<WriteTweet />
-			{!isLoading &&
-				user &&
-				tweets.map((tweet) => <Tweet key={tweet} id={tweet} />)}
-		</div>
+			<WriteTweet border />
+			{tweets.map((tweet) => (
+				<Tweet key={tweet} id={tweet} />
+			))}
+		</Container>
 	)
 }

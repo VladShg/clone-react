@@ -6,6 +6,7 @@ import { useLazyAuthorizeQuery } from './services/authApi'
 import { useLazyGetAvatarQuery } from './services/userApi'
 import { authSelector, setToken, setUser } from './store/auth/authSlice'
 import { common } from '@mui/material/colors'
+import { alpha } from '@mui/material'
 
 const theme = createTheme({
 	typography: {
@@ -37,6 +38,7 @@ const theme = createTheme({
 		primary: {
 			main: '#1d9bf0',
 			dark: '#1a8cd8',
+			inavtive: alpha('#1d9bf0', 0.4),
 		},
 		common: {
 			dark: '#536471',
