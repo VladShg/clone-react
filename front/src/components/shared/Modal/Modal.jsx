@@ -16,7 +16,7 @@ export const ModalBody = styled(Stack)(({ theme }) => ({
 	maxWidth: '400px',
 	boxSizing: 'border-box',
 	margin: '0',
-	borderRadius: '50px',
+	borderRadius: '15px',
 	padding: '40px 80px',
 	transform: 'translate(-50%, -50%)',
 }))
@@ -35,7 +35,8 @@ export const ModalField = styled(TextField)(({ theme }) => ({
 }))
 
 export const ModalSubmit = styled(Button)(({ theme }) => ({
-	backgroundColor: theme.palette.common.dark,
+	backgroundColor: theme.palette.common.black,
+	fontWeight: 'bold',
 	borderRadius: '9999px',
 	color: theme.palette.common.white,
 	textTransform: 'none',
@@ -47,11 +48,11 @@ export const ModalSubmit = styled(Button)(({ theme }) => ({
 
 	'&[disabled]': {
 		color: theme.palette.common.white,
-		backgroundColor: alpha(theme.palette.common.dark, 0.4),
+		backgroundColor: alpha(theme.palette.common.black, 0.4),
 	},
 
 	'&:hover': {
-		backgroundColor: alpha(theme.palette.common.dark, 0.9),
+		backgroundColor: alpha(theme.palette.common.black, 0.9),
 	},
 }))
 

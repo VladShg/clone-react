@@ -69,7 +69,7 @@ export default function HomeLayout() {
 				<div className={styles.Section}>
 					<Outlet />
 					<Modal open={isOpen} onClose={() => setOpen(false)}>
-						<ModalBody sx={{ padding: '10px 30px', borderRadius: '15px' }}>
+						<ModalBody sx={{ padding: '10px 30px' }}>
 							<ModalControl
 								icon="times"
 								style={{ left: '10px', top: '10px' }}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { useLazyGoogleLoginQuery } from '@services/authApi'
@@ -30,12 +30,12 @@ export default function ModalLogin({ isOpen, setOpen }) {
 	const dispatch = useDispatch()
 
 	const {
-		register,
+		control,
 		handleSubmit,
-
 		reset,
-		formState: { isValid, errors },
+		formState: { isValid },
 	} = useForm({
+		defaultValues: { login: '' },
 		resolver: yupResolver(schema),
 		mode: 'onChange',
 	})
@@ -65,7 +65,7 @@ export default function ModalLogin({ isOpen, setOpen }) {
 	}
 
 	const body = (
-		<ModalBody>
+		<>
 			<ModalLogo />
 			<ModalControl icon="times" onClick={() => setOpen(false)} />
 			<GoogleAuth onSignUp={onLogin}>Sign in with Google</GoogleAuth>
@@ -77,27 +77,36 @@ export default function ModalLogin({ isOpen, setOpen }) {
 				gap="20px"
 				onSubmit={handleSubmit(onSubmit)}
 			>
-				<ModalField
-					fullWidth
-					error={errors?.login?.message}
-					label={errors?.login?.message}
-					placeholder="Username or login"
-					{...register('login')}
-				></ModalField>
+				<Controller
+					name="login"
+					control={control}
+					render={({ field: { value, onChange }, fieldState: { error } }) => (
+						<ModalField
+							value={value}
+							onChange={onChange}
+							error={!!error?.message}
+							label={error?.message}
+							placeholder="Username or login"
+							fullWidth
+						/>
+					)}
+				/>
 				<ModalSubmit type="submit" disabled={!isValid}>
 					Continue
 				</ModalSubmit>
 			</Stack>
-		</ModalBody>
+		</>
 	)
 
 	return (
 		<Modal open={isOpen} onClose={() => setOpen(false)}>
-			{login.isOpen ? (
-				<PasswordWindow setLogin={setLogin} login={login.value} />
-			) : (
-				body
-			)}
+			<ModalBody>
+				{login.isOpen ? (
+					<PasswordWindow setLogin={setLogin} login={login.value} />
+				) : (
+					body
+				)}
+			</ModalBody>
 		</Modal>
 	)
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -43,13 +43,14 @@ export default function InitialStep({ setOpen }) {
 	const dispatch = useDispatch()
 	const profile = useSelector(registerSelector).profile
 
-	const {
-		register,
-		handleSubmit,
-		formState: { isValid, errors },
-	} = useForm({
+	const { control, handleSubmit } = useForm({
+		defaultValues: {
+			name: profile.name,
+			email: profile.email,
+			birth: profile.birth ? profile.birth.slice(0, 10) : '',
+		},
 		resolver: yupResolver(schema),
-		mode: 'onChange',
+		mode: 'onSubmit',
 	})
 
 	const onSubmit = (data) => {
@@ -72,38 +73,54 @@ export default function InitialStep({ setOpen }) {
 			<ModalLogo />
 			<ModalControl icon="times" onClick={() => setOpen(false)} />
 			<Typography variant="modalTitle">Create your account</Typography>
-			<ModalField
-				{...register('name')}
-				error={errors.name?.message}
-				label={errors.name?.message}
-				defaultValue={profile.name}
-				fullWidth
-				placeholder="Name"
+			<Controller
+				name="name"
+				control={control}
+				render={({ field: { value, onChange }, fieldState: { error } }) => (
+					<ModalField
+						value={value}
+						onChange={onChange}
+						error={!!error?.message}
+						label={error?.message}
+						placeholder="Name"
+						fullWidth
+					/>
+				)}
 			/>
-			<ModalField
-				{...register('email')}
-				error={errors.email?.message}
-				label={errors.email?.message}
-				defaultValue={profile.email}
-				fullWidth
-				placeholder="Email"
+			<Controller
+				name="email"
+				control={control}
+				render={({ field: { value, onChange }, fieldState: { error } }) => (
+					<ModalField
+						value={value}
+						onChange={onChange}
+						error={!!error?.message}
+						label={error?.message}
+						placeholder="Email"
+						fullWidth
+					/>
+				)}
 			/>
 			<Typography variant="modalSub">Date of birth</Typography>
 			<Typography variant="modalDesc">
 				This will not be shown publicly. Confirm your own age, even if this
 				account is for a business, a pet, or something else.
 			</Typography>
-			<ModalField
-				{...register('birth')}
-				type="date"
-				fullWidth
-				error={errors.birth?.message}
-				label={errors.birth?.message}
-				defaultValue={profile.birth ? profile.birth.slice(0, 10) : ''}
+			<Controller
+				name="birth"
+				control={control}
+				render={({ field: { value, onChange }, fieldState: { error } }) => (
+					<ModalField
+						type="date"
+						value={value}
+						onChange={onChange}
+						error={!!error?.message}
+						label={value ? error?.message : ''}
+						fullWidth
+					/>
+				)}
 			/>
-			<ModalSubmit disabled={!isValid} type="submit">
-				Next
-			</ModalSubmit>
+			<ModalSubmit type="submit">Next</ModalSubmit>
 		</Stack>
 	)
 }

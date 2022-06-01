@@ -1,5 +1,5 @@
 import React from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -35,11 +35,12 @@ export default function PasswordStep({ image }) {
 	const [triggerSignUp] = useSignUpMutation()
 	const dispatch = useDispatch()
 	const {
-		register,
+		control,
 		handleSubmit,
-		formState: { errors, isValid },
+		formState: { isValid },
 	} = useForm({
 		resolver: yupResolver(schema),
+		defaultValues: { password: '', confirm: '' },
 		mode: 'onChange',
 	})
 
@@ -95,21 +96,35 @@ export default function PasswordStep({ image }) {
 			/>
 			<ModalLogo />
 			<Typography variant="modalTitle">Enter password</Typography>
-			<ModalField
-				placeholder="Password"
-				type="password"
-				error={errors.password?.message}
-				label={errors.password?.message}
-				{...register('password')}
-				fullWidth
+			<Controller
+				name="password"
+				control={control}
+				render={({ field: { value, onChange }, fieldState: { error } }) => (
+					<ModalField
+						value={value}
+						type="password"
+						onChange={onChange}
+						error={!!error?.message}
+						label={error?.message}
+						placeholder="Password"
+						fullWidth
+					/>
+				)}
 			/>
-			<ModalField
-				placeholder="Confirm password"
-				type="password"
-				error={errors.confirm?.message}
-				label={errors.confirm?.message}
-				{...register('confirm')}
-				fullWidth
+			<Controller
+				name="confirm"
+				control={control}
+				render={({ field: { value, onChange }, fieldState: { error } }) => (
+					<ModalField
+						value={value}
+						type="password"
+						onChange={onChange}
+						error={!!error?.message}
+						label={error?.message}
+						placeholder="Confirm password"
+						fullWidth
+					/>
+				)}
 			/>
 			<ModalSubmit type="submit" disabled={!isValid}>
 				Submit

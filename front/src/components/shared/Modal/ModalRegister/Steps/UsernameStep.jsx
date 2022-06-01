@@ -1,5 +1,5 @@
 import React from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -38,13 +38,10 @@ const schema = yup
 export default function UsernameStep() {
 	const dispatch = useDispatch()
 	const profile = useSelector(registerSelector).profile
-	const {
-		register,
-		handleSubmit,
-		formState: { errors, isValid },
-	} = useForm({
+	const { control, handleSubmit } = useForm({
 		resolver: yupResolver(schema),
-		mode: 'onChange',
+		mode: 'onSubmit',
+		defaultValues: { username: profile.username },
 	})
 
 	const onSubmit = (data) => {
@@ -65,17 +62,21 @@ export default function UsernameStep() {
 			/>
 			<ModalLogo />
 			<Typography variant="modalTitle">Choose a username</Typography>
-			<ModalField
-				{...register('username')}
-				error={errors.username?.message}
-				label={errors.username?.message}
-				defaultValue={profile.username}
-				placeholder="Username"
-				fullWidth
+			<Controller
+				name="username"
+				control={control}
+				render={({ field: { value, onChange }, fieldState: { error } }) => (
+					<ModalField
+						value={value}
+						onChange={onChange}
+						error={!!error?.message}
+						label={error?.message}
+						placeholder="Username"
+						fullWidth
+					/>
+				)}
 			/>
-			<ModalSubmit type="submit" disabled={!isValid}>
-				Next
-			</ModalSubmit>
+			<ModalSubmit type="submit">Next</ModalSubmit>
 		</Stack>
 	)
 }
