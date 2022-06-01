@@ -60,6 +60,7 @@ export const PasswordWindow = function ({ login, setLogin }) {
 				render={({ field: { value, onChange }, fieldState: { error } }) => (
 					<ModalField
 						type="password"
+						name="password"
 						value={value}
 						onChange={onChange}
 						error={!!error?.message}

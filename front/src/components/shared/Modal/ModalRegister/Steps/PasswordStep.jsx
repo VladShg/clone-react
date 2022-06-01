@@ -102,6 +102,7 @@ export default function PasswordStep({ image }) {
 				render={({ field: { value, onChange }, fieldState: { error } }) => (
 					<ModalField
 						value={value}
+						name="password"
 						type="password"
 						onChange={onChange}
 						error={!!error?.message}
@@ -118,6 +119,7 @@ export default function PasswordStep({ image }) {
 					<ModalField
 						value={value}
 						type="password"
+						name="confirm"
 						onChange={onChange}
 						error={!!error?.message}
 						label={error?.message}
