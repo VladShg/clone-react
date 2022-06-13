@@ -1,39 +1,30 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
-import styles from './Avatar.module.scss'
+import { styled } from '@mui/material'
+import isPropValid from '@emotion/is-prop-valid'
 
-Avatar.propTypes = {
-	src: PropTypes.string,
-	alignCenter: PropTypes.bool,
-	alignBottom: PropTypes.bool,
-}
+export const AvatarWrapper = styled('div')(() => ({
+	display: 'flex',
+	position: 'relative',
+	marginRight: '15px',
+}))
 
-export default function Avatar({
-	src,
-	className,
-	alignCenter,
-	alignBottom,
-	size = 40,
-	...props
-}) {
-	const classes = classNames(styles.Avatar, {
-		[styles.center]: Boolean(alignCenter),
-		[styles.bottom]: Boolean(alignBottom),
-		[className]: !!className,
-	})
-
-	const style = {
+export const AvatarImage = styled('div', { shouldForwardProp: isPropValid })(
+	({ size, src, theme }) => ({
 		width: size + 'px',
 		height: size + 'px',
-	}
-	if (src) {
-		style.backgroundImage = `url('${src}')`
-	}
+		backgroundImage: `url('${src}')`,
+		display: 'inline-block',
+		backgroundColor: theme.palette.common.fadeGrey,
+		backgroundSize: 'cover',
+		backgroundPosition: 'center',
+		borderRadius: '50%',
+	})
+)
 
+export default function Avatar({ src, size = 40 }) {
 	return (
-		<div {...props} className={classes}>
-			<div style={style} className={styles.Skeleton} />
-		</div>
+		<AvatarWrapper>
+			<AvatarImage size={size} src={src} />
+		</AvatarWrapper>
 	)
 }
