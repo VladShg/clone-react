@@ -3,75 +3,129 @@ import { useDispatch, useSelector } from 'react-redux'
 import { authSelector, logout } from '../../../store/auth/authSlice'
 import styles from './Account.module.scss'
 import Avatar from '../Avatar/Avatar'
-import classNames from 'classnames'
+import { styled } from '@mui/material/styles'
+import { Container, Menu, MenuItem, Stack } from '@mui/material'
+
+const Name = styled('span')(() => ({
+	fontWeight: 'bold',
+}))
+
+const Description = styled('div')(() => ({
+	display: 'flex',
+	justifyContent: 'center',
+	flexDirection: 'column',
+	fontSize: '15px',
+}))
+
+const Icon = styled('div')(() => ({
+	position: 'absolute',
+	right: '10px',
+	top: '50%',
+	transform: 'translateY(-50%)',
+}))
+
+const DropDown = styled(Menu)(({ theme }) => ({
+	'.MuiMenu-paper': {
+		borderRadius: '20px',
+		border: `1px solid ${theme.palette.common.border}`,
+		width: '300px',
+	},
+	'.MuiMenu-list': {
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'center',
+		gap: '10px',
+	},
+}))
+
+const Item = styled('button')(({ theme }) => ({
+	background: theme.palette.common.white,
+	outline: 'none',
+	border: 'none',
+	padding: '20px 10px',
+	width: '100%',
+	textAlign: 'start',
+	transition: 'color 0.2s, background-color 0.2s',
+	color: theme.palette.common.black,
+	fontFamily: 'Manrope, serif',
+	fontSize: '16px',
+	textDecoration: 'none',
+	'&:hover': {
+		textDecoration: 'none',
+		color: theme.palette.primary.dark,
+		cursor: 'pointer',
+		backgroundColor: theme.palette.primary.bg,
+	},
+}))
+
+const AccountContainer = styled('div')(({ hasMenu }) => ({
+	display: 'flex',
+	alignItems: 'center',
+	fontSize: '24px',
+	padding: '12px',
+	borderRadius: '9999px',
+	margin: '10px 0',
+	transition: '0.2s ease background',
+	'&:hover': {
+		background: hasMenu ? 'var(--gray-fade)' : '',
+		cursor: hasMenu ? 'pointer' : 'normal',
+	},
+	'&[disabled]': {
+		opacity: '1 !important',
+	},
+}))
 
 function AccountSkeleton({ name, username, avatar, hasMenu = false }) {
-	const [menuOpen, setMenuOpen] = useState(false)
+	const [anchor, setAnchor] = useState(null)
+	const toggleMenu = (e) => {
+		if (hasMenu) setAnchor(e.currentTarget)
+	}
 	const dispatch = useDispatch()
-	const toggleMenu = () => {
-		if (hasMenu) setMenuOpen(!menuOpen)
-	}
-	function Container({ children, className, ...props }) {
-		return (
-			<div
-				className={classNames(styles.Container, { [className]: !!className })}
-				{...props}
-			>
-				{children}
-			</div>
-		)
-	}
 
-	function Descryption({ children }) {
-		return <div className={styles.Description}>{children}</div>
-	}
-
-	function Name({ name }) {
-		return <span>{name}</span>
-	}
-
-	function Username({ username }) {
-		return <span className={styles.Username}>{'@' + username}</span>
-	}
-
-	let mainContainer = classNames({ [styles.Interactive]: hasMenu })
+	const dropdown = (
+		<DropDown
+			anchorOrigin={{
+				vertical: -20,
+				horizontal: 'center',
+			}}
+			transformOrigin={{
+				vertical: 'bottom',
+				horizontal: 'center',
+			}}
+			disableAutoFocusItem
+			open={!!anchor}
+			anchorEl={anchor}
+			onClose={() => setAnchor(null)}
+		>
+			<MenuItem disabled component={AccountContainer} hasMenu={hasMenu}>
+				<Avatar src={avatar} />
+				<Description>
+					<Name>{name}</Name>
+					<span>@{username}</span>
+				</Description>
+			</MenuItem>
+			<MenuItem component={Item} onClick={() => dispatch(logout())}>
+				Log out from @{username}
+			</MenuItem>
+		</DropDown>
+	)
 
 	return (
-		<div className={styles.Wrapper}>
-			{hasMenu && (
-				<div
-					className={classNames(styles.DropDown, { [styles.Open]: menuOpen })}
-				>
-					<Container className={styles.InnerContainer}>
-						<Avatar src={avatar} />
-						<Descryption>
-							<Name name={name} />
-							<Username username={username} />
-						</Descryption>
-					</Container>
-					<button
-						className={styles.Item}
-						onClick={() => {
-							dispatch(logout())
-						}}
-					>
-						Log out from @{username}
-					</button>
-				</div>
-			)}
-			<Container onClick={toggleMenu} className={mainContainer}>
+		<Container disableGutters>
+			{hasMenu && dropdown}
+			<AccountContainer onClick={toggleMenu} hasMenu={hasMenu}>
 				<Avatar src={avatar} />
-				<Descryption>
+				<Description>
 					{hasMenu && (
-						<div className={styles.Icon}>
+						<Icon>
 							<i className="fa-solid fa-ellipsis"></i>
-						</div>
+						</Icon>
 					)}
-					<Name name={name} />
-					<Username username={username} />
-				</Descryption>
-			</Container>
-		</div>
+					<Name>{name}</Name>
+					<span>@{username}</span>
+				</Description>
+			</AccountContainer>
+		</Container>
 	)
 }
 

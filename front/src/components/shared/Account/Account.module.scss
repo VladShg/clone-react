@@ -1,86 +1,11 @@
-.Wrapper {
-	position: relative;
-}
-.Container {
-	display: flex;
-	align-items: center;
-	font-size: 24px;
-	padding: 12px;
-	border-radius: 9999px;
-	margin: 10px 0;
-	transition: 0.2s ease background;
-}
-
-.Interactive {
-	&:hover {
-		background: var(--gray-fade);
-		cursor: pointer;
-	}
-}
-
-.Description {
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	font-size: 15px;
-	font-weight: bold;
-
-	> .Username {
-		font-weight: normal;
-	}
-
-	.Icon {
-		position: absolute;
-		right: 10px;
-		top: 50%;
-		transform: translateY(-50%);
-	}
-}
-
 .DropDown {
 	position: absolute;
 	right: 50%;
 	top: -10px;
 	transform: translateY(-100%) translateX(50%);
 	width: 120%;
-	background: var(--white);
 	padding-bottom: 20px;
 	box-sizing: border-box;
-	border-radius: 20px;
-	border: 1px solid var(--border-grey);
-	opacity: 0;
-	visibility: hidden;
-	transition: 0.2s ease opacity;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	gap: 10px;
-
-	.Item {
-		background: var(--white);
-		outline: none;
-		border: none;
-		padding: 20px 10px;
-		width: 100%;
-		text-align: start;
-		transition: color 0.2s, background-color 0.2s;
-		color: var(--black);
-		font-family: Manrope, serif;
-		font-size: 16px;
-		text-decoration: none;
-
-		&:hover {
-			text-decoration: none;
-			color: var(--focus-main);
-			cursor: pointer;
-			background-color: var(--focus-main-bg);
-		}
-	}
-
-	&.Open {
-		visibility: visible;
-		opacity: 1;
-	}
 
 	.InnerContainer {
 		&:hover {
