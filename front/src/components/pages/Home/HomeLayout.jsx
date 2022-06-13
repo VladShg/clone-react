@@ -41,38 +41,35 @@ export default function HomeLayout() {
 						<i className="fa-solid fa-crow" />
 					</div>
 					<div className={styles.Main}>
-						<HomeLink className={styles.Navigation} to="/home">
+						<HomeLink to="/home">
 							<i className="fa-solid fa-house-chimney-window" />
 							<span>Home</span>
 						</HomeLink>
-						<HomeLink className={styles.Navigation} to="/explore">
+						<HomeLink to="/explore">
 							<i className="fa-solid fa-hashtag" />
 							<span>Explore</span>
 						</HomeLink>
-						<HomeLink className={styles.Navigation} to="/notifications">
+						<HomeLink to="/notifications">
 							<i className="fa-regular fa-bell" />
 							<span>Notifications</span>
 						</HomeLink>
-						<HomeLink className={styles.Navigation} to="/messages">
+						<HomeLink to="/messages">
 							<i className="fa-regular fa-envelope" />
 							<span>Messages</span>
 						</HomeLink>
-						<HomeLink className={styles.Navigation} to="/bookmarks">
+						<HomeLink to="/bookmarks">
 							<i className="fa-regular fa-bookmark" />
 							<span>Bookmarks</span>
 						</HomeLink>
-						<HomeLink className={styles.Navigation} to="/lists">
+						<HomeLink to="/lists">
 							<i className="fa-regular fa-rectangle-list" />
 							<span>Lists</span>
 						</HomeLink>
-						<HomeLink
-							className={styles.Navigation}
-							to={`/profile/${user?.username || ''}`}
-						>
+						<HomeLink to={`/profile/${user?.username || ''}`}>
 							<i className="fa-regular fa-user" />
 							<span>Profile</span>
 						</HomeLink>
-						<HomeLink className={styles.Navigation} to="/more">
+						<HomeLink to="/more">
 							<i className="fa-solid fa-ellipsis" />
 							<span>More</span>
 						</HomeLink>
