@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from './Feed.module.scss'
 import WriteTweet from '@shared/WriteTweet/WriteTweet'
 import Tweet from '@shared/Tweet/Tweet'
 import Spinner from '@shared/Spinner/Spinner'
@@ -15,13 +14,13 @@ export default function Feed() {
 
 	if (isLoading || !user) {
 		return (
-			<Container sx={{ height: '100%' }} position="relative" >
+			<Container sx={{ height: '100%' }} position="relative">
 				<Stack
 					sx={{ width: '100%', height: '100%' }}
 					alignItems="center"
 					justifyContent="center"
 				>
-					<Spinner className={styles.Spinner} />
+					<Spinner size={100} />
 				</Stack>
 			</Container>
 		)

@@ -32,7 +32,7 @@ export default function Profile() {
 	if (isLoading) {
 		return (
 			<div className={styles.SpinnerContainer}>
-				<Spinner className={styles.Spinner} />
+				<Spinner size={100} />
 			</div>
 		)
 	}

@@ -7,7 +7,7 @@ export default function Replies({ replies, isLoading }) {
 	if (isLoading) {
 		return (
 			<div className={styles.SpinnerContainer}>
-				<Spinner className={styles.Spinner} />
+				<Spinner size={100} />
 			</div>
 		)
 	}

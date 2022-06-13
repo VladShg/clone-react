@@ -16,7 +16,7 @@ export default function ProfileReplies() {
 		return (
 			<div className={styles.container}>
 				<div className={styles.SpinnerContainer}>
-					<Spinner className={styles.Spinner} />
+					<Spinner size={100} />
 				</div>
 			</div>
 		)
