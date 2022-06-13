@@ -37,6 +37,9 @@ export const theme = createTheme({
 		common: {
 			dark: '#536471',
 			border: '#eff3f4',
+			grey: '#999999',
+			borderGrey: '#eff3f4',
+			fadeGrey: '#e7e7e8',
 		},
 		tonalOffset: 0.2,
 	},
