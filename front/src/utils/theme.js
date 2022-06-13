@@ -41,6 +41,12 @@ export const theme = createTheme({
 			borderGrey: '#eff3f4',
 			fadeGrey: '#e7e7e8',
 		},
+		error: {
+			main: '#F4212E',
+		},
+		warning: {
+			main: '#FFD400',
+		},
 		tonalOffset: 0.2,
 	},
 })

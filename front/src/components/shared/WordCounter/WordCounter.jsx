@@ -1,6 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styles from './WordCounter.module.scss'
+import isPropValid from '@emotion/is-prop-valid'
+import { styled } from '@mui/material'
+import { theme } from '@utils/theme'
+
+const StyledCircle = styled('circle', { shouldForwardProp: isPropValid })(
+	({ radius, size }) => ({
+		transition: '0.2s ease r',
+		strokeWidth: '2px',
+		strokeLinecap: 'round',
+		fill: 'transparent',
+
+		r: radius,
+		cx: size / 2,
+		cy: size / 2,
+	})
+)
 
 export default function WordCounter({ text, size = 30, maxLength = 140 }) {
 	const warningTreshold = 20
@@ -13,19 +28,20 @@ export default function WordCounter({ text, size = 30, maxLength = 140 }) {
 
 	let caption = null
 	let hasCircle = true
-	let circleColor = 'var(--main)'
-	let textColor = 'black'
+	let circleColor = theme.palette.primary.main
+	let textColor = theme.palette.common.black
 
 	if (text.length >= maxLength) {
 		caption = maxLength - text.length
-		circleColor = 'red'
-		textColor = 'red'
+		circleColor = theme.palette.error.main
+		textColor = theme.palette.error.main
 		if (text.length - maxLength >= 10) {
 			hasCircle = false
 		}
 	} else if (text.length >= maxLength - warningTreshold) {
 		caption = maxLength - text.length
-		circleColor = 'orange'
+		textColor = theme.palette.common.black
+		circleColor = theme.palette.warning.main
 	}
 
 	let circleShrink = null
@@ -67,15 +83,13 @@ const Circle = ({ color, pct, size, shrink = 0.6 }) => {
 	const circ = 2 * Math.PI * radius
 	const strokePct = ((100 - pct) * circ) / 100
 	return (
-		<circle
-			className={styles.circle}
-			r={radius}
-			cx={size / 2}
-			cy={size / 2}
+		<StyledCircle
+			radius={radius}
+			size={size}
 			stroke={strokePct !== circ ? color : ''} // remove color as 0% sets full circumference
 			strokeDasharray={circ}
 			strokeDashoffset={pct ? strokePct : 0}
-		></circle>
+		></StyledCircle>
 	)
 }
 
@@ -104,5 +118,4 @@ const Text = ({ content, size, color }) => {
 Text.propTypes = {
 	content: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 	size: PropTypes.number.isRequired,
-	color: PropTypes.string.isRequired,
 }
