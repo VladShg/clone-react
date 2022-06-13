@@ -41,7 +41,7 @@ export default function WriteTweet({
 					fullWidth
 					value={input}
 				/>
-				<Stack direction="row-reverse">
+				<Stack direction="row-reverse" alignItems="center" gap="10px">
 					<PrimaryButton
 						onClick={async (e) => {
 							e.preventDefault()
