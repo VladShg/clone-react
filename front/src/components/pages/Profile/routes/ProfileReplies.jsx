@@ -5,7 +5,7 @@ import { useUserRepliesQuery } from '@services/tweetApi'
 import { authSelector } from '@store/auth/authSlice'
 import Spinner from '@shared/Spinner/Spinner'
 import Tweet from '@shared/Tweet/Tweet'
-import styles from '../Profile.module.scss'
+import { SpinnerContainer } from '../components/SpinnerContainer'
 
 export default function ProfileReplies() {
 	const username = useParams().username
@@ -14,19 +14,11 @@ export default function ProfileReplies() {
 
 	if (isLoading || !user) {
 		return (
-			<div className={styles.container}>
-				<div className={styles.SpinnerContainer}>
-					<Spinner size={100} />
-				</div>
-			</div>
+			<SpinnerContainer>
+				<Spinner size={100} />
+			</SpinnerContainer>
 		)
 	}
 
-	return (
-		<div className={styles.container}>
-			{!isLoading &&
-				user &&
-				tweets.map((tweet) => <Tweet key={tweet} id={tweet} />)}
-		</div>
-	)
+	return tweets.map((tweet) => <Tweet key={tweet} id={tweet} />)
 }

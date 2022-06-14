@@ -43,3 +43,20 @@ export const SecondaryButton = styled(Button)(({ theme }) => ({
 		color: theme.palette.common.white,
 	},
 }))
+
+export const LightButton = styled(Button)(({ theme }) => ({
+	fontFamily: 'Manrope, serif',
+	textDecoration: 'none',
+	textTransform: 'none',
+	fontWeight: 'bold',
+
+	color: theme.palette.common.black,
+	background: theme.palette.common.white,
+	border: `2px solid ${theme.palette.common.borderGrey}`,
+	padding: '5px 20px',
+	borderRadius: '20px',
+
+	'&:hover': {
+		backgroundColor: theme.palette.common.fadeGrey,
+	},
+}))

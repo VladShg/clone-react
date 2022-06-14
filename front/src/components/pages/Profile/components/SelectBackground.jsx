@@ -1,5 +1,6 @@
-import { styled } from '@mui/material'
 import React from 'react'
+import { styled } from '@mui/material'
+import isPropValid from '@emotion/is-prop-valid'
 
 const Container = styled('div')(() => ({
 	height: '200px',
@@ -22,30 +23,32 @@ const SetBackground = styled('input')(() => ({
 	},
 }))
 
-const LabelContainer = styled('div')(({ src, theme }) => ({
-	position: 'absolute',
-	width: '100%',
-	height: '100%',
-	top: '0',
-	left: '0',
-	display: 'flex',
-	gap: '20px',
-	justifyContent: 'center',
-	alignItems: 'center',
-	zIndex: 0,
-	svg: {
-		padding: '10px',
-		fontSize: '24px',
-		zIndex: 1,
-		transition: 'transform 0.2s',
-		'&:hover': { cursor: 'pointer', transform: 'scale(1.5)' },
-	},
-	backgroundColor: theme.palette.common.bgGrey,
-	backgroundImage: src ? `url('${src}')` : '',
-	backgroundRepeat: 'no-repeat',
-	backgroundPosition: 'center',
-	objectFit: 'cover',
-}))
+const LabelContainer = styled('div', { shouldForwardProp: isPropValid })(
+	({ image, theme }) => ({
+		position: 'absolute',
+		width: '100%',
+		height: '100%',
+		top: '0',
+		left: '0',
+		display: 'flex',
+		gap: '20px',
+		justifyContent: 'center',
+		alignItems: 'center',
+		zIndex: 0,
+		svg: {
+			padding: '10px',
+			fontSize: '24px',
+			zIndex: 1,
+			transition: 'transform 0.2s',
+			'&:hover': { cursor: 'pointer', transform: 'scale(1.5)' },
+		},
+		backgroundColor: theme.palette.common.bgGrey,
+		backgroundImage: image ? `url('${image}')` : '',
+		backgroundRepeat: 'no-repeat',
+		backgroundPosition: 'center',
+		objectFit: 'cover',
+	})
+)
 
 export function SelectBackground({ image, setImage }) {
 	const inputRef = React.createRef()
@@ -73,7 +76,7 @@ export function SelectBackground({ image, setImage }) {
 				type="file"
 				accept=".jpg, .jpeg, .png"
 			/>
-			<LabelContainer src={image?.src}>
+			<LabelContainer image={image?.src}>
 				<div onClick={selectImage}>
 					<i className={'fa-solid fa-camera'} />
 				</div>
