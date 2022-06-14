@@ -1,10 +1,18 @@
-import Modal from '@shared/Modal/Modal'
-import styles from './ModalUpdateProfile.module.scss'
 import React, { useState } from 'react'
-import Avatar from '@shared/Avatar/Avatar'
 import * as yup from 'yup'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Modal, Stack, styled } from '@mui/material'
+import { ModalBody, ModalControl, ModalField } from '@shared/Modal/Modal'
+import { SecondaryButton } from '@shared/Button/Button'
+import { SelectBackground } from './SelectBackground'
+import { SelectAvatar } from './SelectAvatar'
+
+const Content = styled(Stack)(() => ({
+	position: 'relative',
+	padding: '0px 10px',
+	top: '-40px',
+}))
 
 const schema = yup
 	.object({
@@ -13,7 +21,7 @@ const schema = yup
 			.max(30, 'Name too long')
 			.required('Name cannot be blank'),
 		location: yup.string().max(30, 'Location too long'),
-		bio: yup.string().max(60),
+		bio: yup.string().max(60, 'Bio too long'),
 	})
 	.required()
 
@@ -29,16 +37,23 @@ export default function ModalUpdateProfile({
 		file: null,
 	})
 	const {
-		register,
+		control,
 		handleSubmit,
-		formState: { errors, isValid },
-	} = useForm({ resolver: yupResolver(schema), mode: 'onChange' })
+		formState: { isValid },
+	} = useForm({
+		resolver: yupResolver(schema),
+		mode: 'onChange',
+		defaultValues: {
+			name: profile.name || '',
+			bio: profile.bio || '',
+			location: profile.location || '',
+		},
+	})
+
 	const onSubmit = (data) => {
 		let body = new FormData()
 		for (let key of Object.keys(data)) {
-			if (data[key]) {
-				body.append(key, data[key])
-			}
+			body.append(key, data[key])
 		}
 		if (avatar.file) body.append('avatar', avatar.file)
 		if (background.file) body.append('background', background.file)
@@ -46,117 +61,77 @@ export default function ModalUpdateProfile({
 	}
 
 	return (
-		<Modal className={styles.Modal} isOpen={isOpen} setOpen={setOpen}>
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<div className={styles.Actions}>
-					<div className={styles.Description}>
-						<Modal.Close className={styles.Close} />
+		<Modal open={isOpen} onClose={() => setOpen(false)}>
+			<ModalBody
+				sx={{ padding: '20px 5px', maxWidth: '600px' }}
+				component="form"
+				onSubmit={handleSubmit(onSubmit)}
+			>
+				<Stack padding="10px" direction="row" justifyContent="space-between">
+					<Stack direction="row" gap="20px" alignItems="center">
+						<ModalControl
+							sx={{ position: 'static' }}
+							icon="times"
+							onClick={() => setOpen(false)}
+						/>
 						<span>Edit profile</span>
-					</div>
-					<button className={styles.Save} type="submit" disabled={!isValid}>
+					</Stack>
+					<SecondaryButton type="submit" disabled={!isValid}>
 						Save
-					</button>
-				</div>
-				<Background image={background} setImage={setBackground} />
-				<div className={styles.Content}>
+					</SecondaryButton>
+				</Stack>
+				<SelectBackground image={background} setImage={setBackground} />
+				<Content gap="10px">
 					<SelectAvatar image={avatar.src} setImage={setAvatar} />
-					<Modal.Description>Name</Modal.Description>
-					<Modal.Input
-						defaultValue={profile.name}
-						placeholder="Name"
-						props={register('name')}
+					<Controller
+						name="name"
+						control={control}
+						render={({ field: { value, onChange }, fieldState: { error } }) => (
+							<ModalField
+								value={value}
+								name="name"
+								onChange={onChange}
+								error={!!error?.message}
+								label={'Name' || error?.message}
+								placeholder="Name"
+								fullWidth
+							/>
+						)}
 					/>
-					<Modal.Warning>{errors.name?.message}</Modal.Warning>
-					<Modal.Description>Bio</Modal.Description>
-					<Modal.Input
-						defaultValue={profile.bio}
-						placeholder="Bio"
-						props={register('bio')}
+					<Controller
+						name="bio"
+						control={control}
+						render={({ field: { value, onChange }, fieldState: { error } }) => (
+							<ModalField
+								value={value}
+								name="bio"
+								multiline
+								rows={3}
+								onChange={onChange}
+								error={!!error?.message}
+								label={'Bio' || error?.message}
+								placeholder="Bio"
+								fullWidth
+							/>
+						)}
 					/>
-					<Modal.Warning>{errors.bio?.message}</Modal.Warning>
-					<Modal.Description>Location</Modal.Description>
-					<Modal.Input
-						defaultValue={profile.location}
-						placeholder="Location"
-						props={register('location')}
+					<Controller
+						name="location"
+						control={control}
+						render={({ field: { value, onChange }, fieldState: { error } }) => (
+							<ModalField
+								value={value}
+								name="location"
+								onChange={onChange}
+								error={!!error?.message}
+								label={'Location' || error?.message}
+								placeholder="Location"
+								fullWidth
+							/>
+						)}
 					/>
-					<Modal.Warning>{errors.location?.message}</Modal.Warning>
-				</div>
-			</form>
+				</Content>
+			</ModalBody>
 		</Modal>
-	)
-}
-
-function SelectAvatar({ image, setImage }) {
-	const inputRef = React.createRef()
-	const selectImage = () => {
-		inputRef.current.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-	}
-	const onChange = (e) => {
-		if (e.target.files.length) {
-			const file = e.target.files[0]
-			setImage({ src: URL.createObjectURL(file), file: file })
-		}
-	}
-
-	return (
-		<div className={styles.Avatar}>
-			<Avatar
-				className={styles.Preview}
-				size={80}
-				src={image}
-				onClick={selectImage}
-			/>
-			<input
-				className={styles.SetAvatar}
-				onChange={onChange}
-				ref={inputRef}
-				type="file"
-			/>
-			<div className={styles.IconContainer} onClick={selectImage}>
-				<i className={'fa-solid fa-camera'} />
-			</div>
-		</div>
-	)
-}
-
-function Background({ image, setImage }) {
-	const inputRef = React.createRef()
-	const previewStyles = { backgroundImage: `url('${image.src}')` }
-	const onChange = (e) => {
-		if (e.target.files.length) {
-			const file = e.target.files[0]
-			setImage({ src: URL.createObjectURL(file), file: file })
-		}
-	}
-	const selectImage = () => {
-		const event = new MouseEvent('click', { bubbles: true })
-		inputRef.current.dispatchEvent(event)
-	}
-
-	const resetImage = () => {
-		setImage({ src: '', file: null })
-	}
-
-	return (
-		<div className={styles.Background}>
-			<input
-				ref={inputRef}
-				onChange={onChange}
-				type="file"
-				accept=".jpg, .jpeg, .png"
-				className={styles.SetBackground}
-			/>
-			<div style={previewStyles} className={styles.LabelContainer}>
-				<div onClick={selectImage}>
-					<i className={'fa-solid fa-camera'} />
-				</div>
-				{image.file && (
-					<div onClick={resetImage}>
-						<i className={'fa-solid fa-times'} />
-					</div>
-				)}
-			</div>
-		</div>
 	)
 }

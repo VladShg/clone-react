@@ -40,6 +40,7 @@ export const theme = createTheme({
 			grey: '#999999',
 			borderGrey: '#eff3f4',
 			fadeGrey: '#e7e7e8',
+			bgGrey: '#cfd9de',
 		},
 		error: {
 			main: '#F4212E',

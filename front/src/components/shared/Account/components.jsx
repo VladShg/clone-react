@@ -50,6 +50,7 @@ export const AccountContainer = styled('div', {
 	shouldForwardProp: isPropValid,
 })(({ theme, hasMenu }) => ({
 	display: 'flex',
+	gap: '15px',
 	alignItems: 'center',
 	fontSize: '24px',
 	padding: '12px',

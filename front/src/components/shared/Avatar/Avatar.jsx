@@ -5,7 +5,6 @@ import isPropValid from '@emotion/is-prop-valid'
 export const AvatarWrapper = styled('div')(() => ({
 	display: 'flex',
 	position: 'relative',
-	marginRight: '15px',
 }))
 
 export const AvatarImage = styled('div', { shouldForwardProp: isPropValid })(
