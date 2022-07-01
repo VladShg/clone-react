@@ -42,7 +42,7 @@ export const Item = styled(MenuItem)(({ theme }) => ({
 	color: theme.palette.common.black,
 	'&:hover': {
 		color: theme.palette.primary.dark,
-		background: theme.palette.primary.bg,
+		background: theme.palette.primary.focus,
 	},
 }))
 
@@ -71,12 +71,12 @@ export const HelmetItem = styled(MenuItem)(({ theme }) => ({
 		opacity: 1,
 	},
 	padding: '15px',
-	borderBottom: `1px solid ${theme.palette.common.borderGrey}`,
+	borderBottom: `1px solid ${theme.palette.common.border}`,
 }))
 
 export const InnerContainer = styled(AccountContainer)(({ theme }) => ({
 	borderRadius: '0px',
-	borderBottom: `1px solid ${theme.palette.common.borderGrey}`,
+	borderBottom: `1px solid ${theme.palette.common.border}`,
 	'&:hover': {
 		background: theme.palette.common.white,
 		cursor: 'default',

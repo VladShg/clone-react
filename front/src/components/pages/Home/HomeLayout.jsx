@@ -32,10 +32,10 @@ const TweetLink = styled(Link)(({ theme }) => ({
 const Section = styled('div')(({ theme }) => ({
 	maxWidth: '100%',
 	'&:first-child': {
-		borderRight: `1px solid ${theme.palette.common.borderGrey}`,
+		borderRight: `1px solid ${theme.palette.common.border}`,
 	},
 	'&:last-child': {
-		borderLeft: `1px solid ${theme.palette.common.borderGrey}`,
+		borderLeft: `1px solid ${theme.palette.common.border}`,
 	},
 }))
 

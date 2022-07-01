@@ -31,14 +31,13 @@ export const theme = createTheme({
 		primary: {
 			main: '#1d9bf0',
 			dark: '#1a8cd8',
-			bg: alpha('#1d9bf0', 0.1),
 			inavtive: alpha('#1d9bf0', 0.4),
+			focus: alpha('#1d9bf0', 0.1),
 		},
 		common: {
 			dark: '#536471',
 			border: '#eff3f4',
 			grey: '#999999',
-			borderGrey: '#eff3f4',
 			fadeGrey: '#e7e7e8',
 			bgGrey: '#cfd9de',
 		},
