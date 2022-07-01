@@ -5,17 +5,11 @@ import useTweet from '../../../hooks/useTweet'
 import { authSelector } from '@store/auth/authSlice'
 import { formatTimeDelta } from '@utils/date'
 import Avatar from '../Avatar/Avatar'
-import {
-	CreatedAt,
-	DeleteTweet,
-	Like,
-	Message,
-	Name,
-	Reply,
-	Retweet,
-	Username,
-} from './components'
+import { CreatedAt, DeleteTweet, Message, Name, Username } from './components'
 import styles from './Tweet.module.scss'
+import Reply from './components/actions/Reply'
+import Retweet from './components/actions/Retweet'
+import Like from './components/actions/Like'
 
 export default function Tweet({ id }) {
 	let { tweet, relations, isLoading, isRetweet, isReply } = useTweet({ id })
@@ -83,7 +77,12 @@ function Body({ tweet, relations }) {
 				</div>
 				<Message>{tweet.message}</Message>
 				<div className={styles.Counters}>
-					<Reply isActive={isReplied}>{replies}</Reply>
+					<Reply
+						href={`/status/${tweet.author.username}/${tweet.id}`}
+						isActive={isReplied}
+					>
+						{replies}
+					</Reply>
 					<Retweet isActive={isRetweeted} tweetId={tweet.id}>
 						{retweets}
 					</Retweet>

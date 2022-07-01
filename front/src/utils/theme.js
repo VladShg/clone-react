@@ -47,6 +47,16 @@ export const theme = createTheme({
 		warning: {
 			main: '#FFD400',
 		},
+		like: {
+			main: '#f9318e',
+			background: '#f7e0eb',
+		},
+		reply: {
+			main: '#1d9bf0',
+		},
+		retweet: {
+			main: '#1cc18a',
+		},
 		tonalOffset: 0.2,
 	},
 })

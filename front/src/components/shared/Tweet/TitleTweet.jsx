@@ -4,17 +4,13 @@ import { Link } from 'react-router-dom'
 import useTweet from '@hooks/useTweet'
 import { authSelector } from '@store/auth/authSlice'
 import Avatar from '../Avatar/Avatar'
-import {
-	CreatedAt,
-	DeleteTweet,
-	Like,
-	Message,
-	Name,
-	Reply,
-	Retweet,
-	Username,
-} from './components'
+import { CreatedAt, DeleteTweet, Message, Name, Username } from './components'
+
 import styles from './TitleTweet.module.scss'
+import { ActionContainer } from './components/actions/Actions'
+import Reply from './components/actions/Reply'
+import Retweet from './components/actions/Retweet'
+import Like from './components/actions/Like'
 
 export default function TitleTweet({ id }) {
 	const { user } = useSelector(authSelector)
@@ -75,7 +71,7 @@ function Body({ tweet, relations }) {
 					<span className={styles.Label}>Replies</span>
 				</div>
 			</div>
-			<div className={styles.Actions}>
+			<ActionContainer>
 				<Reply
 					className={styles.Action}
 					tweetId={tweet.id}
@@ -87,7 +83,7 @@ function Body({ tweet, relations }) {
 					isActive={isRetweeted}
 				/>
 				<Like className={styles.Action} tweetId={tweet.id} isActive={isLiked} />
-			</div>
+			</ActionContainer>
 		</>
 	)
 }
