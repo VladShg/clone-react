@@ -2,6 +2,12 @@ import React from 'react'
 
 import { IconButton as MUIIconButton, styled } from '@mui/material'
 
+export const Actions = styled('div')(() => ({
+	display: 'grid',
+	width: '90%',
+	gridTemplateColumns: 'repeat(4, 1fr)',
+}))
+
 export const ActionContainer = styled('div')(({ theme }) => ({
 	display: 'flex',
 	justifyContent: 'space-around',

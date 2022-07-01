@@ -23,30 +23,9 @@
 	grid-template-columns: 60px auto;
 }
 
-.Meta {
-	position: relative;
-	display: flex;
-	gap: 5px;
-	justify-content: flex-start;
-}
-
 .Message {
 	margin-bottom: 10px;
 	white-space: pre-wrap;
-}
-
-.Name {
-	color: var(--black);
-	font-size: 15px;
-	font-weight: bold;
-	line-height: 20px;
-}
-
-.Username {
-	font-size: 15px;
-	font-weight: 400px;
-	line-height: 20px;
-	color: var(--secondary);
 }
 
 .CreatedAt {
@@ -61,12 +40,6 @@
 		content: '•';
 		font-size: 10px;
 	}
-}
-
-.Counters {
-	display: grid;
-	width: 90%;
-	grid-template-columns: repeat(4, 1fr);
 }
 
 .UserLink {

@@ -1,10 +1,10 @@
-import classNames from 'classnames'
-import React from 'react'
-import styles from '../Tweet.module.scss'
+import { styled } from '@mui/material'
 
-export default function Name({ children, className }) {
-	const classes = classNames(styles.Name, {
-		[className]: !!className,
-	})
-	return <div className={classes}>{children}</div>
-}
+const Name = styled('div')(({ theme }) => ({
+	color: theme.palette.common.black,
+	fontSize: '15px',
+	fontWeight: 'bold',
+	lineHeight: '20px',
+}))
+
+export default Name

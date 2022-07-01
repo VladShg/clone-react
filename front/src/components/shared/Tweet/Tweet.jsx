@@ -10,6 +10,8 @@ import styles from './Tweet.module.scss'
 import Reply from './components/actions/Reply'
 import Retweet from './components/actions/Retweet'
 import Like from './components/actions/Like'
+import { Stack } from '@mui/material'
+import { Actions } from './components/actions/Actions'
 
 export default function Tweet({ id }) {
 	let { tweet, relations, isLoading, isRetweet, isReply } = useTweet({ id })
@@ -70,13 +72,13 @@ function Body({ tweet, relations }) {
 			</div>
 			<div className={styles.Content}>
 				{isAuthor && <DeleteTweet id={tweet.id} />}
-				<div className={styles.Meta}>
+				<Stack gap="5px" direction="row">
 					<Name>{tweet.author.name}</Name>
 					<Username>{tweet.author.username}</Username>
 					<CreatedAt>{dateFormat}</CreatedAt>
-				</div>
+				</Stack>
 				<Message>{tweet.message}</Message>
-				<div className={styles.Counters}>
+				<Actions>
 					<Reply
 						href={`/status/${tweet.author.username}/${tweet.id}`}
 						isActive={isReplied}
@@ -89,7 +91,7 @@ function Body({ tweet, relations }) {
 					<Like isActive={isLiked} tweetId={tweet.id}>
 						{likes}
 					</Like>
-				</div>
+				</Actions>
 			</div>
 		</>
 	)

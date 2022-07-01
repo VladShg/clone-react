@@ -72,17 +72,9 @@ function Body({ tweet, relations }) {
 				</div>
 			</div>
 			<ActionContainer>
-				<Reply
-					className={styles.Action}
-					tweetId={tweet.id}
-					isActive={isReplied}
-				/>
-				<Retweet
-					className={styles.Action}
-					tweetId={tweet.id}
-					isActive={isRetweeted}
-				/>
-				<Like className={styles.Action} tweetId={tweet.id} isActive={isLiked} />
+				<Reply tweetId={tweet.id} isActive={isReplied} />
+				<Retweet tweetId={tweet.id} isActive={isRetweeted} />
+				<Like tweetId={tweet.id} isActive={isLiked} />
 			</ActionContainer>
 		</>
 	)
